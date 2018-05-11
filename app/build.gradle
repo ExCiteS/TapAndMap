@@ -43,4 +43,7 @@ dependencies {
   // Timber Logger
   implementation 'com.jakewharton.timber:timber:4.7.0'
   implementation 'com.github.michalis-vitos:timberutils:1.0.0'
+
+  implementation 'com.jakewharton:butterknife:8.8.1'
+  annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

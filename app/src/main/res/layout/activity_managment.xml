@@ -9,10 +9,9 @@
     >
 
   <Button
-      android:id="@+id/button"
+      android:id="@+id/btn_goToNFC"
       android:layout_width="95dp"
       android:layout_height="48dp"
-      android:onClick="openNFCActivity"
       android:text="Go to NFC"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"

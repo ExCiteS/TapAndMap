@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 import android.widget.Toast;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import excites.ucl.ac.uk.tapmap.R;
 import timber.log.Timber;
 
@@ -17,7 +19,8 @@ public class NFCActivity extends AppCompatActivity {
   public static final String MIME_TEXT_PLAIN = "text/plain";
   public static final String TAG = "NfcDemo";
 
-  private TextView textView;
+  @BindView(R.id.textView_explanation)
+  protected TextView textViewExplanation;
   private NfcAdapter nfcAdapter;
 
   @Override
@@ -25,7 +28,8 @@ public class NFCActivity extends AppCompatActivity {
 
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_nfc);
-    textView = (TextView) findViewById(R.id.textView_explanation);
+    ButterKnife.bind(this);
+    // TODO Use fields...
 
     nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -37,9 +41,9 @@ public class NFCActivity extends AppCompatActivity {
     }
 
     if (!nfcAdapter.isEnabled()) {
-      textView.setText("NFC is disabled.");
+      textViewExplanation.setText("NFC is disabled.");
     } else {
-      textView.setText(R.string.explanation);
+      textViewExplanation.setText(R.string.explanation);
     }
 
     handleIntent(getIntent());
