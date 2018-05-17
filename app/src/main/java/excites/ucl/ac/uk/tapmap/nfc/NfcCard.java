@@ -129,6 +129,28 @@ public class NfcCard {
     return result;
   }
 
+  /**
+   * Method to find the most appropriate id for a card. This can be used to uniquely identify the card.
+   */
+  public String getCardID() {
+
+    String id = "";
+
+    if (idMifareUltralight > 0) {
+      id = String.valueOf(idMifareUltralight);
+    } else if (idDec > 0) {
+      id = String.valueOf(idDec);
+    } else if (idDecReverse > 0) {
+      id = String.valueOf(idDecReverse);
+    } else if (!idHex.isEmpty()) {
+      id = idHex;
+    } else if (!idHexReverse.isEmpty()) {
+      id = idHexReverse;
+    }
+
+    return id;
+  }
+
   @Override
   public String toString() {
 
