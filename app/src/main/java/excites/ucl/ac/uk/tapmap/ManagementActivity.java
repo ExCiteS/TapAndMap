@@ -22,7 +22,7 @@ public class ManagementActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.btn_goToNFC)
-  public void openNFCActivity(View view) {
+  public void openNFCActivity() {
     Timber.d("Go to NFC activity");
 
     Intent intent = new Intent(this, NFCActivity.class);
