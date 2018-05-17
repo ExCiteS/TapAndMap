@@ -8,9 +8,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import excites.ucl.ac.uk.tapmap.R;
 import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
@@ -20,8 +18,6 @@ public class NFCActivity extends AppCompatActivity {
 
   public static final String MIME_TEXT_PLAIN = "text/plain";
 
-  @BindView(R.id.textView_explanation)
-  protected TextView textViewExplanation;
   private NfcAdapter nfcAdapter;
 
   @Override
@@ -41,9 +37,7 @@ public class NFCActivity extends AppCompatActivity {
     }
 
     if (!nfcAdapter.isEnabled()) {
-      textViewExplanation.setText("NFC is disabled.");
-    } else {
-      textViewExplanation.setText(R.string.explanation);
+      Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG).show();
     }
 
     handleIntent(getIntent());
@@ -90,7 +84,6 @@ public class NFCActivity extends AppCompatActivity {
 
     NfcCard nfcCard = new NfcCard(tag);
 
-    textViewExplanation.setText(nfcCard.toString());
     Timber.d(nfcCard.toString());
   }
 

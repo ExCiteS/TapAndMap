@@ -6,12 +6,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.NFCActivity"
+    tools:layout_editor_absoluteY="81dp"
     >
 
-  <TextView
-      android:id="@+id/textView_explanation"
-      android:layout_width="wrap_content"
+  <ImageView
+      android:id="@+id/nfc"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="128dp"
+      android:layout_marginEnd="60dp"
+      android:layout_marginLeft="60dp"
+      android:layout_marginRight="60dp"
+      android:layout_marginStart="60dp"
+      android:layout_marginTop="110dp"
+      app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_nfc"
+      />
+  <LinearLayout
+      android:id="@+id/linearLayout"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="@string/explanation" />
-
+      android:background="@color/colorAccent"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/nfc"
+      >
+    <ImageButton
+        android:id="@+id/confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_weight="1"
+        android:background="@color/confirm"
+        android:scaleType="fitCenter"
+        android:text="Button"
+        app:srcCompat="@drawable/ic_done_black_24dp"
+        />
+    <ImageButton
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_weight="1"
+        android:background="@color/cancel"
+        android:scaleType="fitCenter"
+        android:text="Button"
+        app:srcCompat="@drawable/ic_clear_black_24dp"
+        />
+  </LinearLayout>
 </android.support.constraint.ConstraintLayout>
