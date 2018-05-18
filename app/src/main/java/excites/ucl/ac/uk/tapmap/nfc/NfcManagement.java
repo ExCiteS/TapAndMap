@@ -24,6 +24,11 @@ public class NfcManagement {
     savedNfcCards = new HashMap<>();
   }
 
+  public void storeNfcCardID(String nfcCardID, String imagePath) {
+
+    savedNfcCards.put(nfcCardID, imagePath);
+  }
+
   public void storeNfcCard(NfcCard nfcCard, String imagePath) {
 
     savedNfcCards.put(nfcCard.getCardID(), imagePath);
