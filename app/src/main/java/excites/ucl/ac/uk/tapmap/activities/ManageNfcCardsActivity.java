@@ -5,8 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -17,8 +15,10 @@ import butterknife.OnClick;
 import excites.ucl.ac.uk.tapmap.R;
 import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
 import excites.ucl.ac.uk.tapmap.nfc.NfcManagement;
+import excites.ucl.ac.uk.tapmap.utils.ImageUtils;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import timber.log.Timber;
 
@@ -89,7 +89,6 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
       InputStream inputStream;
       try {
-        Toast.makeText(this, "Image saved", Toast.LENGTH_SHORT).show();
         inputStream = getContentResolver().openInputStream(uri);
 
         FileOutputStream outputStream =
@@ -106,9 +105,12 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         Timber.e(e, "Error while copying the file.");
       }
 
-      File file = new File(this.getFilesDir(), currentNfcCard.getCardID());
-      Bitmap pickedIcon = BitmapFactory.decodeFile(file.getPath());
-      nfcImageView.setImageBitmap(pickedIcon);
+      String imagePath = new File(this.getFilesDir(), currentNfcCard.getCardID()).getPath();
+      try {
+        nfcImageView.setImageBitmap(ImageUtils.getThumbnail(imagePath));
+      } catch (IOException e) {
+        Timber.e(e, "Cannot load icon.");
+      }
     }
   }
 
