@@ -157,6 +157,7 @@ public class NfcCard {
     StringBuilder sb = new StringBuilder();
 
     sb.append("NFC Info:").append('\n');
+    sb.append("NFC ID:").append(getCardID()).append('\n');
     sb.append("ID (hex): ").append(idHex).append('\n');
     sb.append("ID (reversed hex): ").append(idHexReverse).append('\n');
     sb.append("ID (dec): ").append(idDec).append('\n');
