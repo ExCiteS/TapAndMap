@@ -9,12 +9,10 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import butterknife.ButterKnife;
-import excites.ucl.ac.uk.tapmap.R;
 import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
 import timber.log.Timber;
 
-public class NFCActivity extends AppCompatActivity {
+public abstract class NfcBaseActivity extends AppCompatActivity {
 
   public static final String MIME_TEXT_PLAIN = "text/plain";
 
@@ -24,8 +22,6 @@ public class NFCActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_nfc);
-    ButterKnife.bind(this);
 
     nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -37,10 +33,12 @@ public class NFCActivity extends AppCompatActivity {
     }
 
     if (!nfcAdapter.isEnabled()) {
-      Toast.makeText(this, "NFC is disabled.", Toast.LENGTH_LONG).show();
+      Toast.makeText(this, "NFC is disabled. Please enable it!", Toast.LENGTH_LONG).show();
+      finish();
+      return;
     }
 
-    handleIntent(getIntent());
+    onNewIntent(getIntent());
   }
 
   @Override
@@ -64,28 +62,30 @@ public class NFCActivity extends AppCompatActivity {
     super.onPause();
   }
 
+  /**
+   * This method gets called, when a new Intent gets associated with the current activity instance.
+   * Instead of creating a new activity, onNewIntent will be called. For more information have a look
+   * at the documentation.
+   *
+   * In our case this method gets called, when the user attaches a Tag to the device.
+   */
   @Override
   protected void onNewIntent(Intent intent) {
-    /**
-     * This method gets called, when a new Intent gets associated with the current activity instance.
-     * Instead of creating a new activity, onNewIntent will be called. For more information have a look
-     * at the documentation.
-     *
-     * In our case this method gets called, when the user attaches a Tag to the device.
-     */
-    handleIntent(intent);
-  }
 
-  private void handleIntent(Intent intent) {
-
+    // Get the NFC Tag
     Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
     if (tag == null) return;
 
+    // Get the NFC card
     NfcCard nfcCard = new NfcCard(tag);
-
     Timber.d(nfcCard.toString());
+
+    // Decide what to do with the card on the implementation of each Activity
+    handleNfcCard(nfcCard);
   }
+
+  protected abstract void handleNfcCard(NfcCard nfcCard);
 
   /**
    * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
@@ -99,7 +99,6 @@ public class NFCActivity extends AppCompatActivity {
         PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
 
     IntentFilter[] filters = new IntentFilter[1];
-    String[][] techList = new String[][] {};
 
     // Notice that this is the same filter as in our manifest.
     filters[0] = new IntentFilter();
