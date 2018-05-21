@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import java.util.HashMap;
-import java.util.Map;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.utils.BitmapCache;
 
 public class TapAndMapActivity extends NfcBaseActivity {
 
@@ -20,8 +19,6 @@ public class TapAndMapActivity extends NfcBaseActivity {
   protected ImageView nfcImageView;
 
   private NfcCardDao nfcCardDao;
-
-  Map<String, Bitmap> bitmaps;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +29,6 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
-
-    bitmaps = new HashMap();
   }
 
   @Override
@@ -47,10 +42,10 @@ public class TapAndMapActivity extends NfcBaseActivity {
       final String imagePath = nfcCardDao.findById(cardID).getImagePath();
       if (imagePath != null && !imagePath.isEmpty()) {
 
-        Bitmap bitmap = bitmaps.get(cardID);
+        Bitmap bitmap = BitmapCache.getInstance().getBitmapFromMemCache(cardID);
         if (bitmap == null) {
           bitmap = BitmapFactory.decodeFile(imagePath);
-          bitmaps.put(cardID, bitmap);
+          BitmapCache.getInstance().addBitmapToMemoryCache(cardID, bitmap);
           Timber.d("Load bitmap from memory: %s", bitmap);
         }
 

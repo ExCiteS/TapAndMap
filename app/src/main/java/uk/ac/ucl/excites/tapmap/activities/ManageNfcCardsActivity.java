@@ -22,6 +22,7 @@ import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.utils.BitmapCache;
 import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class ManageNfcCardsActivity extends NfcBaseActivity {
@@ -43,6 +44,9 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+
+    // Clear the bitmap cache since we will update the images
+    BitmapCache.getInstance().clear();
   }
 
   @Override
