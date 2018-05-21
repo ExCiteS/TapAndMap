@@ -3,6 +3,7 @@ package uk.ac.ucl.excites.tapmap.storage;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import java.util.List;
 
@@ -21,10 +22,10 @@ public interface NfcCardDao {
   @Query("SELECT * FROM NfcCard WHERE id = :id LIMIT 1")
   NfcCard findById(String id);
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
   void insert(NfcCard card);
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
   void insert(NfcCard... cards);
 
   @Delete

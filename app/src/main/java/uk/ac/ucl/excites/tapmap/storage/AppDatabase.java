@@ -17,6 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
   public static AppDatabase init(Context context) {
     return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
+        .allowMainThreadQueries() // TODO: 21/05/2018 Maybe remove this in the future
         .build();
   }
 }
