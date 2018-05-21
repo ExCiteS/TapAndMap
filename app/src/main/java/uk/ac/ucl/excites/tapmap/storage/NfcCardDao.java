@@ -1,4 +1,4 @@
-package excites.ucl.ac.uk.tapmap.storage;
+package uk.ac.ucl.excites.tapmap.storage;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

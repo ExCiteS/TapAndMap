@@ -1,13 +1,12 @@
-package excites.ucl.ac.uk.tapmap;
+package uk.ac.ucl.excites.tapmap.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import excites.ucl.ac.uk.tapmap.activities.ManageNfcCardsActivity;
-import excites.ucl.ac.uk.tapmap.activities.TapAndMapActivity;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.R;
 
 public class ManagementActivity extends AppCompatActivity {
 

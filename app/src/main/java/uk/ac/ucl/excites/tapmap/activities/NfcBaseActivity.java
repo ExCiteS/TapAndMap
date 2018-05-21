@@ -1,4 +1,4 @@
-package excites.ucl.ac.uk.tapmap.activities;
+package uk.ac.ucl.excites.tapmap.activities;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -9,7 +9,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
+import uk.ac.ucl.excites.tapmap.nfc.NfcCard;
 import timber.log.Timber;
 
 public abstract class NfcBaseActivity extends AppCompatActivity {

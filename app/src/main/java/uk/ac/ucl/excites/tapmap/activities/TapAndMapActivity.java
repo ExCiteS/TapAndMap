@@ -1,18 +1,16 @@
-package excites.ucl.ac.uk.tapmap.activities;
+package uk.ac.ucl.excites.tapmap.activities;
 
 import android.os.Bundle;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import excites.ucl.ac.uk.tapmap.R;
-import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
-import excites.ucl.ac.uk.tapmap.nfc.NfcManagement;
-import excites.ucl.ac.uk.tapmap.utils.ImageUtils;
+import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.nfc.NfcCard;
+import uk.ac.ucl.excites.tapmap.nfc.NfcManagement;
+import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 import timber.log.Timber;
 
 public class TapAndMapActivity extends NfcBaseActivity {
-
-
 
   @BindView(R.id.nfc)
   protected ImageView nfcImageView;

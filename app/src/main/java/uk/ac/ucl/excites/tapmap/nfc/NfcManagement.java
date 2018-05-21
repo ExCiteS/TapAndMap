@@ -1,4 +1,4 @@
-package excites.ucl.ac.uk.tapmap.nfc;
+package uk.ac.ucl.excites.tapmap.nfc;
 
 import java.util.HashMap;
 import java.util.Map;

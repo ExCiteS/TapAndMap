@@ -1,4 +1,4 @@
-package excites.ucl.ac.uk.tapmap.activities;
+package uk.ac.ucl.excites.tapmap.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,15 +12,15 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import excites.ucl.ac.uk.tapmap.R;
-import excites.ucl.ac.uk.tapmap.nfc.NfcCard;
-import excites.ucl.ac.uk.tapmap.nfc.NfcManagement;
-import excites.ucl.ac.uk.tapmap.utils.ImageUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.nfc.NfcCard;
+import uk.ac.ucl.excites.tapmap.nfc.NfcManagement;
+import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class ManageNfcCardsActivity extends NfcBaseActivity {
 

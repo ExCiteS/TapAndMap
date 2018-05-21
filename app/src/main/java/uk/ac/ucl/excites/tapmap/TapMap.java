@@ -1,10 +1,10 @@
-package excites.ucl.ac.uk.tapmap;
+package uk.ac.ucl.excites.tapmap;
 
 import android.app.Application;
 import com.facebook.stetho.Stetho;
-import excites.ucl.ac.uk.tapmap.storage.AppDatabase;
 import lombok.Getter;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.storage.AppDatabase;
 
 /**
  * Created by Michalis Vitos

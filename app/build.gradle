@@ -14,7 +14,7 @@ def butterknifeVersion = "8.8.1"
 android {
   compileSdkVersion 27
   defaultConfig {
-    applicationId "excites.ucl.ac.uk.tapmap"
+    applicationId "uk.ac.ucl.excites.tapmap"
     minSdkVersion 16
     targetSdkVersion 27
     versionCode 1

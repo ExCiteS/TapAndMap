@@ -1,4 +1,4 @@
-package excites.ucl.ac.uk.tapmap.utils;
+package uk.ac.ucl.excites.tapmap.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
