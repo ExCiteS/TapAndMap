@@ -68,12 +68,12 @@ public class NfcCard {
       mifareUlTag.connect();
       byte[] payload = mifareUlTag.readPages(3);
       id = Integer.parseInt(toReversedHex(payload, "").substring(0, 8), 16);
-    } catch (IOException e) {
+    } catch (Exception e) {
       Timber.e(e, "Read MifareUltralight.");
     } finally {
       try {
         mifareUlTag.close();
-      } catch (IOException e) {
+      } catch (Exception e) {
         Timber.e(e, "Cannot close MifareUltralight");
       }
     }
