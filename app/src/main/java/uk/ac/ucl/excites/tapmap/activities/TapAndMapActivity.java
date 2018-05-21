@@ -12,6 +12,7 @@ import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.BitmapCache;
+import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class TapAndMapActivity extends NfcBaseActivity {
 
@@ -44,7 +45,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
         Bitmap bitmap = BitmapCache.getInstance().getBitmapFromMemCache(cardID);
         if (bitmap == null) {
-          bitmap = BitmapFactory.decodeFile(imagePath);
+          bitmap = ImageUtils.getThumbnail(imagePath);
           BitmapCache.getInstance().addBitmapToMemoryCache(cardID, bitmap);
           Timber.d("Load bitmap from memory: %s", bitmap);
         }

@@ -8,4 +8,14 @@
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
+  <style name="AppTheme.Button.Confirm" parent="Widget.AppCompat.Button.Colored">
+    <item name="colorButtonNormal">@color/confirm</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="AppTheme.Button.Cancel" parent="Widget.AppCompat.Button.Colored">
+    <item name="colorButtonNormal">@color/cancel</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
 </resources>

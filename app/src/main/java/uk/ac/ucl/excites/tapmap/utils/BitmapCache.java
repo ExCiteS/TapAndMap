@@ -37,7 +37,8 @@ public class BitmapCache {
 
     memoryCache = getMemoryCache(cacheSize);
 
-    Timber.d("Created Bitmap cache that uses %s memory out of %s", cacheSize, maxMemory);
+    Timber.d("Created Bitmap cache with %s MB memory out of %s MB", cacheSize / 1024,
+        maxMemory / 1024);
   }
 
   @NonNull
