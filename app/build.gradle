@@ -29,6 +29,13 @@ android {
   }
   defaultConfig {
     vectorDrawables.useSupportLibrary = true
+
+    // Java Compile Options
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+      }
+    }
   }
 }
 

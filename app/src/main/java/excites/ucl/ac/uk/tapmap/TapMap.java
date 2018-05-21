@@ -2,6 +2,8 @@ package excites.ucl.ac.uk.tapmap;
 
 import android.app.Application;
 import com.facebook.stetho.Stetho;
+import excites.ucl.ac.uk.tapmap.storage.AppDatabase;
+import lombok.Getter;
 import timber.log.Timber;
 
 /**
@@ -9,12 +11,18 @@ import timber.log.Timber;
  */
 public class TapMap extends Application {
 
+  @Getter
+  AppDatabase appDatabase;
+
   @Override
   public void onCreate() {
     super.onCreate();
 
     // Initialise development tools
     initDevTools();
+
+    // Init the database
+    appDatabase = AppDatabase.init(this);
   }
 
   public void initDevTools() {
