@@ -12,18 +12,17 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.BuildConfig;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
-import uk.ac.ucl.excites.tapmap.utils.BitmapCache;
-import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class ManageNfcCardsActivity extends NfcBaseActivity {
 
@@ -34,6 +33,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
   private NfcTagParser currentNfcTagParser;
   private NfcCardDao nfcCardDao;
+  private Picasso picasso;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +45,9 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
 
-    // Clear the bitmap cache since we will update the images
-    BitmapCache.getInstance().clear();
+    // Set up Picasso
+    picasso = Picasso.get();
+    picasso.setIndicatorsEnabled(BuildConfig.DEBUG);
   }
 
   @Override
@@ -95,7 +96,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
       // Get URI
       final Uri uri = data.getData();
-      if (uri == null) return;
+      if (uri == null)
+        return;
 
       InputStream inputStream;
       try {
@@ -115,12 +117,15 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         Timber.e(e, "Error while copying the file.");
       }
 
-      String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
-      try {
-        nfcImageView.setImageBitmap(ImageUtils.getThumbnail(imagePath));
-      } catch (IOException e) {
-        Timber.e(e, "Cannot load icon.");
-      }
+      // Load image
+      File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
+      picasso.invalidate(imageFile);
+      picasso.load(imageFile)
+          .placeholder(R.drawable.ic_refresh_black_24dp)
+          .error(R.drawable.ic_error_outline_black_24dp)
+          .resize(TapAndMapActivity.MAX_SIZE, TapAndMapActivity.MAX_SIZE)
+          .centerCrop()
+          .into(nfcImageView);
     }
   }
 
@@ -133,9 +138,9 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
 
     // Get path
-    final String path = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
+    final String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
     // Store to DB
-    nfcCardDao.insert(currentNfcTagParser.toNfcCard(path));
+    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
   }
 
@@ -149,7 +154,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
     // Clean up by deleting the file
     final File file = new File(this.getFilesDir(), currentNfcTagParser.getId());
-    if (file.exists()) file.delete();
+    if (file.exists())
+      file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
   }
 }

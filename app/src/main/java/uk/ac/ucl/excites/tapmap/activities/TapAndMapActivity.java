@@ -41,22 +41,22 @@ public class TapAndMapActivity extends NfcBaseActivity {
   @Override
   protected void handleNfcCard(NfcTagParser nfcTagParser) {
 
-    Timber.d("NFC ID: %s", nfcTagParser.getId());
+    final String cardID = nfcTagParser.getId();
+    String imagePath = "";
 
     try {
-
-      final String cardID = nfcTagParser.getId();
-      final String imagePath = nfcCardDao.findById(cardID).getImagePath();
-      if (imagePath != null && !imagePath.isEmpty()) {
-
-        picasso.load(new File(imagePath))
-            .placeholder(R.drawable.ic_refresh_black_24dp)
-            .resize(MAX_SIZE, MAX_SIZE)
-            .centerCrop()
-            .into(nfcImageView);
-      }
+      imagePath = nfcCardDao.findById(cardID).getImagePath();
     } catch (Exception e) {
-      Timber.e(e, "Cannot load icon.");
+      Timber.e(e, "Cannot get icon.");
     }
+
+    Timber.d("NFC ID: %s. Path: %s", cardID, imagePath);
+
+    picasso.load(new File(imagePath))
+        .placeholder(R.drawable.ic_refresh_black_24dp)
+        .error(R.drawable.ic_error_outline_black_24dp)
+        .resize(MAX_SIZE, MAX_SIZE)
+        .centerCrop()
+        .into(nfcImageView);
   }
 }
