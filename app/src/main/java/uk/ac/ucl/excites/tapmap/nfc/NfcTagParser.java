@@ -20,6 +20,7 @@ public class NfcTagParser {
   public static final String DEFAULT_SEPARATOR = ":";
 
   private Tag tag;
+  private String id = "";
   private String idHex = "";
   private String idHexReverse = "";
   private long idDec = -1;
@@ -35,11 +36,11 @@ public class NfcTagParser {
 
     this.tag = tag;
 
-    byte[] id = tag.getId();
-    idHex = toHex(id, separator);
-    idHexReverse = toReversedHex(id, separator);
-    idDec = toDec(id);
-    idDecReverse = toReversedDec(id);
+    byte[] tagId = tag.getId();
+    idHex = toHex(tagId, separator);
+    idHexReverse = toReversedHex(tagId, separator);
+    idDec = toDec(tagId);
+    idDecReverse = toReversedDec(tagId);
 
     // Get Technologies
     String prefix = "android.nfc.tech.";
@@ -60,14 +61,14 @@ public class NfcTagParser {
    */
   private int getMifareUltralightID(Tag tag) {
 
-    int id = -1;
+    int ultralightId = -1;
 
     MifareUltralight mifareUlTag = MifareUltralight.get(tag);
 
     try {
       mifareUlTag.connect();
       byte[] payload = mifareUlTag.readPages(3);
-      id = Integer.parseInt(toReversedHex(payload, "").substring(0, 8), 16);
+      ultralightId = Integer.parseInt(toReversedHex(payload, "").substring(0, 8), 16);
     } catch (Exception e) {
       Timber.e(e, "Read MifareUltralight.");
     } finally {
@@ -78,7 +79,7 @@ public class NfcTagParser {
       }
     }
 
-    return id;
+    return ultralightId;
   }
 
   private String toHex(byte[] bytes, String separator) {
@@ -134,7 +135,8 @@ public class NfcTagParser {
    */
   public String getCardID() {
 
-    String id = "";
+    // Calculate once and cache
+    if (!id.isEmpty()) return id;
 
     if (idMifareUltralight > 0) {
       id = String.valueOf(idMifareUltralight);
