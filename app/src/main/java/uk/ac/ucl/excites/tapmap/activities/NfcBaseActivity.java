@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
-import timber.log.Timber;
 
 public abstract class NfcBaseActivity extends AppCompatActivity {
 
@@ -79,7 +78,6 @@ public abstract class NfcBaseActivity extends AppCompatActivity {
 
     // Get the NFC card
     NfcTagParser nfcCard = new NfcTagParser(tag);
-    Timber.d(nfcCard.toString());
 
     // Decide what to do with the card on the implementation of each Activity
     handleNfcCard(nfcCard);

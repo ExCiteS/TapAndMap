@@ -1,15 +1,18 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import java.util.HashMap;
+import java.util.Map;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
-import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class TapAndMapActivity extends NfcBaseActivity {
 
@@ -17,6 +20,8 @@ public class TapAndMapActivity extends NfcBaseActivity {
   protected ImageView nfcImageView;
 
   private NfcCardDao nfcCardDao;
+
+  Map<String, Bitmap> bitmaps;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -27,18 +32,29 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+
+    bitmaps = new HashMap();
   }
 
   @Override
   protected void handleNfcCard(NfcTagParser nfcTagParser) {
 
-    Timber.d(nfcTagParser.toString());
+    Timber.d("NFC ID: %s", nfcTagParser.getId());
 
     try {
 
-      final String imagePath = nfcCardDao.findById(nfcTagParser.getCardID()).getImagePath();
+      final String cardID = nfcTagParser.getId();
+      final String imagePath = nfcCardDao.findById(cardID).getImagePath();
       if (imagePath != null && !imagePath.isEmpty()) {
-        nfcImageView.setImageBitmap(ImageUtils.getThumbnail(imagePath));
+
+        Bitmap bitmap = bitmaps.get(cardID);
+        if (bitmap == null) {
+          bitmap = BitmapFactory.decodeFile(imagePath);
+          bitmaps.put(cardID, bitmap);
+          Timber.d("Load bitmap from memory: %s", bitmap);
+        }
+
+        nfcImageView.setImageBitmap(bitmap);
       }
     } catch (Exception e) {
       Timber.e(e, "Cannot load icon.");

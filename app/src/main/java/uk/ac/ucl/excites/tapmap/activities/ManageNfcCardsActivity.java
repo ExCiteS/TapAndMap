@@ -52,7 +52,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     currentNfcTagParser = nfcTagParser;
 
     // 1. Check if Card is already associated with an icon
-    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getCardID());
+    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
     if (nfcCard != null && !nfcCard.getImagePath().isEmpty()) {
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -98,7 +98,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         inputStream = getContentResolver().openInputStream(uri);
 
         FileOutputStream outputStream =
-            openFileOutput(currentNfcTagParser.getCardID(), Context.MODE_PRIVATE);
+            openFileOutput(currentNfcTagParser.getId(), Context.MODE_PRIVATE);
 
         // Copy file
         byte[] buffer = new byte[1024];
@@ -111,7 +111,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         Timber.e(e, "Error while copying the file.");
       }
 
-      String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getCardID()).getPath();
+      String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
       try {
         nfcImageView.setImageBitmap(ImageUtils.getThumbnail(imagePath));
       } catch (IOException e) {
@@ -129,7 +129,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
 
     // Get path
-    final String path = new File(this.getFilesDir(), currentNfcTagParser.getCardID()).getPath();
+    final String path = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
     // Store to DB
     nfcCardDao.insert(currentNfcTagParser.toNfcCard(path));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
@@ -144,7 +144,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
 
     // Clean up by deleting the file
-    final File file = new File(this.getFilesDir(), currentNfcTagParser.getCardID());
+    final File file = new File(this.getFilesDir(), currentNfcTagParser.getId());
     if (file.exists()) file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
   }

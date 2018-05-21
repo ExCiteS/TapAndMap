@@ -14,6 +14,10 @@ import java.io.InputStream;
  */
 public class ImageUtils {
 
+  private ImageUtils() {
+    // Do nothing
+  }
+
   private static final int THUMBNAIL_SIZE = 600;
 
   public static Bitmap getThumbnail(String filePath) throws IOException {
