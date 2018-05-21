@@ -5,6 +5,11 @@ repositories {
   maven { url "https://jitpack.io" }
 }
 
+// Define versions
+def roomVersion = "1.1.0"
+def lombokVersion = "1.16.20"
+def butterknifeVersion = "8.8.1"
+
 
 android {
   compileSdkVersion 27
@@ -48,10 +53,14 @@ dependencies {
   implementation 'com.github.michalis-vitos:timberutils:1.0.0'
 
   // Butterknife
-  implementation 'com.jakewharton:butterknife:8.8.1'
-  annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+  implementation "com.jakewharton:butterknife:$butterknifeVersion"
+  annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 
   // Project lombok
-  compileOnly 'org.projectlombok:lombok:1.16.20'
-  annotationProcessor 'org.projectlombok:lombok:1.16.20'
+  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+
+  // Room
+  implementation "android.arch.persistence.room:runtime:$roomVersion"
+  annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
 }
