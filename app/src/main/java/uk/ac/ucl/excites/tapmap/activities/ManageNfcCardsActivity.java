@@ -121,7 +121,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
       picasso.invalidate(imageFile);
       picasso.load(imageFile)
-          .placeholder(R.drawable.ic_refresh_black_24dp)
+          .placeholder(R.drawable.progress_animation)
           .error(R.drawable.ic_error_outline_black_24dp)
           .resize(TapAndMapActivity.MAX_SIZE, TapAndMapActivity.MAX_SIZE)
           .centerCrop()

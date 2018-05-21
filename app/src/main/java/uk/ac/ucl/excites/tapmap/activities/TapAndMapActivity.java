@@ -53,7 +53,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
     Timber.d("NFC ID: %s. Path: %s", cardID, imagePath);
 
     picasso.load(new File(imagePath))
-        .placeholder(R.drawable.ic_refresh_black_24dp)
+        .placeholder(R.drawable.progress_animation)
         .error(R.drawable.ic_error_outline_black_24dp)
         .resize(MAX_SIZE, MAX_SIZE)
         .centerCrop()
