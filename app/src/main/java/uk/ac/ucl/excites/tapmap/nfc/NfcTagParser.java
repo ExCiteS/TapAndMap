@@ -3,11 +3,11 @@ package uk.ac.ucl.excites.tapmap.nfc;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 
 /**
  * Class that represents an NFC card
@@ -15,7 +15,7 @@ import timber.log.Timber;
  * Created by Michalis Vitos on 17/05/2018.
  */
 @Getter
-public class NfcCard {
+public class NfcTagParser {
 
   public static final String DEFAULT_SEPARATOR = ":";
 
@@ -27,11 +27,11 @@ public class NfcCard {
   private long idMifareUltralight = -1;
   private List<String> technologies = new ArrayList<>();
 
-  public NfcCard(Tag tag) {
+  public NfcTagParser(Tag tag) {
     this(tag, DEFAULT_SEPARATOR);
   }
 
-  public NfcCard(Tag tag, String separator) {
+  public NfcTagParser(Tag tag, String separator) {
 
     this.tag = tag;
 
@@ -149,6 +149,15 @@ public class NfcCard {
     }
 
     return id;
+  }
+
+  /**
+   * Get an NFC Card from the {@link NfcTagParser}
+   *
+   * @return NfcCard
+   */
+  public NfcCard toNfcCard(String imagePath) {
+    return new NfcCard(getCardID(), imagePath);
   }
 
   @Override

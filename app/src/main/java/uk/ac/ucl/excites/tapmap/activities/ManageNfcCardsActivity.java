@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
-import uk.ac.ucl.excites.tapmap.nfc.NfcCard;
-import uk.ac.ucl.excites.tapmap.nfc.NfcManagement;
+import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.ImageUtils;
 
 public class ManageNfcCardsActivity extends NfcBaseActivity {
@@ -29,7 +31,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
   @BindView(R.id.nfc)
   protected ImageView nfcImageView;
 
-  private NfcCard currentNfcCard;
+  private NfcTagParser currentNfcTagParser;
+  private NfcCardDao nfcCardDao;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +40,21 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_tap_and_map);
     ButterKnife.bind(this);
+
+    final TapMap app = (TapMap) getApplication();
+    nfcCardDao = app.getAppDatabase().nfcCardDao();
   }
 
   @Override
-  protected void handleNfcCard(NfcCard nfcCard) {
+  protected void handleNfcCard(NfcTagParser nfcTagParser) {
 
-    Timber.d(nfcCard.toString());
-    currentNfcCard = nfcCard;
+    Timber.d(nfcTagParser.toString());
+    currentNfcTagParser = nfcTagParser;
 
     // 1. Check if Card is already associated with an icon
-    String path = NfcManagement.getInstance().getImagePath(nfcCard);
+    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getCardID());
 
-    if (path != null && !path.isEmpty()) {
+    if (nfcCard != null && !nfcCard.getImagePath().isEmpty()) {
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
       alertDialogBuilder.setTitle("Replace card icon")
           .setMessage("This card has already an icon")
@@ -92,7 +98,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         inputStream = getContentResolver().openInputStream(uri);
 
         FileOutputStream outputStream =
-            openFileOutput(currentNfcCard.getCardID(), Context.MODE_PRIVATE);
+            openFileOutput(currentNfcTagParser.getCardID(), Context.MODE_PRIVATE);
 
         // Copy file
         byte[] buffer = new byte[1024];
@@ -105,7 +111,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         Timber.e(e, "Error while copying the file.");
       }
 
-      String imagePath = new File(this.getFilesDir(), currentNfcCard.getCardID()).getPath();
+      String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getCardID()).getPath();
       try {
         nfcImageView.setImageBitmap(ImageUtils.getThumbnail(imagePath));
       } catch (IOException e) {
@@ -117,26 +123,28 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
   @OnClick(R.id.confirm)
   protected void confirmCard() {
 
-    if (currentNfcCard == null) {
+    if (currentNfcTagParser == null) {
       Toast.makeText(this, "You have to setup a card first.", Toast.LENGTH_LONG).show();
       return;
     }
 
-    final String path = new File(this.getFilesDir(), currentNfcCard.getCardID()).getPath();
-    NfcManagement.getInstance().storeNfcCard(currentNfcCard, path);
+    // Get path
+    final String path = new File(this.getFilesDir(), currentNfcTagParser.getCardID()).getPath();
+    // Store to DB
+    nfcCardDao.insert(currentNfcTagParser.toNfcCard(path));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
   }
 
   @OnClick(R.id.cancel)
   protected void cancelCard() {
 
-    if (currentNfcCard == null) {
+    if (currentNfcTagParser == null) {
       Toast.makeText(this, "You have to setup a card first.", Toast.LENGTH_LONG).show();
       return;
     }
 
     // Clean up by deleting the file
-    final File file = new File(this.getFilesDir(), currentNfcCard.getCardID());
+    final File file = new File(this.getFilesDir(), currentNfcTagParser.getCardID());
     if (file.exists()) file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
   }

@@ -9,7 +9,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import uk.ac.ucl.excites.tapmap.nfc.NfcCard;
+import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import timber.log.Timber;
 
 public abstract class NfcBaseActivity extends AppCompatActivity {
@@ -78,14 +78,14 @@ public abstract class NfcBaseActivity extends AppCompatActivity {
     if (tag == null) return;
 
     // Get the NFC card
-    NfcCard nfcCard = new NfcCard(tag);
+    NfcTagParser nfcCard = new NfcTagParser(tag);
     Timber.d(nfcCard.toString());
 
     // Decide what to do with the card on the implementation of each Activity
     handleNfcCard(nfcCard);
   }
 
-  protected abstract void handleNfcCard(NfcCard nfcCard);
+  protected abstract void handleNfcCard(NfcTagParser nfcCard);
 
   /**
    * @param activity The corresponding {@link Activity} requesting the foreground dispatch.
