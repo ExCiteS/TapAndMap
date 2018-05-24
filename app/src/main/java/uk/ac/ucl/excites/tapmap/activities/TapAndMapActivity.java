@@ -1,9 +1,12 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import timber.log.Timber;
@@ -19,6 +22,10 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
   @BindView(R.id.nfc)
   protected ImageView nfcImageView;
+  @BindView(R.id.confirm)
+  protected ImageButton confirmButton;
+  @BindView(R.id.cancel)
+  protected ImageButton cancelButton;
 
   private NfcCardDao nfcCardDao;
   private Picasso picasso;
@@ -39,6 +46,33 @@ public class TapAndMapActivity extends NfcBaseActivity {
   }
 
   @Override
+  protected void onResume() {
+    super.onResume();
+
+    // Start with the default UI
+    resetUI();
+  }
+
+  private void resetUI() {
+
+    // Reset image
+    nfcImageView.setImageResource(R.drawable.ic_nfc);
+
+    // Hide Buttons
+    hideButtons();
+  }
+
+  private void hideButtons() {
+    confirmButton.setVisibility(View.INVISIBLE);
+    cancelButton.setVisibility(View.INVISIBLE);
+  }
+
+  private void showButtons() {
+    confirmButton.setVisibility(View.VISIBLE);
+    cancelButton.setVisibility(View.VISIBLE);
+  }
+
+  @Override
   protected void handleNfcCard(NfcTagParser nfcTagParser) {
 
     final String cardID = nfcTagParser.getId();
@@ -52,11 +86,29 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     Timber.d("NFC ID: %s. Path: %s", cardID, imagePath);
 
+    // Show NFC card
     picasso.load(new File(imagePath))
         .placeholder(R.drawable.progress_animation)
         .error(R.drawable.ic_error_outline_black_24dp)
         .resize(MAX_SIZE, MAX_SIZE)
         .centerCrop()
         .into(nfcImageView);
+
+    // Show buttons
+    showButtons();
+  }
+
+  @OnClick(R.id.confirm)
+  protected void onConfirmClicked() {
+    // TODO: 24/05/2018
+  }
+
+  @OnClick(R.id.cancel)
+  protected void onCancelClicked() {
+
+    // Reset the UI
+    resetUI();
+
+    // TODO: 24/05/2018 Log click
   }
 }

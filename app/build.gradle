@@ -65,7 +65,7 @@ dependencies {
   annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 
   // Project lombok
-  compileOnly "org.projectlombok:lombok:$lombokVersion"
+  provided "org.projectlombok:lombok:$lombokVersion"
   annotationProcessor "org.projectlombok:lombok:$lombokVersion"
 
   // Room
