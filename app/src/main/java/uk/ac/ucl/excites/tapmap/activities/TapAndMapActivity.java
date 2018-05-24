@@ -1,9 +1,7 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
-import android.animation.LayoutTransition;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -97,7 +95,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
     // Show NFC card
     picasso.load(new File(imagePath))
         .placeholder(R.drawable.progress_animation)
-        .error(R.drawable.ic_error_outline_black_24dp)
+        .error(R.drawable.ic_error)
         .resize(MAX_SIZE, MAX_SIZE)
         .centerCrop()
         .into(nfcImageView);
