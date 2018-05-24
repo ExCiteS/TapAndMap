@@ -1,9 +1,12 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
+import android.animation.LayoutTransition;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -56,6 +59,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
   private void resetUI() {
 
     // Reset image
+    nfcImageView.animate().alpha(1.0f);
     nfcImageView.setImageResource(R.drawable.ic_nfc);
 
     // Hide Buttons
@@ -63,11 +67,15 @@ public class TapAndMapActivity extends NfcBaseActivity {
   }
 
   private void hideButtons() {
+    confirmButton.animate().alpha(0.0f);
+    cancelButton.animate().alpha(0.0f);
     confirmButton.setVisibility(View.INVISIBLE);
     cancelButton.setVisibility(View.INVISIBLE);
   }
 
   private void showButtons() {
+    confirmButton.animate().alpha(1.0f);
+    cancelButton.animate().alpha(1.0f);
     confirmButton.setVisibility(View.VISIBLE);
     cancelButton.setVisibility(View.VISIBLE);
   }
@@ -100,7 +108,14 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
   @OnClick(R.id.confirm)
   protected void onConfirmClicked() {
-    // TODO: 24/05/2018
+
+    // Reset UI
+    resetUI();
+
+    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+
+    // TODO: 24/05/2018 Log click, and store record
+
   }
 
   @OnClick(R.id.cancel)
@@ -108,6 +123,8 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Reset the UI
     resetUI();
+
+    Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
 
     // TODO: 24/05/2018 Log click
   }
