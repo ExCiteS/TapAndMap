@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_height"
+    android:gravity="center_vertical|start"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/item_padding"
+    android:paddingLeft="@dimen/item_padding"
+    android:paddingRight="@dimen/item_padding"
+    android:paddingStart="@dimen/item_padding">
+
+  <TextView
+      android:id="@+id/id"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif-medium"
+      android:gravity="center_vertical|start"
+      android:lines="1"
+      android:singleLine="true"
+      android:textDirection="anyRtl"
+      android:textSize="@dimen/item_primary_text"
+      tools:text="The id of the card" />
+
+  <TextView
+      android:id="@+id/description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fontFamily="sans-serif"
+      android:gravity="center_vertical|start"
+      android:lines="1"
+      android:singleLine="true"
+      android:textDirection="anyRtl"
+      android:textSize="@dimen/item_primary_text_description"
+      tools:text="The description of the card" />
+</LinearLayout>

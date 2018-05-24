@@ -18,7 +18,14 @@ public class ManagementActivity extends AppCompatActivity {
 
     Timber.d("Hi from the ManagementActivity");
 
-    //openNFCActivity();
+    openListActivity();
+  }
+
+  public void openListActivity() {
+    Timber.d("Go to List activity");
+
+    Intent intent = new Intent(this, ListActivity.class);
+    startActivity(intent);
   }
 
   @OnClick(R.id.btn_collectData)

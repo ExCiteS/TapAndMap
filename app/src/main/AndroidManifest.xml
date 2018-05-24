@@ -25,6 +25,7 @@
     </activity>
     <activity android:name="uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity"/>
     <activity android:name="uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity"/>
+    <activity android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"/>
   </application>
 
 </manifest>
