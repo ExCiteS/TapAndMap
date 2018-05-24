@@ -1,6 +1,6 @@
 <resources>
 
-  <dimen name="item_height">48dp</dimen>
+  <dimen name="item_height">52dp</dimen>
   <dimen name="item_padding">16dp</dimen>
   <dimen name="item_primary_text">14sp</dimen>
   <dimen name="item_primary_text_description">14sp</dimen>

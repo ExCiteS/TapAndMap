@@ -9,8 +9,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import com.squareup.picasso.Picasso;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -24,11 +28,17 @@ public class ListActivity extends AppCompatActivity {
   private FastAdapter<NfcCardItem> fastAdapter;
   private ItemAdapter<NfcCardItem> itemAdapter;
 
+  private NfcCardDao nfcCardDao;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_list);
     ButterKnife.bind(this);
+
+    // Get database dao
+    final TapMap app = (TapMap) getApplication();
+    nfcCardDao = app.getAppDatabase().nfcCardDao();
 
     setRecyclerView();
   }
@@ -44,9 +54,9 @@ public class ListActivity extends AppCompatActivity {
     nfcCardsRecyclerView.setItemAnimator(new DefaultItemAnimator());
     nfcCardsRecyclerView.setAdapter(fastAdapter);
 
-    //set the items to your ItemAdapter
-    itemAdapter.add(new NfcCardItem("Test"));
-    itemAdapter.add(new NfcCardItem("Test"));
-    itemAdapter.add(new NfcCardItem("Test"));
+    // TODO: This should take place in a background thread
+    //set the items to the ItemAdapter
+    for (NfcCard card : nfcCardDao.getAll())
+      itemAdapter.add(new NfcCardItem(card));
   }
 }

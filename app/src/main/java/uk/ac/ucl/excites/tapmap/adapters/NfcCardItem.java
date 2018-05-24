@@ -2,14 +2,19 @@ package uk.ac.ucl.excites.tapmap.adapters;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
+import com.squareup.picasso.Picasso;
+import java.io.File;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -17,7 +22,9 @@ import uk.ac.ucl.excites.tapmap.R;
 @AllArgsConstructor
 public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolder> {
 
-  public String id;
+  public static final int MAX_SIZE = 32;
+
+  public NfcCard card;
 
   @Override
   public int getType() {
@@ -37,6 +44,8 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
 
   public class ViewHolder extends FastAdapter.ViewHolder<NfcCardItem> {
 
+    @BindView(R.id.card_image)
+    ImageView nfcImageView;
     @BindView(R.id.id)
     TextView id;
     @BindView(R.id.description)
@@ -48,13 +57,23 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
     }
 
     @Override
-    public void bindView(NfcCardItem item, List<Object> payloads) {
-      // TODO: 24/05/2018
-      id.setText(item.id);
+    public void bindView(@NonNull NfcCardItem item, @NonNull List<Object> payloads) {
+
+      id.setText(item.card.getId());
+
+      final int size = (int) ScreenMetrics.convertDpToPixel(MAX_SIZE);
+      // Show NFC card
+      Picasso.get()
+          .load(new File(item.card.getImagePath()))
+          .placeholder(R.drawable.progress_animation)
+          .error(R.drawable.ic_error)
+          .resize(size, size)
+          .centerCrop()
+          .into(nfcImageView);
     }
 
     @Override
-    public void unbindView(NfcCardItem item) {
+    public void unbindView(@NonNull NfcCardItem item) {
       // TODO: 24/05/2018
       id.setText(null);
     }
