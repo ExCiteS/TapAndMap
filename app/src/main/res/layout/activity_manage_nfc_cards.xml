@@ -5,25 +5,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context="uk.ac.ucl.excites.tapmap.activities.NfcBaseActivity"
     tools:layout_editor_absoluteY="81dp"
     >
 
-  <ImageView
-      android:id="@+id/nfc"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:layout_marginBottom="24dp"
-      android:layout_marginEnd="16dp"
-      android:layout_marginLeft="16dp"
-      android:layout_marginRight="16dp"
+  <TextView
+      android:id="@+id/one"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:layout_marginStart="16dp"
       android:layout_marginTop="24dp"
-      app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-      app:layout_constraintEnd_toEndOf="parent"
+      android:text="1. Touch NFC card:"
+      android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:srcCompat="@drawable/ic_nfc"
+      />
+  <TextView
+      android:id="@+id/card_id"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:text="card id"
+      app:layout_constraintStart_toStartOf="@+id/one"
+      app:layout_constraintTop_toBottomOf="@+id/one"
+      />
+  <TextView
+      android:id="@+id/two"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="32dp"
+      android:text="2. Pick an image:"
+      android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/card_id"
+      />
+  <ImageView
+      android:id="@+id/nfc"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_marginTop="8dp"
+      android:scaleType="centerCrop"
+      app:layout_constraintStart_toStartOf="@+id/two"
+      app:layout_constraintTop_toBottomOf="@+id/two"
+      app:srcCompat="@drawable/ic_image"
+      />
+  <TextView
+      android:id="@+id/three"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="32dp"
+      android:text="3. Add a tag to the card:"
+      android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/nfc"
+      />
+  <EditText
+      android:id="@+id/tag"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:layout_marginTop="8dp"
+      android:ems="10"
+      android:hint="Add a tag e.g. banana"
+      android:inputType="textPersonName"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/three"
       />
   <LinearLayout
       android:id="@+id/linearLayout"
@@ -33,7 +82,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/nfc"
       >
     <ImageButton
         android:id="@+id/confirm"

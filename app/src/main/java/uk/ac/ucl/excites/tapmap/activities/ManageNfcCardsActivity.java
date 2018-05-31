@@ -1,13 +1,17 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import timber.log.Timber;
-import uk.ac.ucl.excites.tapmap.BuildConfig;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
@@ -28,8 +31,21 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
   public static final int PICK_IMAGE = 1;
 
+  // UI
+  @BindView(R.id.card_id)
+  protected TextView cardId;
+  @BindView(R.id.two)
+  protected TextView two;
   @BindView(R.id.nfc)
-  protected ImageView nfcImageView;
+  protected ImageView nfcImage;
+  @BindView(R.id.three)
+  protected TextView three;
+  @BindView(R.id.tag)
+  protected EditText tag;
+  @BindView(R.id.confirm)
+  protected ImageButton confirmButton;
+  @BindView(R.id.cancel)
+  protected ImageButton cancelButton;
 
   private NfcTagParser currentNfcTagParser;
   private NfcCardDao nfcCardDao;
@@ -39,7 +55,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_tap_and_map);
+    setContentView(R.layout.activity_manage_nfc_cards);
     ButterKnife.bind(this);
 
     final TapMap app = (TapMap) getApplication();
@@ -47,7 +63,35 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
     // Set up Picasso
     picasso = Picasso.get();
-    picasso.setIndicatorsEnabled(BuildConfig.DEBUG);
+
+    // Start with the default UI
+    resetUI();
+  }
+
+  private void resetUI() {
+
+    cardId.setText("");
+    two.setVisibility(View.GONE);
+    nfcImage.setVisibility(View.GONE);
+    three.setVisibility(View.GONE);
+    tag.setVisibility(View.GONE);
+    confirmButton.setVisibility(View.GONE);
+    cancelButton.setVisibility(View.GONE);
+  }
+
+  private void showStepTwo(String cardIdText) {
+
+    cardId.setText(cardIdText);
+    two.setVisibility(View.VISIBLE);
+    nfcImage.setVisibility(View.VISIBLE);
+  }
+
+  private void showStepThree() {
+
+    three.setVisibility(View.VISIBLE);
+    tag.setVisibility(View.VISIBLE);
+    confirmButton.setVisibility(View.VISIBLE);
+    cancelButton.setVisibility(View.VISIBLE);
   }
 
   @Override
@@ -59,30 +103,35 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // 1. Check if Card is already associated with an icon
     final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
-    if (nfcCard != null && !nfcCard.getImagePath().isEmpty()) {
-      AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-      alertDialogBuilder.setTitle("Replace card icon")
-          .setMessage("This card has already an icon")
-          .setPositiveButton("Replace", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-              pickIcon();
-            }
-          })
-          .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-              // Do nothing
-            }
-          })
-          .show();
-    } else {
-      pickIcon();
-    }
+    if (nfcCard != null && !nfcCard.getImagePath().isEmpty())
+      showAlreadyExistsDialog(nfcCard.getId());
+    else
+      showStepTwo(nfcCard.getId());
+  }
+
+  private void showAlreadyExistsDialog(final String cardIdText) {
+
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    alertDialogBuilder.setTitle("Replace card?")
+        .setMessage("This card has been already setup. Do you want to replace it?")
+        .setPositiveButton("Replace", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int which) {
+            showStepTwo(cardIdText);
+          }
+        })
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+          public void onClick(DialogInterface dialog, int which) {
+            // Do nothing
+          }
+        })
+        .show();
   }
 
   /**
    * Open an ImagePicker
    */
-  private void pickIcon() {
+  @OnClick(R.id.nfc)
+  protected void onPickIconClicked() {
     Intent intent = new Intent();
     intent.setType("image/*");
     intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -125,7 +174,11 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
           .error(R.drawable.ic_error)
           .resize(TapAndMapActivity.MAX_SIZE, TapAndMapActivity.MAX_SIZE)
           .centerCrop()
-          .into(nfcImageView);
+          .into(nfcImage);
+
+      // Go to step 3
+      showStepTwo(currentNfcTagParser.getId());
+      showStepThree();
     }
   }
 
@@ -142,6 +195,9 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // Store to DB
     nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
+
+    // Reset UI
+    resetUI();
   }
 
   @OnClick(R.id.cancel)
@@ -157,5 +213,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     if (file.exists())
       file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
+
+    // Reset UI
+    resetUI();
   }
 }

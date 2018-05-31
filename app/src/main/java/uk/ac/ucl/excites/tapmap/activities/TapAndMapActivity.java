@@ -43,7 +43,6 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Set up Picasso
     picasso = Picasso.get();
-    picasso.setIndicatorsEnabled(BuildConfig.DEBUG);
   }
 
   @Override
