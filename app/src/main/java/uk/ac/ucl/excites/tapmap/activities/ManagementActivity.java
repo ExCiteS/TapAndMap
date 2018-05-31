@@ -17,15 +17,6 @@ public class ManagementActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     Timber.d("Hi from the ManagementActivity");
-
-    openListActivity();
-  }
-
-  public void openListActivity() {
-    Timber.d("Go to List activity");
-
-    Intent intent = new Intent(this, ListActivity.class);
-    startActivity(intent);
   }
 
   @OnClick(R.id.btn_collectData)
@@ -37,10 +28,10 @@ public class ManagementActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.btn_manageCards)
-  public void openManageNfcCardsActivity() {
-    Timber.d("Go to NFC activity");
+  public void openListActivity() {
+    Timber.d("Go to List activity");
 
-    Intent intent = new Intent(this, ManageNfcCardsActivity.class);
+    Intent intent = new Intent(this, ListActivity.class);
     startActivity(intent);
   }
 }

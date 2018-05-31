@@ -1,5 +1,6 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -7,9 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
-import com.squareup.picasso.Picasso;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
@@ -39,6 +40,11 @@ public class ListActivity extends AppCompatActivity {
     // Get database dao
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
 
     setRecyclerView();
   }
@@ -58,5 +64,11 @@ public class ListActivity extends AppCompatActivity {
     //set the items to the ItemAdapter
     for (NfcCard card : nfcCardDao.getAll())
       itemAdapter.add(new NfcCardItem(card));
+  }
+
+  @OnClick(R.id.fabAddCard)
+  protected void onAddCardClicked() {
+    Intent intent = new Intent(this, ManageNfcCardsActivity.class);
+    startActivity(intent);
   }
 }
