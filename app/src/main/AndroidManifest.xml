@@ -27,7 +27,9 @@
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity"
         android:label="Add NFC card"/>
-    <activity android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"/>
+    <activity
+        android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"
+        android:label="List of cards"/>
   </application>
 
 </manifest>

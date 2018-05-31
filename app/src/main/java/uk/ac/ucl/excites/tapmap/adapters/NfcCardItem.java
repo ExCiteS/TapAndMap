@@ -46,10 +46,10 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
 
     @BindView(R.id.card_image)
     ImageView nfcImageView;
-    @BindView(R.id.id)
+    @BindView(R.id.card_tag)
+    TextView tag;
+    @BindView(R.id.card_id)
     TextView id;
-    @BindView(R.id.description)
-    TextView description;
 
     ViewHolder(View view) {
       super(view);
@@ -59,6 +59,7 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
     @Override
     public void bindView(@NonNull NfcCardItem item, @NonNull List<Object> payloads) {
 
+      tag.setText(item.card.getTag());
       id.setText(item.card.getId());
 
       final int size = (int) ScreenMetrics.convertDpToPixel(MAX_SIZE);
@@ -74,8 +75,9 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
 
     @Override
     public void unbindView(@NonNull NfcCardItem item) {
-      // TODO: 24/05/2018
+      tag.setText(null);
       id.setText(null);
+      nfcImageView.setImageDrawable(null);
     }
   }
 }

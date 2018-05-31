@@ -193,11 +193,11 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // Get path
     final String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
     // Store to DB
-    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath));
+    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath, tag.getText().toString()));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
 
-    // Reset UI
-    resetUI();
+    // Close activity
+    finish();
   }
 
   @OnClick(R.id.cancel)
@@ -216,7 +216,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
     nfcCardDao.delete(currentNfcTagParser.toNfcCard());
 
-    // Reset UI
-    resetUI();
+    // Close activity
+    finish();
   }
 }
