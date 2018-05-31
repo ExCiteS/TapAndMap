@@ -106,7 +106,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     if (nfcCard != null && !nfcCard.getImagePath().isEmpty())
       showAlreadyExistsDialog(nfcCard.getId());
     else
-      showStepTwo(nfcCard.getId());
+      showStepTwo(currentNfcTagParser.getId());
   }
 
   private void showAlreadyExistsDialog(final String cardIdText) {
