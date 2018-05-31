@@ -132,6 +132,17 @@ public class NfcTagParser {
    *
    * @return NfcCard
    */
+  public NfcCard toNfcCard() {
+    final NfcCard nfcCard = new NfcCard();
+    nfcCard.setId(getId());
+    return nfcCard;
+  }
+
+  /**
+   * Get an NFC Card from the {@link NfcTagParser}
+   *
+   * @return NfcCard
+   */
   public NfcCard toNfcCard(String imagePath) {
     return new NfcCard(getCardID(), imagePath);
   }

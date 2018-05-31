@@ -214,6 +214,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
 
+    nfcCardDao.delete(currentNfcTagParser.toNfcCard());
+
     // Reset UI
     resetUI();
   }
