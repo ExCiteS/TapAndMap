@@ -30,6 +30,9 @@
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"
         android:label="List of cards"/>
+    <activity
+        android:name="uk.ac.ucl.excites.tapmap.activities.SessionActivity"
+        android:label="Session"/>
   </application>
 
 </manifest>

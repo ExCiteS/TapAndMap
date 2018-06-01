@@ -7,10 +7,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
-import uk.ac.ucl.excites.tapmap.TapMap;
-import uk.ac.ucl.excites.tapmap.storage.AppDatabase;
-import uk.ac.ucl.excites.tapmap.storage.Session;
-import uk.ac.ucl.excites.tapmap.storage.SessionDao;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,19 +17,13 @@ public class MainActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     Timber.d("Hi from the MainActivity");
-
-    // TODO: 01/06/2018 remove
-    final TapMap app = (TapMap) getApplication();
-    SessionDao sessionDao = app.getAppDatabase().sessionDao();
-
-    sessionDao.insert(new Session());
   }
 
   @OnClick(R.id.btn_collectData)
-  public void openNFCActivity() {
+  public void openSessionActivity() {
     Timber.d("Go to NFC activity");
 
-    Intent intent = new Intent(this, TapAndMapActivity.class);
+    Intent intent = new Intent(this, SessionActivity.class);
     startActivity(intent);
   }
 

@@ -17,16 +17,19 @@ public interface SessionDao {
   List<Session> getAll();
 
   @Query("SELECT * FROM Session WHERE id IN (:sessions)")
-  List<Session> findAllByIds(int[] sessions);
+  List<Session> findAllByIds(long[] sessions);
 
   @Query("SELECT * FROM Session WHERE id = :id LIMIT 1")
-  Session findById(String id);
+  Session findById(long id);
+
+  @Query("SELECT * FROM Session ORDER BY id DESC LIMIT 1;")
+  Session findLast();
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  void insert(Session session);
+  long insert(Session session);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  void insert(Session... session);
+  long[] insert(Session... session);
 
   @Delete
   void delete(Session card);
