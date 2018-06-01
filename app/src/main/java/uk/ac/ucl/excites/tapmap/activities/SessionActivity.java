@@ -45,7 +45,8 @@ public class SessionActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
 
-    setActiveSession(sessionController.getActiveSession());
+    activeSession = sessionController.getActiveSession();
+    setActiveSessionUI(activeSession);
   }
 
   @OnClick(R.id.newSession)
@@ -54,7 +55,7 @@ public class SessionActivity extends AppCompatActivity {
     updateActiveSession();
 
     activeSession = sessionController.openNewSession();
-    setActiveSession(activeSession);
+    setActiveSessionUI(activeSession);
   }
 
   @OnClick(R.id.collectData)
@@ -65,7 +66,7 @@ public class SessionActivity extends AppCompatActivity {
     openNFCActivity();
   }
 
-  private void setActiveSession(Session activeSession) {
+  private void setActiveSessionUI(Session activeSession) {
 
     sessionId.setText(String.valueOf(activeSession.getId()));
     sessionDesc.setText(String.valueOf(activeSession.getDescription()));
