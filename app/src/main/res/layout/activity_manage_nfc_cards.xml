@@ -91,7 +91,7 @@
         android:scaleType="fitCenter"
         android:text="Button"
         android:theme="@style/AppTheme.Button.Confirm"
-        app:srcCompat="@drawable/ic_done_black_24dp"
+        app:srcCompat="@drawable/ic_done"
         />
     <ImageButton
         android:id="@+id/cancel"
@@ -101,7 +101,7 @@
         android:scaleType="fitCenter"
         android:text="Button"
         android:theme="@style/AppTheme.Button.Cancel"
-        app:srcCompat="@drawable/ic_clear_black_24dp"
+        app:srcCompat="@drawable/ic_clear"
         />
   </LinearLayout>
 </android.support.constraint.ConstraintLayout>
