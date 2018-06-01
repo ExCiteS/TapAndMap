@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="uk.ac.ucl.excites.tapmap.activities.MainActivity"
+    tools:layout_editor_absoluteY="81dp"
+    >
+
+  <Button
+      android:id="@+id/btn_collectData"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="24dp"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="24dp"
+      android:backgroundTint="@android:color/transparent"
+      android:drawableTop="@drawable/ic_collect"
+      android:paddingBottom="5dp"
+      android:paddingLeft="16dp"
+      android:paddingRight="16dp"
+      android:paddingTop="70dp"
+      android:text="Collect Data"
+      app:layout_constraintBottom_toTopOf="@+id/btn_manageCards"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
+  <Button
+      android:id="@+id/btn_manageCards"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="24dp"
+      android:layout_marginEnd="24dp"
+      android:layout_marginStart="24dp"
+      android:layout_marginTop="8dp"
+      android:backgroundTint="@android:color/transparent"
+      android:drawableTop="@drawable/ic_edit"
+      android:paddingBottom="5dp"
+      android:paddingLeft="16dp"
+      android:paddingRight="16dp"
+      android:paddingTop="70dp"
+      android:text="Manage NFC Cards"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btn_collectData"
+      />
+
+
+</android.support.constraint.ConstraintLayout>

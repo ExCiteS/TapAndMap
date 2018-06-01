@@ -8,15 +8,15 @@ import butterknife.OnClick;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 
-public class ManagementActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_managment);
+    setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
-    Timber.d("Hi from the ManagementActivity");
+    Timber.d("Hi from the MainActivity");
   }
 
   @OnClick(R.id.btn_collectData)
