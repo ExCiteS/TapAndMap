@@ -2,9 +2,9 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
   <TextView
       android:id="@+id/sessionId"
@@ -26,5 +26,58 @@
       android:textStyle="bold"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      />
+  <TextView
+      android:id="@+id/textView3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:text="Description: "
+      android:textStyle="bold"
+      app:layout_constraintStart_toStartOf="@+id/textView2"
+      app:layout_constraintTop_toBottomOf="@+id/textView2"
+      />
+  <EditText
+      android:id="@+id/sessionDesc"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="8dp"
+      android:ems="10"
+      android:hint="Add a description to the session"
+      android:inputType="text"
+      android:textSize="12sp"
+      app:layout_constraintBottom_toBottomOf="@+id/textView3"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/textView3"
+      app:layout_constraintTop_toTopOf="@+id/textView3"
+      />
+  <Button
+      android:id="@+id/newSession"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:backgroundTint="@color/colorAccent"
+      android:text="New Session"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/collectData"
+      app:layout_constraintStart_toStartOf="parent"
+      />
+  <Button
+      android:id="@+id/collectData"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="16dp"
+      android:backgroundTint="@color/colorAccent"
+      android:text="Collect data"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/newSession"
       />
 </android.support.constraint.ConstraintLayout>

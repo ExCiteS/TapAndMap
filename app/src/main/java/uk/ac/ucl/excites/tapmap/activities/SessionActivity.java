@@ -3,9 +3,11 @@ package uk.ac.ucl.excites.tapmap.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
@@ -21,8 +23,11 @@ public class SessionActivity extends AppCompatActivity {
   // UI
   @BindView(R.id.sessionId)
   protected TextView sessionId;
+  @BindView(R.id.sessionDesc)
+  protected EditText sessionDesc;
 
   private SessionDao sessionDao;
+  private Session activeSession;
   private SessionController sessionController;
 
   @Override
@@ -40,19 +45,44 @@ public class SessionActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
 
-    setActiveSession();
+    setActiveSession(sessionController.getActiveSession());
   }
 
-  private void setActiveSession() {
+  @OnClick(R.id.newSession)
+  protected void onNewSessionClicked() {
 
-    final Session activeSession = sessionController.getActiveSession();
+    updateActiveSession();
+
+    activeSession = sessionController.openNewSession();
+    setActiveSession(activeSession);
+  }
+
+  @OnClick(R.id.collectData)
+  protected void onCollectDataClicked() {
+
+    updateActiveSession();
+
+    openNFCActivity();
+  }
+
+  private void setActiveSession(Session activeSession) {
+
     sessionId.setText(String.valueOf(activeSession.getId()));
+    sessionDesc.setText(String.valueOf(activeSession.getDescription()));
   }
 
-  public void openNFCActivity() {
+  private void openNFCActivity() {
     Timber.d("Go to NFC activity");
 
     Intent intent = new Intent(this, TapAndMapActivity.class);
     startActivity(intent);
+  }
+
+  /**
+   * Update Active Session
+   */
+  private void updateActiveSession() {
+    activeSession.setDescription(sessionDesc.getText().toString());
+    sessionDao.insert(activeSession);
   }
 }

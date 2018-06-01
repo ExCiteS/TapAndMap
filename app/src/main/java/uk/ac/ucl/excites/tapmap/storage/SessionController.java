@@ -11,15 +11,22 @@ public class SessionController {
 
   private SessionDao sessionDao;
 
-  public Session openSession() {
-    return openSession("");
+  public Session openNewSession() {
+    return openNewSession("");
   }
 
-  public Session openSession(String desc) {
-    Session session = new Session();
-    session.setStartTime(new Date());
-    session.setDescription(desc);
-    long id = sessionDao.insert(session);
+  public Session openNewSession(String desc) {
+
+    // 1. Close previous session if needed
+    final Session lastSession = sessionDao.findLast();
+    if (lastSession != null && !isSessionClosed(lastSession))
+      closeSession(lastSession);
+
+    // 2. Create new Session
+    final Session newSession = new Session();
+    newSession.setStartTime(new Date());
+    newSession.setDescription(desc);
+    long id = sessionDao.insert(newSession);
 
     return sessionDao.findById(id);
   }
@@ -39,6 +46,6 @@ public class SessionController {
     if (session != null && !isSessionClosed(session))
       return session;
     else
-      return openSession();
+      return openNewSession();
   }
 }
