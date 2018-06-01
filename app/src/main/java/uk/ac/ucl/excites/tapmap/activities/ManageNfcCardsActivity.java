@@ -104,19 +104,19 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
     if (nfcCard != null && !nfcCard.getImagePath().isEmpty())
-      showAlreadyExistsDialog(nfcCard.getId());
+      showAlreadyExistsDialog(nfcCard);
     else
       showStepTwo(currentNfcTagParser.getId());
   }
 
-  private void showAlreadyExistsDialog(final String cardIdText) {
+  private void showAlreadyExistsDialog(final NfcCard nfcCard) {
 
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-    alertDialogBuilder.setTitle("Replace card?")
+    alertDialogBuilder.setTitle("Replace card " + nfcCard.getTag() + "?")
         .setMessage("This card has been already setup. Do you want to replace it?")
         .setPositiveButton("Replace", new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int which) {
-            showStepTwo(cardIdText);
+            showStepTwo(nfcCard.getId());
           }
         })
         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
