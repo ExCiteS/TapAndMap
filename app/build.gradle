@@ -64,6 +64,8 @@ dependencies {
   // Timber Logger
   implementation 'com.jakewharton.timber:timber:4.7.0'
   implementation 'com.github.michalis-vitos:timberutils:1.0.0'
+  implementation 'org.slf4j:slf4j-api:1.7.25'
+  implementation 'com.github.tony19:logback-android:1.1.1-12'
 
   // Butterknife
   implementation "com.jakewharton:butterknife:$butterknifeVersion"
