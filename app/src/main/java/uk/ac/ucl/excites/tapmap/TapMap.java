@@ -6,6 +6,7 @@ import gr.michalisvitos.timberutils.DebugTree;
 import lombok.Getter;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.storage.AppDatabase;
+import uk.ac.ucl.excites.tapmap.utils.LifeCycleMonitor;
 
 /**
  * Created by Michalis Vitos
@@ -24,6 +25,9 @@ public class TapMap extends Application {
 
     // Init the database
     appDatabase = AppDatabase.init(this);
+
+    // Set a LifeCycleMonitor
+    new LifeCycleMonitor(this);
   }
 
   public void initDevTools() {

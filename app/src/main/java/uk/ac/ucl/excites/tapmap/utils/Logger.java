@@ -13,6 +13,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import java.nio.charset.Charset;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
+import timber.log.Timber;
 
 /**
  * Created by Michalis Vitos on 08/06/2018.
@@ -22,6 +23,10 @@ public class Logger {
 
   private static final String LOG_PREFIX = "tam-log";
   private static final Logger ourInstance = new Logger();
+
+  public enum TAG {
+    ANDROID, CLICK,
+  }
 
   public static Logger getInstance() {
     return ourInstance;
@@ -94,10 +99,21 @@ public class Logger {
 
     StringBuilder builder = new StringBuilder();
     for (String message : messages)
-      builder.append("\"").append(message).append("\"").append(", ");
+      builder.append("\"").append(message).append("\"").append(",");
 
-    builder.setLength(builder.length() - 2);
+    builder.setLength(builder.length() - 1);
 
-    log.info(builder.toString());
+    final String log = builder.toString();
+    Logger.log.info(log);
+    Timber.d("LOG: %s", log);
+  }
+
+  public void log(TAG tag, String... messages) {
+
+    String[] newMessages = new String[messages.length + 1];
+    newMessages[0] = tag.toString();
+    System.arraycopy(messages, 0, newMessages, 1, messages.length);
+
+    log(newMessages);
   }
 }
