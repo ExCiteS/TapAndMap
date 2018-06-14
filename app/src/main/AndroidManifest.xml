@@ -17,23 +17,30 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name="uk.ac.ucl.excites.tapmap.activities.MainActivity">
+    <activity
+        android:name="uk.ac.ucl.excites.tapmap.activities.MainActivity"
+        android:screenOrientation="sensorPortrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name="uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity"/>
+    <activity
+        android:name="uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity"
+        android:screenOrientation="sensorPortrait"/>
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity"
-        android:label="Add NFC card"/>
+        android:label="Add NFC card"
+        android:screenOrientation="sensorPortrait"/>
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"
-        android:label="List of cards"/>
+        android:label="List of cards"
+        android:screenOrientation="sensorPortrait"/>
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.SessionActivity"
-        android:label="Session"/>
+        android:label="Session"
+        android:screenOrientation="sensorPortrait"/>
   </application>
 
 </manifest>
