@@ -7,6 +7,7 @@ import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.storage.SessionController;
 import uk.ac.ucl.excites.tapmap.storage.SessionDao;
 
 import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.ANDROID;
@@ -65,7 +66,8 @@ public class LifeCycleMonitor
   private void log(Activity activity, String method) {
     final TapMap app = (TapMap) activity.getApplication();
     final SessionDao sessionDao = app.getAppDatabase().sessionDao();
-    final String session = "SESSION:" + sessionDao.findLast().getId();
+    final SessionController sessionController = new SessionController(sessionDao);
+    final String session = "SESSION:" + sessionController.getActiveSessionId();
     Logger.getInstance().log(ANDROID, session, activity.getLocalClassName() + "." + method);
   }
 

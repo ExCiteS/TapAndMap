@@ -48,4 +48,11 @@ public class SessionController {
     else
       return openNewSession();
   }
+
+  /**
+   * Get the id of the ActiveSession
+   */
+  public long getActiveSessionId() {
+    return getActiveSession().getId();
+  }
 }
