@@ -144,7 +144,7 @@ public class NfcTagParser {
    * @return NfcCard
    */
   public NfcCard toNfcCard(String imagePath, String filename, String tag) {
-    return new NfcCard(getCardID(), filename, imagePath, tag);
+    return new NfcCard(id, imagePath, filename, tag);
   }
 
   @Override
