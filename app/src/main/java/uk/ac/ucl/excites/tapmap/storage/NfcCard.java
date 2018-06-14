@@ -28,6 +28,9 @@ public class NfcCard {
   @ColumnInfo(name = "image_path")
   private String imagePath;
 
+  @ColumnInfo(name = "image_filename")
+  private String filename;
+
   @ColumnInfo(name = "tag")
   private String tag;
 }

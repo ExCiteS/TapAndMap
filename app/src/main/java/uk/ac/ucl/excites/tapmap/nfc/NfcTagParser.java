@@ -11,12 +11,11 @@ import uk.ac.ucl.excites.tapmap.storage.NfcCard;
  *
  * Created by Michalis Vitos on 17/05/2018.
  */
-@Getter
 public class NfcTagParser {
 
   public static final String DEFAULT_SEPARATOR = ":";
 
-  private Tag tag;
+  @Getter
   private String id = "";
   private String idHex = "";
   private long idDec = -1;
@@ -27,9 +26,7 @@ public class NfcTagParser {
 
   public NfcTagParser(Tag tag, String separator) {
 
-    this.tag = tag;
-
-    byte[] tagId = tag.getId();
+    final byte[] tagId = tag.getId();
     idHex = toHex(tagId, separator);
     idDec = toDec(tagId);
 
@@ -66,7 +63,8 @@ public class NfcTagParser {
     StringBuilder sb = new StringBuilder();
     for (int i = bytes.length - 1; i >= 0; --i) {
       int b = bytes[i] & 0xff;
-      if (b < 0x10) sb.append('0');
+      if (b < 0x10)
+        sb.append('0');
       sb.append(Integer.toHexString(b));
       if (i > 0) {
         sb.append(separator);
@@ -82,7 +80,8 @@ public class NfcTagParser {
         sb.append(separator);
       }
       int b = bytes[i] & 0xff;
-      if (b < 0x10) sb.append('0');
+      if (b < 0x10)
+        sb.append('0');
       sb.append(Integer.toHexString(b));
     }
     return sb.toString();
@@ -116,7 +115,8 @@ public class NfcTagParser {
   private String getCardID() {
 
     // Calculate once and cache
-    if (!id.isEmpty()) return id;
+    if (!id.isEmpty())
+      return id;
 
     if (idDec > 0) {
       id = String.valueOf(idDec);
@@ -143,8 +143,8 @@ public class NfcTagParser {
    *
    * @return NfcCard
    */
-  public NfcCard toNfcCard(String imagePath, String tag) {
-    return new NfcCard(getCardID(), imagePath, tag);
+  public NfcCard toNfcCard(String imagePath, String filename, String tag) {
+    return new NfcCard(getCardID(), filename, imagePath, tag);
   }
 
   @Override

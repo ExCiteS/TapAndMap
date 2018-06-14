@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +52,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
   private NfcTagParser currentNfcTagParser;
   private NfcCardDao nfcCardDao;
   private Picasso picasso;
+  private String imageFileName = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,9 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       if (uri == null)
         return;
 
+      // Get the filename of the picked icon
+      imageFileName = getImageName(uri);
+
       InputStream inputStream;
       try {
         inputStream = getContentResolver().openInputStream(uri);
@@ -167,7 +173,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       }
 
       // Load image
-      File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
+      final File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
       picasso.invalidate(imageFile);
       picasso.load(imageFile)
           .placeholder(R.drawable.progress_animation)
@@ -182,6 +188,32 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
   }
 
+  /**
+   * Get the filename of a uri
+   */
+  private String getImageName(Uri uri) {
+
+    String name = "";
+
+    try {
+      Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+      /*
+       * Get the column indexes of the data in the Cursor,
+       * move to the first row in the Cursor and get the data
+       */
+      final int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+      cursor.moveToFirst();
+      name = cursor.getString(nameIndex);
+      cursor.close();
+
+      Timber.d("Found image with name: %s.", name);
+    } catch (Exception e) {
+      Timber.e(e);
+    }
+
+    return name;
+  }
+
   @OnClick(R.id.confirm)
   protected void confirmCard() {
 
@@ -193,7 +225,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // Get path
     final String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
     // Store to DB
-    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath, tag.getText().toString()));
+    final String tagText = this.tag.getText().toString();
+    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath, imageFileName, tagText));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
 
     // Close activity
