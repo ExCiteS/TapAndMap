@@ -20,8 +20,6 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import java.util.List;
 
@@ -41,10 +39,10 @@ public interface NfcCardDao {
   NfcCard findById(String id);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  void insert(NfcCard card);
+  long insert(NfcCard card);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  void insert(NfcCard... cards);
+  List<Long> insert(NfcCard... cards);
 
   @Delete
   void delete(NfcCard card);

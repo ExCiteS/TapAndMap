@@ -18,25 +18,24 @@ package uk.ac.ucl.excites.tapmap.storage;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import com.google.gson.JsonObject;
 import java.util.Date;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Representation of a collection session. This could be associated with for example a participant
- * collecting some data before handing the device back etc. Each session has a start and end time
- * as well as a description that explains the purpose of the session.
- *
- * Created by Michalis Vitos on 21/05/2018.
+ * Created by Michalis Vitos on 15/06/2018.
  */
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
-public class Session {
+public class Record {
 
   /**
    * Auto-generated ID
@@ -45,20 +44,22 @@ public class Session {
   private long id;
 
   /**
-   * The description that explains the purpose of this session. For example: "Michalis session collecting trees" etc
+   * The date (converted to timestamp in Room) of the record
    */
-  @ColumnInfo(name = "description")
-  private String description;
+  @ColumnInfo(name = "date")
+  private Date date;
 
   /**
-   * The start time of the session
+   * A tag that describes the record. This comes from the tag of the NFC card. For example this
+   * could be "banana" etc.
    */
-  @ColumnInfo(name = "start_time")
-  private Date startTime;
+  @ColumnInfo(name = "tag")
+  private String tag;
 
   /**
-   * The end time of the session
+   * A {@link JsonObject} meta object to store various meta information for this record. This could
+   * for example be the NFC card info, the location captured, the media captured etc.
    */
-  @ColumnInfo(name = "end_time")
-  private Date endTime;
+  @ColumnInfo(name = "meta")
+  private JsonObject meta;
 }

@@ -78,7 +78,6 @@ public class LifeCycleMonitor
   }
 
   private void log(Activity activity, String method) {
-    final TapMap app = (TapMap) activity.getApplication();
     final SessionController sessionController = new SessionController(activity);
     final String session = "SESSION:" + sessionController.getActiveSessionId();
     Logger.getInstance().log(ANDROID, session, activity.getLocalClassName() + "." + method);

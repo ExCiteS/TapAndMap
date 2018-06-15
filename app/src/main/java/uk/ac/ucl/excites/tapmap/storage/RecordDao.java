@@ -20,32 +20,30 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import io.reactivex.Single;
 import java.util.List;
 
 /**
- * Created by Michalis Vitos on 21/05/2018.
+ * Created by Michalis Vitos on 15/06/2018.
  */
 @Dao
-public interface SessionDao {
+public interface RecordDao {
 
-  @Query("SELECT * FROM Session")
-  List<Session> getAll();
+  @Query("SELECT * FROM Record")
+  Single<List<Record>> getAll();
 
-  @Query("SELECT * FROM Session WHERE id IN (:sessions)")
-  List<Session> findAllByIds(long[] sessions);
+  @Query("SELECT * FROM Record WHERE id IN (:ids)")
+  List<Record> findAllByIds(int[] ids);
 
-  @Query("SELECT * FROM Session WHERE id = :id LIMIT 1")
-  Session findById(long id);
-
-  @Query("SELECT * FROM Session ORDER BY id DESC LIMIT 1;")
-  Session findLast();
+  @Query("SELECT * FROM Record WHERE id = :id LIMIT 1")
+  Record findById(String id);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  long insert(Session session);
+  long insert(Record record);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  List<Long> insert(Session... session);
+  List<Long> insert(Record... records);
 
   @Delete
-  void delete(Session card);
+  void delete(Record record);
 }

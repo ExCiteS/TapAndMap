@@ -25,7 +25,7 @@ import android.content.Context;
  * Created by Michalis Vitos on 21/05/2018.
  */
 @Database(entities = { NfcCard.class, Session.class }, version = 1)
-@TypeConverters({ DateTypeConverter.class })
+@TypeConverters({ DateTypeConverter.class, MetaTypeConverter.class })
 public abstract class AppDatabase extends RoomDatabase {
 
   public static final String DATABASE_NAME = "TapMapDatabase.sqlite";
@@ -33,6 +33,8 @@ public abstract class AppDatabase extends RoomDatabase {
   public abstract NfcCardDao nfcCardDao();
 
   public abstract SessionDao sessionDao();
+
+  public abstract RecordDao recordDao();
 
   public static AppDatabase init(Context context) {
     return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME)
