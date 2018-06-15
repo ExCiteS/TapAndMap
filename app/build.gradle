@@ -78,6 +78,7 @@ dependencies {
 
   // Room
   implementation "android.arch.persistence.room:runtime:$roomVersion"
+  implementation "android.arch.persistence.room:rxjava2:$roomVersion"
   annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
 
   // Picasso
@@ -85,4 +86,11 @@ dependencies {
 
   // FastAdapter
   implementation 'com.mikepenz:fastadapter:3.2.7'
+
+  // RxJava 2
+  implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+  // Because RxAndroid releases are few and far between, it is recommended you also
+  // explicitly depend on RxJava's latest version for bug fixes and new features.
+  // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
 }

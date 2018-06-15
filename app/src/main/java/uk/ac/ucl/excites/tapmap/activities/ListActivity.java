@@ -11,6 +11,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import java.util.List;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
@@ -60,10 +68,37 @@ public class ListActivity extends AppCompatActivity {
     nfcCardsRecyclerView.setItemAnimator(new DefaultItemAnimator());
     nfcCardsRecyclerView.setAdapter(fastAdapter);
 
-    // TODO: This should take place in a background thread
-    //set the items to the ItemAdapter
-    for (NfcCard card : nfcCardDao.getAll())
-      itemAdapter.add(new NfcCardItem(card));
+    nfcCardDao.getAll()
+        .subscribeOn(Schedulers.io())
+        .toObservable()
+        .flatMap(new Function<List<NfcCard>, ObservableSource<NfcCard>>() {
+          @Override
+          public ObservableSource<NfcCard> apply(List<NfcCard> nfcCards) {
+            return Observable.fromIterable(nfcCards);
+          }
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<NfcCard>() {
+          @Override
+          public void onSubscribe(Disposable d) {
+            // Do nothing
+          }
+
+          @Override
+          public void onNext(NfcCard nfcCard) {
+            itemAdapter.add(new NfcCardItem(nfcCard));
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            // TODO: 15/06/2018
+          }
+
+          @Override
+          public void onComplete() {
+            // TODO: 15/06/2018
+          }
+        });
   }
 
   @OnClick(R.id.fabAddCard)
