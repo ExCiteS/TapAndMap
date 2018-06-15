@@ -16,7 +16,6 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.nfc.NfcAdapter;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -58,23 +57,15 @@ public abstract class NfcBaseActivity extends AppCompatActivity {
     Bundle options = new Bundle();
     options.putInt(NfcAdapter.EXTRA_READER_PRESENCE_CHECK_DELAY, 100);
 
-    nfcAdapter.enableReaderMode(this, new NfcAdapter.ReaderCallback() {
-      @Override
-      public void onTagDiscovered(final Tag tag) {
+    nfcAdapter.enableReaderMode(this, tag -> {
 
-        if (tag == null)
-          return;
+      if (tag == null)
+        return;
 
-        // Get the NFC card
-        final NfcTagParser nfcTagParser = new NfcTagParser(tag);
-
-        runOnUiThread(new Runnable() {
-          public void run() {
-            // Decide what to do with the card on the implementation of each Activity
-            handleNfcCard(nfcTagParser);
-          }
-        });
-      }
+      // Get the NFC card
+      final NfcTagParser nfcTagParser = new NfcTagParser(tag);
+      // Decide what to do with the card on the implementation of each Activity
+      runOnUiThread(() -> handleNfcCard(nfcTagParser));
     }, NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK, options);
   }
 

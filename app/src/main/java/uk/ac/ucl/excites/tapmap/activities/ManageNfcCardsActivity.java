@@ -17,7 +17,6 @@ package uk.ac.ucl.excites.tapmap.activities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -132,16 +131,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
     alertDialogBuilder.setTitle("Replace card " + nfcCard.getTag() + "?")
         .setMessage("This card has been already setup. Do you want to replace it?")
-        .setPositiveButton("Replace", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            showStepTwo(nfcCard.getId());
-          }
-        })
-        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-          public void onClick(DialogInterface dialog, int which) {
-            // Do nothing
-          }
-        })
+        .setPositiveButton("Replace", (dialog, which) -> showStepTwo(nfcCard.getId()))
+        .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
         .show();
   }
 

@@ -30,13 +30,10 @@ import butterknife.OnClick;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import java.util.List;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
@@ -54,8 +51,6 @@ public class ListActivity extends AppCompatActivity {
   @BindView(R.id.progressBar)
   protected ProgressBar progressBar;
 
-  //save our FastAdapter
-  private FastAdapter<NfcCardItem> fastAdapter;
   private ItemAdapter<NfcCardItem> itemAdapter;
 
   private NfcCardDao nfcCardDao;
@@ -82,7 +77,7 @@ public class ListActivity extends AppCompatActivity {
     //create the ItemAdapter holding your Items
     itemAdapter = new ItemAdapter<>();
     //create the managing FastAdapter, by passing in the itemAdapter
-    fastAdapter = FastAdapter.with(itemAdapter);
+    FastAdapter<NfcCardItem> fastAdapter = FastAdapter.with(itemAdapter);
 
     //set our adapters to the RecyclerView
     nfcCardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -92,12 +87,7 @@ public class ListActivity extends AppCompatActivity {
     nfcCardDao.getAll()
         .subscribeOn(Schedulers.io())
         .toObservable()
-        .flatMap(new Function<List<NfcCard>, ObservableSource<NfcCard>>() {
-          @Override
-          public ObservableSource<NfcCard> apply(List<NfcCard> nfcCards) {
-            return Observable.fromIterable(nfcCards);
-          }
-        })
+        .flatMap(Observable::fromIterable)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<NfcCard>() {
           @Override
