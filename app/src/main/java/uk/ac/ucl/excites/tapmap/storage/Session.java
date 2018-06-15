@@ -19,13 +19,16 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import java.util.Date;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
+ * Representation of a collection session. This could be associated with for example a participant
+ * collecting some data before handing the device back etc. Each session has a start and end time
+ * as well as a description that explains the purpose of the session.
+ *
  * Created by Michalis Vitos on 21/05/2018.
  */
 @Entity
@@ -35,15 +38,27 @@ import lombok.ToString;
 @ToString
 public class Session {
 
+  /**
+   * Auto-generated number
+   */
   @PrimaryKey(autoGenerate = true)
   private long id;
 
+  /**
+   * The description that explains the purpose of this session. For example: "Michalis session collecting trees" etc
+   */
   @ColumnInfo(name = "description")
   private String description;
 
+  /**
+   * The start time of the session
+   */
   @ColumnInfo(name = "start_time")
   private Date startTime;
 
+  /**
+   * The end time of the session
+   */
   @ColumnInfo(name = "end_time")
   private Date endTime;
 }
