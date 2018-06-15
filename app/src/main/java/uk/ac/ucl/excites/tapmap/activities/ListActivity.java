@@ -80,7 +80,7 @@ public class ListActivity extends AppCompatActivity {
 
   private void setRecyclerView() {
     //create the ItemAdapter holding your Items
-    itemAdapter = new ItemAdapter();
+    itemAdapter = new ItemAdapter<>();
     //create the managing FastAdapter, by passing in the itemAdapter
     fastAdapter = FastAdapter.with(itemAdapter);
 

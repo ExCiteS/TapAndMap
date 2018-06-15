@@ -44,19 +44,6 @@ public class MainActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     checkStoragePermission();
-
-    openListActivity();
-
-    TapMap tapMap = (TapMap) getApplication();
-    NfcCardDao dao = tapMap.getAppDatabase().nfcCardDao();
-    NfcCard card = dao.findById("36119829698424836");
-
-   // Timber.d("Cards: : %s", dao.getAll().size());
-
-    //for (int i = 0; i <= 10000; i++) {
-    //  card.setId(String.valueOf(Math.random() * 1000));
-    //  dao.insert(card);
-    //}
   }
 
   private void checkStoragePermission() {
