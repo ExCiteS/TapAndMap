@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +35,9 @@ public class ListActivity extends AppCompatActivity {
 
   @BindView(R.id.nfcCardsRecyclerView)
   protected RecyclerView nfcCardsRecyclerView;
+
+  @BindView(R.id.progressBar)
+  protected ProgressBar progressBar;
 
   //save our FastAdapter
   private FastAdapter<NfcCardItem> fastAdapter;
@@ -91,12 +97,12 @@ public class ListActivity extends AppCompatActivity {
 
           @Override
           public void onError(Throwable e) {
-            // TODO: 15/06/2018
+            Toast.makeText(ListActivity.this, "Cannot load NFC Cards", Toast.LENGTH_SHORT).show();
           }
 
           @Override
           public void onComplete() {
-            // TODO: 15/06/2018
+            progressBar.setVisibility(View.GONE);
           }
         });
   }
