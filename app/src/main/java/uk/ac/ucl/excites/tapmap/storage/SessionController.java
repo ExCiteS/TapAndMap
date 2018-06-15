@@ -15,16 +15,23 @@
 
 package uk.ac.ucl.excites.tapmap.storage;
 
+import android.content.Context;
 import java.util.Date;
-import lombok.AllArgsConstructor;
+import uk.ac.ucl.excites.tapmap.TapMap;
 
 /**
  * Created by Michalis Vitos on 01/06/2018.
  */
-@AllArgsConstructor
 public class SessionController {
 
   private SessionDao sessionDao;
+
+  public SessionController(Context context) {
+
+    // Get the DAO
+    TapMap tapMap = (TapMap) context.getApplicationContext();
+    this.sessionDao = tapMap.getAppDatabase().sessionDao();
+  }
 
   public Session openNewSession() {
     return openNewSession("");

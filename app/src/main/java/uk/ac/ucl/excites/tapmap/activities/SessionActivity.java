@@ -53,7 +53,7 @@ public class SessionActivity extends AppCompatActivity {
 
     final TapMap app = (TapMap) getApplication();
     sessionDao = app.getAppDatabase().sessionDao();
-    sessionController = new SessionController(sessionDao);
+    sessionController = new SessionController(this);
   }
 
   @Override
