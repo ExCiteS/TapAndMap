@@ -15,27 +15,42 @@
 
 package uk.ac.ucl.excites.tapmap.utils;
 
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import timber.log.Timber;
 
 /**
- * Created by Michalis Vitos on 24/05/2018.
+ * Created by Michalis Vitos on 14/06/2018.
  */
-public class ScreenMetrics {
+public class PrintSubscriber implements Observer {
 
-  private ScreenMetrics() {
-    // Do nothing
+  private final String name;
+
+  public PrintSubscriber() {
+    this.name = "DEBUG";
   }
 
-  public static float convertPixelsToDp(float px) {
-    DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-    float dp = px / (metrics.densityDpi / 160f);
-    return Math.round(dp);
+  @Override
+  public void onSubscribe(Disposable d) {
+    Timber.d("%s : onSubscribe : %s", name, d);
   }
 
-  public static float convertDpToPixel(float dp) {
-    DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-    float px = dp * (metrics.densityDpi / 160f);
-    return Math.round(px);
+  public PrintSubscriber(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public void onComplete() {
+    Timber.d("%s : Completed", name);
+  }
+
+  @Override
+  public void onError(Throwable e) {
+    Timber.d("%s : Error : %s", name, e.getMessage());
+  }
+
+  @Override
+  public void onNext(Object v) {
+    Timber.d("%s : %s", name, v);
   }
 }

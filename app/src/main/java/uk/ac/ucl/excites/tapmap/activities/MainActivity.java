@@ -1,3 +1,18 @@
+/*
+ * Tap and Map is part of the Sapelli platform: http://sapelli.org
+ * <p/>
+ * Copyright 2012-2018 University College London - ExCiteS group
+ * <p/>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.Manifest;
@@ -13,6 +28,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +44,19 @@ public class MainActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     checkStoragePermission();
+
+    openListActivity();
+
+    TapMap tapMap = (TapMap) getApplication();
+    NfcCardDao dao = tapMap.getAppDatabase().nfcCardDao();
+    NfcCard card = dao.findById("36119829698424836");
+
+   // Timber.d("Cards: : %s", dao.getAll().size());
+
+    //for (int i = 0; i <= 10000; i++) {
+    //  card.setId(String.valueOf(Math.random() * 1000));
+    //  dao.insert(card);
+    //}
   }
 
   private void checkStoragePermission() {
