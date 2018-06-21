@@ -18,7 +18,7 @@ package uk.ac.ucl.excites.tapmap.storage;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import com.google.gson.annotations.Expose;
+import android.support.annotation.NonNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,17 +43,17 @@ public class NfcCard {
   /**
    * ID of the card. This is the actual ID that each NFC card comes with.
    */
+  @NonNull
   @PrimaryKey
   private String id;
 
   /**
    * This is the location where the image associated to this NFC card is stored. Usually this will be
    * something like /data/user/0/uk.ac.ucl.excites.tapmap/files/<card_id>. This is excluded from a GSON
-   * conversion toJson.
+   * conversion toJson (with the use of the transient word).
    */
-  @Expose(serialize = false, deserialize = false)
   @ColumnInfo(name = "image_path")
-  private String imagePath;
+  private transient String imagePath;
 
   /**
    * The actual file name of the picked image for this NFC card. For example this could be banana.png
