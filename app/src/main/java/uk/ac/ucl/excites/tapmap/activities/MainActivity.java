@@ -28,9 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
-import uk.ac.ucl.excites.tapmap.TapMap;
-import uk.ac.ucl.excites.tapmap.storage.NfcCard;
-import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {

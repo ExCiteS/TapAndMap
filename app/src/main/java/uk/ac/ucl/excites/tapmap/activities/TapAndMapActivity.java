@@ -26,11 +26,17 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import timber.log.Timber;
-import uk.ac.ucl.excites.tapmap.BuildConfig;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.storage.RecordController;
+import uk.ac.ucl.excites.tapmap.utils.Logger;
+
+import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.CANCELLED;
+import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.STORED;
+import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.TOUCHED;
 
 public class TapAndMapActivity extends NfcBaseActivity {
 
@@ -43,7 +49,9 @@ public class TapAndMapActivity extends NfcBaseActivity {
   @BindView(R.id.cancel)
   protected ImageButton cancelButton;
 
+  private RecordController recordController;
   private NfcCardDao nfcCardDao;
+  private NfcCard nfcCard;
   private Picasso picasso;
 
   @Override
@@ -54,6 +62,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
     ButterKnife.bind(this);
 
     final TapMap app = (TapMap) getApplication();
+    recordController = new RecordController(this);
     nfcCardDao = app.getAppDatabase().nfcCardDao();
 
     // Set up Picasso
@@ -99,7 +108,11 @@ public class TapAndMapActivity extends NfcBaseActivity {
     String imagePath = "";
 
     try {
-      imagePath = nfcCardDao.findById(cardID).getImagePath();
+      nfcCard = nfcCardDao.findById(cardID);
+      imagePath = nfcCard.getImagePath();
+
+      // Log card
+      Logger.getInstance().log(TOUCHED, nfcCard.toJson().toString());
     } catch (Exception e) {
       Timber.e(e, "Cannot get icon.");
     }
@@ -126,8 +139,11 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
 
-    // TODO: 24/05/2018 Log click, and store record
-
+    // Log click, and store record
+    if (nfcCard != null) {
+      Logger.getInstance().log(STORED, nfcCard.toJson().toString());
+      recordController.storeCard(nfcCard);
+    }
   }
 
   @OnClick(R.id.cancel)
@@ -138,6 +154,9 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
 
-    // TODO: 24/05/2018 Log click
+    // Log click
+    if (nfcCard != null) {
+      Logger.getInstance().log(CANCELLED, nfcCard.toJson().toString());
+    }
   }
 }

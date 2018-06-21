@@ -19,16 +19,13 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.Date;
-import lombok.AllArgsConstructor;
 import uk.ac.ucl.excites.tapmap.TapMap;
 
 /**
  * Created by Michalis Vitos on 01/06/2018.
  */
-@AllArgsConstructor
 public class RecordController {
 
-  private NfcCardDao cardDao;
   private RecordDao recordDao;
   private Gson gson;
 
@@ -36,12 +33,18 @@ public class RecordController {
 
     TapMap tapMap = (TapMap) context.getApplicationContext();
 
-    this.cardDao = tapMap.getAppDatabase().nfcCardDao();
     this.recordDao = tapMap.getAppDatabase().recordDao();
     this.gson = new Gson();
   }
 
+  /**
+   * Store the card and return the id or -1 if the operation fails
+   */
   public long storeCard(NfcCard card) {
+
+    if (card == null)
+      return -1;
+
     final Record record = new Record();
     // Set time to now
     record.setDate(new Date());

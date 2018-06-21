@@ -41,7 +41,7 @@ public class Logger {
   private static final Logger ourInstance = new Logger();
 
   public enum TAG {
-    ANDROID, CLICK, STORED, CANCELLED
+    ANDROID, CLICK, STORED, CANCELLED, TOUCHED
   }
 
   public static Logger getInstance() {

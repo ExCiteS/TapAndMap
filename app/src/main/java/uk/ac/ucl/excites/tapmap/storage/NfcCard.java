@@ -19,6 +19,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,4 +69,12 @@ public class NfcCard {
    */
   @ColumnInfo(name = "tag")
   private String tag;
+
+  /**
+   * Convert Card to Json
+   */
+  public JsonObject toJson() {
+    final Gson gson = new Gson();
+    return gson.toJsonTree(this).getAsJsonObject();
+  }
 }
