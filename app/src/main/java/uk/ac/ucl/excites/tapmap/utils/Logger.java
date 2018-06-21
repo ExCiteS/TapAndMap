@@ -27,6 +27,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.StatusPrinter;
 import java.nio.charset.Charset;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.LoggerFactory;
 import timber.log.Timber;
 
@@ -40,7 +41,7 @@ public class Logger {
   private static final Logger ourInstance = new Logger();
 
   public enum TAG {
-    ANDROID, CLICK,
+    ANDROID, CLICK, STORED, CANCELLED
   }
 
   public static Logger getInstance() {
@@ -96,7 +97,7 @@ public class Logger {
     rollingFileAppender.setEncoder(encoder);
     rollingFileAppender.start();
 
-    // add the newly created appenders to the root logger;
+    // Add the newly created appender to the root logger
     // qualify Logger to disambiguate from org.slf4j.Logger
     ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(
         ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -114,7 +115,7 @@ public class Logger {
 
     StringBuilder builder = new StringBuilder();
     for (String message : messages)
-      builder.append("\"").append(message).append("\"").append(",");
+      builder.append(StringEscapeUtils.escapeCsv(message)).append(",");
 
     builder.setLength(builder.length() - 1);
 

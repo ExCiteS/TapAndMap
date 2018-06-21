@@ -115,4 +115,7 @@ dependencies {
 
   // Gson
   implementation 'com.google.code.gson:gson:2.8.5'
+
+  // Apache Commons Lang 3
+  implementation 'org.apache.commons:commons-text:1.4'
 }
