@@ -32,6 +32,7 @@ import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.storage.RecordController;
+import uk.ac.ucl.excites.tapmap.storage.SessionController;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.CANCELLED;
@@ -51,6 +52,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
   private RecordController recordController;
   private NfcCardDao nfcCardDao;
+  private String session;
   private NfcCard nfcCard;
   private Picasso picasso;
 
@@ -64,6 +66,9 @@ public class TapAndMapActivity extends NfcBaseActivity {
     final TapMap app = (TapMap) getApplication();
     recordController = new RecordController(this);
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+
+    final SessionController sessionController = new SessionController(this);
+    session = "SESSION:" + sessionController.getActiveSessionId();
 
     // Set up Picasso
     picasso = Picasso.get();
@@ -112,7 +117,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
       imagePath = nfcCard.getImagePath();
 
       // Log card
-      Logger.getInstance().log(TOUCHED, nfcCard.toJson().toString());
+      Logger.getInstance().log(TOUCHED, session, nfcCard.toJson().toString());
     } catch (Exception e) {
       Timber.e(e, "Cannot get icon.");
     }
@@ -141,7 +146,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Log click, and store record
     if (nfcCard != null) {
-      Logger.getInstance().log(STORED, nfcCard.toJson().toString());
+      Logger.getInstance().log(STORED, session, nfcCard.toJson().toString());
       recordController.storeCard(nfcCard);
     }
   }
@@ -156,7 +161,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Log click
     if (nfcCard != null) {
-      Logger.getInstance().log(CANCELLED, nfcCard.toJson().toString());
+      Logger.getInstance().log(CANCELLED, session, nfcCard.toJson().toString());
     }
   }
 }
