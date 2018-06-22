@@ -75,7 +75,7 @@ public class Logger {
 
     TimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new TimeBasedRollingPolicy<>();
     rollingPolicy.setContext(loggerContext);
-    rollingPolicy.setFileNamePattern(logDirectory + "/" + LOG_PREFIX + ".%d{yyyy-MM-dd}.%i.html");
+    rollingPolicy.setFileNamePattern(logDirectory + "/" + LOG_PREFIX + ".%d{yyyy-MM-dd}.%i.csv");
     rollingPolicy.setMaxHistory(100);
     rollingPolicy.setTimeBasedFileNamingAndTriggeringPolicy(fileNamingPolicy);
     rollingPolicy.setParent(rollingFileAppender);  // parent and context required!
