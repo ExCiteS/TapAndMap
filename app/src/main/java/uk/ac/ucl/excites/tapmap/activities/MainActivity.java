@@ -40,9 +40,13 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
+    // Check if we have the appropriate permissions before we do anything else
     checkStoragePermission();
   }
 
+  /**
+   * Check if we have the appropriate permissions
+   */
   private void checkStoragePermission() {
 
     final MainActivity activity = MainActivity.this;
@@ -67,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         // TODO: 08/06/2018 Might want to show our own dialog why we need storage permissions here
       }
       ActivityCompat.requestPermissions(activity, permissions, READ_WRITE_EXTERNAL_STORAGE);
+    } else {
+      onPermissionsGranted();
     }
   }
 
@@ -80,14 +86,45 @@ public class MainActivity extends AppCompatActivity {
 
       Timber.d("Granted permissions: %s", permissions);
       Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-
-      // Set up Logger now
-      Logger logger = Logger.getInstance();
-      logger.log("Storage permission is granted");
+      onPermissionsGranted();
     } else {
       Toast.makeText(this, "Permission denied, you can't use our app.", Toast.LENGTH_SHORT).show();
       finish();
     }
+  }
+
+  /**
+   * Actions to be performed when we have all the necessary permissions
+   */
+  private void onPermissionsGranted() {
+
+    Timber.d("We have all the permissions! Yeah!");
+
+    // Set up Logger now
+    Logger.getInstance();
+
+    // Add shortcuts now
+    createShortcutOfTapAndMapActivity();
+  }
+
+  /**
+   * Create a shortcut for the Tap and Map activity
+   */
+  private void createShortcutOfTapAndMapActivity() {
+
+    final Intent shortcutIntent = new Intent(getApplicationContext(), TapAndMapActivity.class);
+    shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+    final Intent addIntent = new Intent();
+    addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+    addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Tap and Map Collect");
+    addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+        Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher));
+
+    addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+    // Don't duplicate the shortcut, if it already exists
+    addIntent.putExtra("duplicate", false);
+    getApplicationContext().sendBroadcast(addIntent);
   }
 
   @OnClick(R.id.btn_collectData)

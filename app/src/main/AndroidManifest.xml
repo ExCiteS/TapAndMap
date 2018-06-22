@@ -19,6 +19,7 @@
 
   <uses-permission android:name="android.permission.NFC"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
 
   <uses-feature
       android:name="android.hardware.nfc"
@@ -43,6 +44,7 @@
     </activity>
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity"
+        android:exported="true"
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name="uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity"
