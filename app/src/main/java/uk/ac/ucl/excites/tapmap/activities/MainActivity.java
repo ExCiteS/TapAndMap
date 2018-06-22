@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
     addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Tap and Map Collect");
     addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-        Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_launcher));
+        Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.mipmap.ic_collect));
 
     addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
     // Don't duplicate the shortcut, if it already exists
