@@ -22,10 +22,10 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Representation of a NFC card stored in the database. Each NFC card has an ID that was is the
@@ -39,7 +39,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@Builder
 public class NfcCard {
 
   /**
@@ -76,5 +76,9 @@ public class NfcCard {
   public JsonObject toJson() {
     final Gson gson = new Gson();
     return gson.toJsonTree(this).getAsJsonObject();
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag.trim();
   }
 }

@@ -148,9 +148,7 @@ public class NfcTagParser {
    * @return NfcCard
    */
   public NfcCard toNfcCard() {
-    final NfcCard nfcCard = new NfcCard();
-    nfcCard.setId(getId());
-    return nfcCard;
+    return NfcCard.builder().id(id).build();
   }
 
   /**
@@ -159,7 +157,8 @@ public class NfcTagParser {
    * @return NfcCard
    */
   public NfcCard toNfcCard(String imagePath, String filename, String tag) {
-    return new NfcCard(id, imagePath, filename, tag);
+
+    return NfcCard.builder().id(id).imagePath(imagePath).filename(filename).tag(tag).build();
   }
 
   @Override
