@@ -16,16 +16,15 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import io.reactivex.Observable;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
@@ -47,50 +46,37 @@ public class MainActivity extends AppCompatActivity {
   /**
    * Check if we have the appropriate permissions
    */
+  @SuppressLint("CheckResult")
   private void checkStoragePermission() {
 
     final MainActivity activity = MainActivity.this;
-    final String writeExternalStorage = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    final String readExternalStorage = Manifest.permission.READ_EXTERNAL_STORAGE;
-    final String[] permissions = { writeExternalStorage, readExternalStorage };
+    final RxPermissions rxPermissions = new RxPermissions(activity);
+    final String[] permissions = {
+        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.RECORD_AUDIO
+    };
 
-    final boolean writeAccess = ContextCompat.checkSelfPermission(activity, writeExternalStorage)
-        == PackageManager.PERMISSION_GRANTED;
-    final boolean readAccess = ContextCompat.checkSelfPermission(activity, readExternalStorage)
-        == PackageManager.PERMISSION_GRANTED;
-
-    if (!writeAccess || !readAccess) {
-
-      // Should we show an explanation?
-      final boolean writeAskForExplanation =
-          ActivityCompat.shouldShowRequestPermissionRationale(activity, writeExternalStorage);
-      final boolean readAskForExplanation =
-          ActivityCompat.shouldShowRequestPermissionRationale(activity, readExternalStorage);
-
-      if (writeAskForExplanation || readAskForExplanation) {
-        // TODO: 08/06/2018 Might want to show our own dialog why we need storage permissions here
-      }
-      ActivityCompat.requestPermissions(activity, permissions, READ_WRITE_EXTERNAL_STORAGE);
-    } else {
-      onPermissionsGranted();
-    }
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
-
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (ActivityCompat.checkSelfPermission(this, permissions[0])
-        == PackageManager.PERMISSION_GRANTED) {
-
-      Timber.d("Granted permissions: %s", permissions);
-      Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-      onPermissionsGranted();
-    } else {
-      Toast.makeText(this, "Permission denied, you can't use our app.", Toast.LENGTH_SHORT).show();
-      finish();
-    }
+    Observable.fromArray(permissions)
+        .doOnNext(permission -> Timber.d("Checking permission: %s", permission))
+        // Filter permissions that are already granted and keep just the denied
+        .filter(permission -> !rxPermissions.isGranted(permission))
+        .doOnNext(permission -> Timber.d("Remained permission: %s", permission))
+        // Request each of them
+        .flatMap(rxPermissions::request)
+        .subscribe(granted -> {
+              if (granted) {
+                // All requested permissions are granted
+                onPermissionsGranted();
+              } else {
+                // At least one permission is denied
+                Toast.makeText(this, "Permission denied, you can't use our app.", Toast.LENGTH_SHORT)
+                    .show();
+                finish();
+              }
+            },
+            error -> Timber.d("error: %s", error.getLocalizedMessage()),
+            () -> Timber.d("Completed")
+        );
   }
 
   /**
@@ -99,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
   private void onPermissionsGranted() {
 
     Timber.d("We have all the permissions! Yeah!");
+    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
 
     // Set up Logger now
     Logger.getInstance();

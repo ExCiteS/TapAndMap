@@ -116,6 +116,9 @@ dependencies {
   // Gson
   implementation 'com.google.code.gson:gson:2.8.5'
 
-  // Apache Commons Lang 3
+  // Apache Commons Text
   implementation 'org.apache.commons:commons-text:1.4'
+
+  // RxPermissions
+  compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5'
 }
