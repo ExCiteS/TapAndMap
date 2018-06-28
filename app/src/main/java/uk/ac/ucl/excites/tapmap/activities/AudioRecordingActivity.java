@@ -19,12 +19,19 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.github.piasy.rxandroidaudio.AudioRecorder;
+import com.github.piasy.rxandroidaudio.RxAmplitude;
+import com.github.piasy.rxandroidaudio.RxAudioPlayer;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -32,43 +39,30 @@ import java.util.Date;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 
-public class AudioRecordingActivity extends AppCompatActivity {
+public class AudioRecordingActivity extends RxAppCompatActivity
+    implements AudioRecorder.OnErrorListener {
 
   // Static
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd_hh.mm.ss");
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh.mm.ss");
   private static final String AUDIO_EXTENSION = "m4a";
 
   // Private
-  private AudioRecorder audioRecorder;
+  private AudioRecorder audioRecorder = AudioRecorder.getInstance();
+  private RxAudioPlayer audioPlayer = RxAudioPlayer.getInstance();
   private File currentAudioFile;
+  private Disposable recordDisposable;
 
   // UI
   @BindView(R.id.recordButton)
   protected ImageView recordButton;
+  @BindView(R.id.status)
+  protected TextView status;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_audio_recording);
     ButterKnife.bind(this);
-
-    try {
-      setupRecorder();
-    } catch (Exception e) {
-      Timber.e(e);
-    }
-  }
-
-  private void setupRecorder() throws IOException {
-
-    audioRecorder = AudioRecorder.getInstance();
-    currentAudioFile = getAudioFile();
-    audioRecorder.prepareRecord(
-        MediaRecorder.AudioSource.MIC,
-        MediaRecorder.OutputFormat.MPEG_4,
-        MediaRecorder.AudioEncoder.AAC,
-        currentAudioFile
-    );
   }
 
   private void animateVoice(final float maxPeak) {
@@ -77,14 +71,71 @@ public class AudioRecordingActivity extends AppCompatActivity {
 
   @OnClick(R.id.recordButton)
   public void onRecordClicked() {
-    Timber.d("Start recording...");
-    audioRecorder.startRecord();
+
+    Timber.d("Clicked recording...");
+
+    recordDisposable = Observable
+        .fromCallable(() -> {
+          Timber.d("Prepare record...");
+          currentAudioFile = getAudioFile();
+          return audioRecorder.prepareRecord(
+              MediaRecorder.AudioSource.MIC,
+              MediaRecorder.OutputFormat.MPEG_4,
+              MediaRecorder.AudioEncoder.AAC,
+              currentAudioFile);
+        })
+        .doOnComplete(() -> {
+          Timber.d("Start recording...");
+          audioRecorder.startRecord();
+        })
+        .doOnNext(b -> Timber.d("Start recording successfully..."))
+        .flatMap(b -> RxAmplitude.from(audioRecorder))
+        .compose(bindToLifecycle())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            level -> {
+              int progress = audioRecorder.progress();
+              refreshAudioAmplitudeView(level, progress);
+            },
+            Timber::e);
+  }
+
+  private void refreshAudioAmplitudeView(int level, int progress) {
+
+    // Log Amplitude progress every 5 seconds
+    if (progress % 5 == 0)
+      Timber.d("Refresh UI with level: %s, progress: %s", level, progress);
+
+    // TODO: 28/06/2018
+    status.setText("level: " + level + "  |  " + progress + " secs");
   }
 
   @OnClick(R.id.stopButton)
   public void onStopClicked() {
-    final int seconds = audioRecorder.stopRecord();
-    Timber.d("Stopped recording. Recorded %s seconds.", seconds);
+
+    if (recordDisposable != null && !recordDisposable.isDisposed()) {
+      recordDisposable.dispose();
+      recordDisposable = null;
+    }
+
+    recordDisposable = Observable
+        .fromCallable(() -> {
+          final int seconds = audioRecorder.stopRecord();
+          Timber.d("Stopped recording. Recorded %s seconds.", seconds);
+          return seconds >= 0;
+        })
+        .compose(bindToLifecycle())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            added -> {
+              if (added)
+                Timber.d("File: %s recorded.", currentAudioFile.getName());
+
+              status.setText("...");
+            },
+            Timber::e);
   }
 
   @NonNull
@@ -99,8 +150,16 @@ public class AudioRecordingActivity extends AppCompatActivity {
     if (!file.exists()) {
       final boolean mkdirs = file.getParentFile().mkdirs();
       final boolean newFile = file.createNewFile();
-      Timber.d("Created directory: %s and file: %s", mkdirs, newFile);
+      if (mkdirs)
+        Timber.d("Created directory: %s", file.getParentFile());
+      if (newFile)
+        Timber.d("Created file: %s", file.getAbsoluteFile());
     }
     return file;
+  }
+
+  @Override
+  public void onError(int error) {
+    Timber.d("Error while recording: %s", error);
   }
 }

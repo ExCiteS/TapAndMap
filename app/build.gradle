@@ -28,6 +28,7 @@ def roomVersion = "1.1.0"
 def lombokVersion = "1.16.20"
 def butterknifeVersion = "8.8.1"
 def latestSupportLib = "27.1.1"
+def rxLifecycle = "2.2.1"
 
 
 android {
@@ -113,6 +114,11 @@ dependencies {
   // explicitly depend on RxJava's latest version for bug fixes and new features.
   // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
   implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+
+  // RxLifecycle
+  implementation "com.trello.rxlifecycle2:rxlifecycle:$rxLifecycle"
+  implementation "com.trello.rxlifecycle2:rxlifecycle-android:$rxLifecycle"
+  implementation "com.trello.rxlifecycle2:rxlifecycle-components:$rxLifecycle"
 
   // Gson
   implementation 'com.google.code.gson:gson:2.8.5'
