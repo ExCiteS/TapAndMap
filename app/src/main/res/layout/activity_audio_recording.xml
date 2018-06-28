@@ -8,6 +8,20 @@
     tools:layout_editor_absoluteY="81dp"
     >
 
+  <include
+      layout="@layout/voice_indicators"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="70dp"
+      android:layout_marginStart="70dp"
+      android:layout_marginTop="24dp"
+      app:layout_constraintBottom_toTopOf="@+id/status"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
   <ImageButton
       android:id="@+id/recordButton"
       android:layout_width="180dp"
@@ -41,11 +55,14 @@
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
       android:layout_marginTop="8dp"
-      android:text="..."
+      android:text="@string/zero_time"
+      android:textSize="24sp"
       app:layout_constraintBottom_toTopOf="@+id/stopButton"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.501"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.826"
       />
 
 </android.support.constraint.ConstraintLayout>

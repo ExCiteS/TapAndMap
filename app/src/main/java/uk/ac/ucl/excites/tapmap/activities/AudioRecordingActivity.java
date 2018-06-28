@@ -19,6 +19,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
@@ -35,7 +36,10 @@ import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 
@@ -45,6 +49,11 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   // Static
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh.mm.ss");
   private static final String AUDIO_EXTENSION = "m4a";
+
+  private static final ButterKnife.Action<View> INVISIBLE =
+      (view, index) -> view.setVisibility(View.INVISIBLE);
+  private static final ButterKnife.Action<View> VISIBLE
+      = (view, index) -> view.setVisibility(View.VISIBLE);
 
   // Private
   private AudioRecorder audioRecorder = AudioRecorder.getInstance();
@@ -57,16 +66,33 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   protected ImageView recordButton;
   @BindView(R.id.status)
   protected TextView status;
+  private List<ImageView> voiceIndicators;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_audio_recording);
     ButterKnife.bind(this);
+
+    setVoiceIndicators();
   }
 
-  private void animateVoice(final float maxPeak) {
-    recordButton.animate().scaleX(1 + maxPeak).scaleY(1 + maxPeak).setDuration(10).start();
+  /**
+   * Collect the resource ids of the voice indicators
+   */
+  private void setVoiceIndicators() {
+
+    voiceIndicators = new ArrayList<>();
+
+    // TODO: 28/06/2018 Add exact number of items
+    for (int i = 1; i <= 20; i++) {
+      String voiceIndicatorId = "indication_" + i;
+      int resID = getResources().getIdentifier(voiceIndicatorId, "id", getPackageName());
+      voiceIndicators.add(this.findViewById(resID));
+    }
+
+    // Hide the indicators
+    ButterKnife.apply(voiceIndicators, INVISIBLE);
   }
 
   @OnClick(R.id.recordButton)
@@ -108,7 +134,20 @@ public class AudioRecordingActivity extends RxAppCompatActivity
       Timber.d("Refresh UI with level: %s, progress: %s", level, progress);
 
     // TODO: 28/06/2018
-    status.setText("level: " + level + "  |  " + progress + " secs");
+    status.setText(convertSecondsToHumanTime(progress));
+
+    int end = level < voiceIndicators.size() ? level : voiceIndicators.size();
+    ButterKnife.apply(voiceIndicators.subList(0, end), VISIBLE);
+    ButterKnife.apply(voiceIndicators.subList(end, voiceIndicators.size()), INVISIBLE);
+  }
+
+  public String convertSecondsToHumanTime(int totalSeconds) {
+
+    int hours = totalSeconds / 3600;
+    int minutes = (totalSeconds % 3600) / 60;
+    int seconds = totalSeconds % 60;
+
+    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
   }
 
   @OnClick(R.id.stopButton)
@@ -133,7 +172,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
               if (added)
                 Timber.d("File: %s recorded.", currentAudioFile.getName());
 
-              status.setText("...");
+              status.setText(R.string.zero_time);
             },
             Timber::e);
   }

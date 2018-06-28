@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Tap and Map is part of the Sapelli platform: http://sapelli.org
+  ~ <p/>
+  ~ Copyright 2012-2018 University College London - ExCiteS group
+  ~ <p/>
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+  ~ the License. You may obtain a copy of the License at
+  ~ <p/>
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ <p/>
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+  ~ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    >
+  <View
+      android:id="@+id/indication_20"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_19"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_18"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_17"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_16"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_15"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_14"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_13"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_12"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_11"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_10"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_9"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_8"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_7"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_6"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_5"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_4"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_3"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_2"
+      style="@style/voice_indicator"
+      />
+  <View
+      android:id="@+id/indication_1"
+      style="@style/voice_indicator"
+      />
+</LinearLayout>
