@@ -12,8 +12,7 @@
   ~ Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
   ~ an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
   ~ specific language governing permissions and limitations under the License.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uk.ac.ucl.excites.tapmap">
 
@@ -21,12 +20,16 @@
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
   <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
 
+  <!-- Audio recording permissions -->
+  <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
   <uses-feature
       android:name="android.hardware.nfc"
       android:required="true"/>
 
   <application
-      android:name="uk.ac.ucl.excites.tapmap.TapMap"
+      android:name=".TapMap"
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
       android:label="@string/app_name"
@@ -34,7 +37,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
     <activity
-        android:name="uk.ac.ucl.excites.tapmap.activities.MainActivity"
+        android:name=".activities.MainActivity"
         android:screenOrientation="sensorPortrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -43,20 +46,24 @@
       </intent-filter>
     </activity>
     <activity
-        android:name="uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity"
+        android:name=".activities.TapAndMapActivity"
         android:exported="true"
         android:screenOrientation="sensorPortrait"/>
     <activity
-        android:name="uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity"
+        android:name=".activities.ManageNfcCardsActivity"
         android:label="Add NFC card"
         android:screenOrientation="sensorPortrait"/>
     <activity
-        android:name="uk.ac.ucl.excites.tapmap.activities.ListActivity"
+        android:name=".activities.ListActivity"
         android:label="List of cards"
         android:screenOrientation="sensorPortrait"/>
     <activity
-        android:name="uk.ac.ucl.excites.tapmap.activities.SessionActivity"
+        android:name=".activities.SessionActivity"
         android:label="Session"
+        android:screenOrientation="sensorPortrait"/>
+    <activity
+        android:name=".activities.AudioRecordingActivity"
+        android:label="Record audio"
         android:screenOrientation="sensorPortrait"/>
   </application>
 
