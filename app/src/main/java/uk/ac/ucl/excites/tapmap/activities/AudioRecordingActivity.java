@@ -19,8 +19,10 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,11 +39,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.Random;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.utils.Math;
+import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
+import uk.ac.ucl.excites.tapmap.utils.Time;
 
 public class AudioRecordingActivity extends RxAppCompatActivity
     implements AudioRecorder.OnErrorListener {
@@ -60,20 +66,29 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   private RxAudioPlayer audioPlayer = RxAudioPlayer.getInstance();
   private File currentAudioFile;
   private Disposable recordDisposable;
+  private int maxAmplitude = 0;
 
   // UI
   @BindView(R.id.recordButton)
   protected ImageView recordButton;
   @BindView(R.id.status)
   protected TextView status;
-  private List<ImageView> voiceIndicators;
+  @BindView(R.id.voice_indicator)
+  protected LinearLayout voiceIndicatorLayout;
+  private List<View> voiceIndicators;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_audio_recording);
     ButterKnife.bind(this);
+  }
 
+  @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+
+    // Use the onWindowFocusChanged method to get the correct dimensions for the elements
     setVoiceIndicators();
   }
 
@@ -82,14 +97,26 @@ public class AudioRecordingActivity extends RxAppCompatActivity
    */
   private void setVoiceIndicators() {
 
+    final LayoutInflater inflater = LayoutInflater.from(this);
     voiceIndicators = new ArrayList<>();
 
-    // TODO: 28/06/2018 Add exact number of items
-    for (int i = 1; i <= 20; i++) {
-      String voiceIndicatorId = "indication_" + i;
-      int resID = getResources().getIdentifier(voiceIndicatorId, "id", getPackageName());
-      voiceIndicators.add(this.findViewById(resID));
+    final int height = voiceIndicatorLayout.getHeight();
+    final int width = voiceIndicatorLayout.getWidth();
+    Timber.d("Voice Indicator: %sx%s pixels.", width, height);
+    final float voiceIndicatorHeight = ScreenMetrics.convertDpToPixel(2);
+    Timber.d("Each voice indicator is 10 dp = %s pixels", voiceIndicatorHeight);
+    final int countVoiceIndicators = (int) (height / voiceIndicatorHeight);
+    Timber.d("We can fit %s voice indicators in the screen.", countVoiceIndicators);
+
+    // Inflate views
+    for (int i = 0; i < countVoiceIndicators; i++) {
+      View view = inflater.inflate(R.layout.voice_indicator, voiceIndicatorLayout, false);
+      voiceIndicatorLayout.addView(view);
+      voiceIndicators.add(view);
     }
+
+    // Reverse the list, as we need the bottom items to be last
+    Collections.reverse(voiceIndicators);
 
     // Hide the indicators
     ButterKnife.apply(voiceIndicators, INVISIBLE);
@@ -115,7 +142,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
           audioRecorder.startRecord();
         })
         .doOnNext(b -> Timber.d("Start recording successfully..."))
-        .flatMap(b -> RxAmplitude.from(audioRecorder))
+        .flatMap(b -> RxAmplitude.from(audioRecorder, 250))
         .compose(bindToLifecycle())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -127,27 +154,37 @@ public class AudioRecordingActivity extends RxAppCompatActivity
             Timber::e);
   }
 
-  private void refreshAudioAmplitudeView(int level, int progress) {
+  private void refreshAudioAmplitudeView(int amplitudeLevel, int progressInSeconds) {
 
-    // Log Amplitude progress every 5 seconds
-    if (progress % 5 == 0)
-      Timber.d("Refresh UI with level: %s, progress: %s", level, progress);
+    // Capture max amplitude
+    maxAmplitude = amplitudeLevel > maxAmplitude ? amplitudeLevel : maxAmplitude;
 
-    // TODO: 28/06/2018
-    status.setText(convertSecondsToHumanTime(progress));
+    // Log Amplitude progressInSeconds every 5 seconds
+    if (progressInSeconds % 5 == 0) {
+      Timber.d("Refresh UI with amplitudeLevel: %s/%s, progressInSeconds: %s",
+          amplitudeLevel,
+          maxAmplitude,
+          progressInSeconds);
+    }
 
-    int end = level < voiceIndicators.size() ? level : voiceIndicators.size();
-    ButterKnife.apply(voiceIndicators.subList(0, end), VISIBLE);
-    ButterKnife.apply(voiceIndicators.subList(end, voiceIndicators.size()), INVISIBLE);
-  }
+    // Update time
+    status.setText(Time.convertSecondsToHumanTime(progressInSeconds));
 
-  public String convertSecondsToHumanTime(int totalSeconds) {
+    // Update Voice Indicators
+    final int voiceIndicatorSize = voiceIndicators.size();
+    int adjustedLevel = (int) Math.map(amplitudeLevel, 0, maxAmplitude, 0, voiceIndicatorSize);
+    // Add a random element to the level
+    if (adjustedLevel == 0) {
+      Random random = new Random();
+      int randomInt = random.nextInt(voiceIndicatorSize / 10) + 1;
+      // 10% of voiceIndicatorSize]
+      adjustedLevel += randomInt;
+    }
+    int max = adjustedLevel > voiceIndicatorSize ? voiceIndicatorSize : adjustedLevel;
+    // Timber.d("Level (actual/adjusted/max): %s/%s/%s", amplitudeLevel, adjustedLevel, maxAmplitude);
 
-    int hours = totalSeconds / 3600;
-    int minutes = (totalSeconds % 3600) / 60;
-    int seconds = totalSeconds % 60;
-
-    return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+    ButterKnife.apply(voiceIndicators.subList(0, max), VISIBLE);
+    ButterKnife.apply(voiceIndicators.subList(max, voiceIndicatorSize), INVISIBLE);
   }
 
   @OnClick(R.id.stopButton)
@@ -170,9 +207,10 @@ public class AudioRecordingActivity extends RxAppCompatActivity
         .subscribe(
             added -> {
               if (added)
-                Timber.d("File: %s recorded.", currentAudioFile.getName());
+                Timber.d("File: %s | MaxAmplitude: %s", currentAudioFile.getName(), maxAmplitude);
 
-              status.setText(R.string.zero_time);
+              // Hide the indicators
+              ButterKnife.apply(voiceIndicators, INVISIBLE);
             },
             Timber::e);
   }

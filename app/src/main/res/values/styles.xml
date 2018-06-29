@@ -33,11 +33,4 @@
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="voice_indicator">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">5dp</item>
-    <item name="android:layout_marginBottom">5dp</item>
-    <item name="android:background">@color/voice_indicator</item>
-  </style>
-
 </resources>
