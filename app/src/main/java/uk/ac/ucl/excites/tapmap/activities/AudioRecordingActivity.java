@@ -19,6 +19,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,7 +46,7 @@ import java.util.List;
 import java.util.Random;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
-import uk.ac.ucl.excites.tapmap.utils.Math;
+import uk.ac.ucl.excites.tapmap.utils.MathUtils;
 import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
 import uk.ac.ucl.excites.tapmap.utils.Time;
 
@@ -172,7 +173,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
     // Update Voice Indicators
     final int voiceIndicatorSize = voiceIndicators.size();
-    int adjustedLevel = (int) Math.map(amplitudeLevel, 0, maxAmplitude, 0, voiceIndicatorSize);
+    int adjustedLevel = (int) MathUtils.map(amplitudeLevel, 0, maxAmplitude, 0, voiceIndicatorSize);
     // Add a random element to the level
     if (adjustedLevel == 0) {
       Random random = new Random();

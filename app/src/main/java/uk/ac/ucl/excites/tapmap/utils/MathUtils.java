@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
  * Created by Michalis Vitos on 29/06/2018.
  */
 @NoArgsConstructor
-public class Math {
+public class MathUtils {
 
   /**
    * Map a number of a one range to the number of another range
