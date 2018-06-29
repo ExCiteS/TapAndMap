@@ -19,8 +19,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="1dp"
+    android:layout_height="2dp"
     android:layout_marginTop="1dp"
-    android:background="@color/voice_indicator"
     tools:showIn="@layout/voice_indicators"
     />

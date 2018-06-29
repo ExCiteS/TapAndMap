@@ -104,14 +104,24 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     final int height = voiceIndicatorLayout.getHeight();
     final int width = voiceIndicatorLayout.getWidth();
     Timber.d("Voice Indicator: %sx%s pixels.", width, height);
-    final float voiceIndicatorHeight = ScreenMetrics.convertDpToPixel(2);
+    final float voiceIndicatorHeight = ScreenMetrics.convertDpToPixel(3);
     Timber.d("Each voice indicator is 10 dp = %s pixels", voiceIndicatorHeight);
     final int countVoiceIndicators = (int) (height / voiceIndicatorHeight);
     Timber.d("We can fit %s voice indicators in the screen.", countVoiceIndicators);
 
+    int mediumBand = countVoiceIndicators / 3;
+    int highBand = countVoiceIndicators / 3 * 2;
+
     // Inflate views
     for (int i = 0; i < countVoiceIndicators; i++) {
       View view = inflater.inflate(R.layout.voice_indicator, voiceIndicatorLayout, false);
+
+      if (i <= mediumBand)
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.voice_indicator_high));
+      else if (i <= highBand)
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.voice_indicator_medium));
+      else
+        view.setBackgroundColor(ContextCompat.getColor(this, R.color.voice_indicator_low));
       voiceIndicatorLayout.addView(view);
       voiceIndicators.add(view);
     }

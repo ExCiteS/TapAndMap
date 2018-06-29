@@ -26,6 +26,8 @@
   <color name="confirm">#009E0F</color>
   <color name="cancel">#CF2A27</color>
 
-  <color name="voice_indicator">#b62320</color>
+  <color name="voice_indicator_high">#e85129</color>
+  <color name="voice_indicator_medium">#f8a81c</color>
+  <color name="voice_indicator_low">#85bb5b</color>
 
 </resources>
