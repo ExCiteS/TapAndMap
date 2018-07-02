@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         .subscribe(granted -> {
               if (granted) {
                 // All requested permissions are granted
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
                 onPermissionsGranted();
               } else {
                 // At least one permission is denied
@@ -75,7 +76,10 @@ public class MainActivity extends AppCompatActivity {
               }
             },
             error -> Timber.d("error: %s", error.getLocalizedMessage()),
-            () -> Timber.d("Completed")
+            () -> {
+              Timber.d("Completed");
+              onPermissionsGranted();
+            }
         );
   }
 
@@ -85,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
   private void onPermissionsGranted() {
 
     Timber.d("We have all the permissions! Yeah!");
-    Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
 
     // Set up Logger now
     Logger.getInstance();

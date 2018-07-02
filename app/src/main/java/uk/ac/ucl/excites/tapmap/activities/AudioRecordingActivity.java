@@ -67,7 +67,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   // Private
   private AudioRecorder audioRecorder = AudioRecorder.getInstance();
   //private RxAudioPlayer audioPlayer = RxAudioPlayer.getInstance();
-  private List<String> recordings;
+  private List<File> recordings;
   private File currentAudioFile;
   private Disposable recordDisposable;
   private int maxAmplitude = 0;
@@ -161,15 +161,24 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   @OnClick(R.id.confirm)
   public void onConfirmClicked() {
 
-    // TODO: 02/07/2018
+    // TODO: 02/07/2018 Decide what to do here:
     Timber.d("Recorded so far: %s", recordings);
   }
 
   @OnClick(R.id.cancel)
   public void onCancelClicked() {
 
-    // TODO: 02/07/2018
-    Timber.d("Hey!!!");
+    Timber.d("Cancel recording, must delete: %s", recordings);
+    for (File recording : recordings) {
+      boolean deleted = recording.delete();
+      if (deleted)
+        Timber.d("Deleted: %s", recording);
+      else
+        Timber.d("Could not delete: %s", recording);
+    }
+
+    // TODO: 02/07/2018 Decide on the action here:
+    finish();
   }
 
   private void updateRecordingUI() {
@@ -277,7 +286,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
         .fromCallable(() -> {
           final int seconds = audioRecorder.stopRecord();
           Timber.d("Stopped recording. Recorded %s seconds.", seconds);
-          recordings.add(currentAudioFile.getAbsolutePath());
+          recordings.add(currentAudioFile);
           return seconds >= 0;
         })
         .compose(bindToLifecycle())
