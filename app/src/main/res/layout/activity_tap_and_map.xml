@@ -34,7 +34,7 @@
       android:layout_marginStart="16dp"
       android:layout_marginTop="24dp"
       android:scaleType="center"
-      app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+      app:layout_constraintBottom_toTopOf="@+id/confirmation_buttons"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
       />
 
   <include
-      layout="@layout/confirm_buttons"
+      layout="@layout/confirmation_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       app:layout_constraintBottom_toBottomOf="parent"

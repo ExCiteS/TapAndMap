@@ -69,6 +69,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   private File currentAudioFile;
   private Disposable recordDisposable;
   private int maxAmplitude = 0;
+  private boolean isRecording;
 
   // UI
   @BindView(R.id.recordButton)
@@ -137,7 +138,17 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   }
 
   @OnClick(R.id.recordButton)
-  public void onRecordClicked() {
+  public void onButtonClicked() {
+    if (!isRecording) {
+      isRecording = true;
+      onRecordClicked();
+    } else {
+      isRecording = false;
+      onStopClicked();
+    }
+  }
+
+  private void onRecordClicked() {
 
     Timber.d("Clicked recording...");
 
@@ -201,8 +212,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     ButterKnife.apply(voiceIndicators.subList(max, voiceIndicatorSize), INVISIBLE);
   }
 
-  @OnClick(R.id.stopButton)
-  public void onStopClicked() {
+  private void onStopClicked() {
 
     if (recordDisposable != null && !recordDisposable.isDisposed()) {
       recordDisposable.dispose();

@@ -22,47 +22,47 @@
       app:layout_constraintTop_toTopOf="parent"
       />
 
-  <ImageButton
-      android:id="@+id/recordButton"
-      android:layout_width="180dp"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="16dp"
-      android:layout_marginEnd="8dp"
-      android:layout_marginStart="16dp"
-      android:contentDescription="TODO"
-      android:src="@drawable/ic_record"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toStartOf="@+id/stopButton"
-      app:layout_constraintStart_toStartOf="parent"
-      />
-
-  <ImageButton
-      android:id="@+id/stopButton"
-      android:layout_width="180dp"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="16dp"
-      android:layout_marginEnd="16dp"
-      android:contentDescription="TODO"
-      android:src="@drawable/ic_stop"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      />
   <TextView
       android:id="@+id/status"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="8dp"
+      android:layout_height="35dp"
       android:layout_marginEnd="8dp"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
       android:text="@string/zero_time"
       android:textSize="24sp"
-      app:layout_constraintBottom_toTopOf="@+id/stopButton"
+      app:layout_constraintBottom_toTopOf="@+id/recordButton"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.501"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.826"
+      app:layout_constraintVertical_bias="0.948"
+      />
+
+  <ImageButton
+      android:id="@+id/recordButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:contentDescription="TODO"
+      android:padding="20dp"
+      android:src="@drawable/ic_record"
+      app:layout_constraintBottom_toTopOf="@+id/include"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      />
+
+
+  <include
+      layout="@layout/confirmation_buttons"
+      android:id="@+id/include"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:visibility="invisible"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/nfc"
       />
 
 </android.support.constraint.ConstraintLayout>
