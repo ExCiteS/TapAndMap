@@ -17,7 +17,6 @@ package uk.ac.ucl.excites.tapmap;
 
 import android.app.Application;
 import com.facebook.stetho.Stetho;
-import gr.michalisvitos.timberutils.DebugTree;
 import lombok.Getter;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.storage.AppDatabase;
@@ -69,7 +68,7 @@ public class TapMap extends Application {
   private void setTimber() {
 
     if (BuildConfig.DEBUG) {
-      Timber.plant(new DebugTree());
+      Timber.plant(new Timber.DebugTree());
     } else {
       // TODO Enable Crashlytics
       // Timber.plant(new CrashlyticsTree());

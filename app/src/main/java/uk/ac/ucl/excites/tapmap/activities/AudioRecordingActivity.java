@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.github.piasy.rxandroidaudio.AudioRecorder;
 import com.github.piasy.rxandroidaudio.RxAmplitude;
-import com.github.piasy.rxandroidaudio.RxAudioPlayer;
+import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -65,7 +66,8 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
   // Private
   private AudioRecorder audioRecorder = AudioRecorder.getInstance();
-  private RxAudioPlayer audioPlayer = RxAudioPlayer.getInstance();
+  //private RxAudioPlayer audioPlayer = RxAudioPlayer.getInstance();
+  private List<String> recordings;
   private File currentAudioFile;
   private Disposable recordDisposable;
   private int maxAmplitude = 0;
@@ -78,6 +80,10 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   protected TextView status;
   @BindView(R.id.voice_indicator)
   protected LinearLayout voiceIndicatorLayout;
+  @BindView(R.id.confirm)
+  protected ImageButton confirmButton;
+  @BindView(R.id.cancel)
+  protected ImageButton cancelButton;
   private List<View> voiceIndicators;
 
   @Override
@@ -85,6 +91,13 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_audio_recording);
     ButterKnife.bind(this);
+
+    // List of recordings
+    recordings = new ArrayList<>();
+
+    // Set UI
+    ButterKnife.apply(confirmButton, INVISIBLE);
+    ButterKnife.apply(cancelButton, INVISIBLE);
   }
 
   @Override
@@ -139,16 +152,47 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
   @OnClick(R.id.recordButton)
   public void onButtonClicked() {
-    if (!isRecording) {
-      isRecording = true;
-      onRecordClicked();
-    } else {
-      isRecording = false;
-      onStopClicked();
-    }
+    if (!isRecording)
+      startRecording();
+    else
+      stopRecording();
   }
 
-  private void onRecordClicked() {
+  @OnClick(R.id.confirm)
+  public void onConfirmClicked() {
+
+    // TODO: 02/07/2018
+    Timber.d("Recorded so far: %s", recordings);
+  }
+
+  @OnClick(R.id.cancel)
+  public void onCancelClicked() {
+
+    // TODO: 02/07/2018
+    Timber.d("Hey!!!");
+  }
+
+  private void updateRecordingUI() {
+    Timber.d("Update recording UI");
+    recordButton.setImageResource(R.drawable.ic_stop);
+    ButterKnife.apply(confirmButton, INVISIBLE);
+    ButterKnife.apply(cancelButton, INVISIBLE);
+  }
+
+  private void updateStoppedUI() {
+    Timber.d("Update stopping UI");
+
+    // Change icon
+    recordButton.setImageResource(R.drawable.ic_record);
+
+    // Show buttons
+    ButterKnife.apply(confirmButton, VISIBLE);
+    ButterKnife.apply(cancelButton, VISIBLE);
+    // Hide the indicators
+    ButterKnife.apply(voiceIndicators, INVISIBLE);
+  }
+
+  private void startRecording() {
 
     Timber.d("Clicked recording...");
 
@@ -168,15 +212,25 @@ public class AudioRecordingActivity extends RxAppCompatActivity
         })
         .doOnNext(b -> Timber.d("Start recording successfully..."))
         .flatMap(b -> RxAmplitude.from(audioRecorder, 250))
-        .compose(bindToLifecycle())
+        .compose(bindUntilEvent(ActivityEvent.STOP))
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
+            //onNext
             level -> {
               int progress = audioRecorder.progress();
               refreshAudioAmplitudeView(level, progress);
+
+              if (!isRecording) {
+                updateRecordingUI();
+                isRecording = true;
+              }
             },
-            Timber::e);
+            // onError
+            Timber::e,
+            // onComplete
+            this::stopRecording
+        );
   }
 
   private void refreshAudioAmplitudeView(int amplitudeLevel, int progressInSeconds) {
@@ -212,7 +266,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     ButterKnife.apply(voiceIndicators.subList(max, voiceIndicatorSize), INVISIBLE);
   }
 
-  private void onStopClicked() {
+  private void stopRecording() {
 
     if (recordDisposable != null && !recordDisposable.isDisposed()) {
       recordDisposable.dispose();
@@ -223,19 +277,18 @@ public class AudioRecordingActivity extends RxAppCompatActivity
         .fromCallable(() -> {
           final int seconds = audioRecorder.stopRecord();
           Timber.d("Stopped recording. Recorded %s seconds.", seconds);
+          recordings.add(currentAudioFile.getAbsolutePath());
           return seconds >= 0;
         })
         .compose(bindToLifecycle())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(b -> updateStoppedUI())
+        .doOnNext(b -> isRecording = false)
         .subscribe(
-            added -> {
-              if (added)
-                Timber.d("File: %s | MaxAmplitude: %s", currentAudioFile.getName(), maxAmplitude);
-
-              // Hide the indicators
-              ButterKnife.apply(voiceIndicators, INVISIBLE);
-            },
+            b -> Timber.d("File: %s | MaxAmplitude: %s",
+                currentAudioFile.getName(),
+                maxAmplitude),
             Timber::e);
   }
 

@@ -5,6 +5,7 @@
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:layout_editor_absoluteY="81dp"
     >
 
@@ -47,7 +48,7 @@
       android:contentDescription="TODO"
       android:padding="20dp"
       android:src="@drawable/ic_record"
-      app:layout_constraintBottom_toTopOf="@+id/include"
+      app:layout_constraintBottom_toTopOf="@+id/confirmation_buttons"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       />
@@ -55,10 +56,10 @@
 
   <include
       layout="@layout/confirmation_buttons"
-      android:id="@+id/include"
+      android:id="@+id/confirmation_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:visibility="invisible"
+      android:animateLayoutChanges="true"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
