@@ -24,7 +24,7 @@ repositories {
  */
 
 // Define versions
-def roomVersion = "1.1.0"
+def roomVersion = "1.1.1"
 def lombokVersion = "1.16.20"
 def butterknifeVersion = "8.8.1"
 def latestSupportLib = "27.1.1"
@@ -76,7 +76,7 @@ dependencies {
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
   // Crashlytics
-  implementation('com.crashlytics.sdk.android:crashlytics:2.9.3@aar') {
+  implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
     transitive = true;
   }
 
@@ -84,8 +84,8 @@ dependencies {
   implementation 'com.facebook.stetho:stetho:1.5.0'
 
   // Timber Logger
-  implementation 'com.jakewharton.timber:timber:4.7.0'
-  implementation 'com.github.michalis-vitos:timberutils:1.0.0'
+  implementation 'com.jakewharton.timber:timber:4.7.1'
+  implementation 'com.github.michalis-vitos:timberutils:1.0.2'
   implementation 'org.slf4j:slf4j-api:1.7.25'
   implementation 'com.github.tony19:logback-android:1.1.1-12'
 
@@ -113,7 +113,7 @@ dependencies {
   // Because RxAndroid releases are few and far between, it is recommended you also
   // explicitly depend on RxJava's latest version for bug fixes and new features.
   // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
-  implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+  implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
 
   // RxLifecycle
   implementation "com.trello.rxlifecycle2:rxlifecycle:$rxLifecycle"

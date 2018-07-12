@@ -60,6 +60,7 @@
     <activity
         android:name=".activities.SessionActivity"
         android:label="Session"
+        android:exported="true"
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.AudioRecordingActivity"

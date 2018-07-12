@@ -27,6 +27,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import io.reactivex.Observable;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
    */
   private void createShortcutOfTapAndMapActivity() {
 
-    final Intent shortcutIntent = new Intent(getApplicationContext(), TapAndMapActivity.class);
+    final Intent shortcutIntent = new Intent(getApplicationContext(), SessionActivity.class);
     shortcutIntent.setAction(Intent.ACTION_MAIN);
 
     final Intent addIntent = new Intent();
