@@ -163,14 +163,12 @@ public class TapAndMapActivity extends NfcBaseActivity {
   @OnClick(R.id.cancel)
   protected void onCancelClicked() {
 
-    // Reset the UI
-    resetUI();
-
-    Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show();
-
     // Log click
     if (nfcCard != null) {
       Logger.getInstance().log(CANCELLED, session, nfcCard.toJson().toString());
     }
+
+    // Clear activity and finish
+    NavigationController.getInstance().cancel(this, true);
   }
 }

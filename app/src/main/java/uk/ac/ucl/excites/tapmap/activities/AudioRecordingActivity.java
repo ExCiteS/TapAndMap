@@ -188,8 +188,8 @@ public class AudioRecordingActivity extends RxAppCompatActivity
         Timber.d("Could not delete: %s", recording);
     }
 
-    // TODO: 02/07/2018 Decide on the action here:
-    finish();
+    // Clear activity and finish
+    NavigationController.getInstance().cancel(this, true);
   }
 
   private void updateRecordingUI() {

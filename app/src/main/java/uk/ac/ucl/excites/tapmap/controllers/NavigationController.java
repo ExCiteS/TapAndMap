@@ -152,6 +152,16 @@ public class NavigationController {
       activity.finish();
   }
 
+  public void cancel(Activity activity, boolean finishActivity) {
+
+    // Clear the current meta
+    currentMeta = new JsonObject();
+
+    // Finish activity if necessary
+    if (finishActivity && activity != null)
+      activity.finish();
+  }
+
   public static void openSessionActivity(Context context) {
     Timber.d("Go to the Session activity");
 
