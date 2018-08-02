@@ -70,6 +70,10 @@
         android:name=".activities.SettingsActivity"
         android:label="Settings"
         android:screenOrientation="sensorPortrait"/>
+    <activity
+        android:name=".activities.LocationActivity"
+        android:label="Settings"
+        android:screenOrientation="sensorPortrait"/>
   </application>
 
 </manifest>

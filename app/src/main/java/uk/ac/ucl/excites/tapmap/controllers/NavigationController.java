@@ -12,6 +12,7 @@ import java.util.List;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
 import uk.ac.ucl.excites.tapmap.activities.ListActivity;
+import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
 import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
 import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity;
@@ -143,7 +144,7 @@ public class NavigationController {
         openNfcActivity(activity);
         break;
       case LOCATION:
-        // TODO: 02/08/2018 add Action
+        openLocationActivity(activity);
         break;
     }
 
@@ -180,6 +181,13 @@ public class NavigationController {
     Timber.d("Go to the NFC activity");
 
     Intent intent = new Intent(context, TapAndMapActivity.class);
+    context.startActivity(intent);
+  }
+
+  public static void openLocationActivity(Context context) {
+    Timber.d("Go to the Location activity");
+
+    Intent intent = new Intent(context, LocationActivity.class);
     context.startActivity(intent);
   }
 
