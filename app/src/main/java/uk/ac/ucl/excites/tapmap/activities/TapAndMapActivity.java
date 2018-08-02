@@ -23,6 +23,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import timber.log.Timber;
@@ -57,6 +58,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
   private String session;
   private NfcCard nfcCard;
   private Picasso picasso;
+  private Gson gson = new Gson();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -152,9 +154,10 @@ public class TapAndMapActivity extends NfcBaseActivity {
       recordController.storeCard(nfcCard);
     }
 
-    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.NFC);
-    NavigationController.getInstance().goToNextScreen(this, nextScreen);
-    // TODO: 02/08/2018 Pass audio json and finish this
+    // Go to next
+    final NavigationController navigationController = NavigationController.getInstance();
+    navigationController.setCurrentScreen(Screens.NFC, gson.toJsonTree(nfcCard));
+    navigationController.goToNextScreen(this, false);
   }
 
   @OnClick(R.id.cancel)

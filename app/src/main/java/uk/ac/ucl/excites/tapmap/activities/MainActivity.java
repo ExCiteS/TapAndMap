@@ -148,8 +148,9 @@ public class MainActivity extends AppCompatActivity {
   @OnClick(R.id.btn_collectData)
   public void openSessionActivity() {
 
-    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.MAIN);
-    NavigationController.getInstance().goToNextScreen(this, nextScreen);
+    final NavigationController navigationController = NavigationController.getInstance();
+    navigationController.setCurrentScreen(Screens.MAIN, null);
+    navigationController.goToNextScreen(this, false);
   }
 
   @OnClick(R.id.btn_manageCards)

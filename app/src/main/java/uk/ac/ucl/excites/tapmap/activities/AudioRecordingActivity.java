@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.github.piasy.rxandroidaudio.AudioRecorder;
 import com.github.piasy.rxandroidaudio.RxAmplitude;
+import com.google.gson.JsonArray;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import io.reactivex.Observable;
@@ -165,9 +166,14 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
     Timber.d("Recorded so far: %s", recordings);
 
-    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.AUDIO);
-    NavigationController.getInstance().goToNextScreen(this, nextScreen);
-    // TODO: 02/08/2018 Pass audio json and finish this
+    // Create the meta
+    final JsonArray meta = new JsonArray();
+    for (File recording : recordings)
+      meta.add(recording.getName());
+
+    final NavigationController navigationController = NavigationController.getInstance();
+    navigationController.setCurrentScreen(Screens.AUDIO, meta);
+    navigationController.goToNextScreen(this, true);
   }
 
   @OnClick(R.id.cancel)

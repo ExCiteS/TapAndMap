@@ -1,9 +1,12 @@
 package uk.ac.ucl.excites.tapmap.controllers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
@@ -34,14 +37,20 @@ public class NavigationController {
     return ourInstance;
   }
 
-  private List<Screens> screensOrder;
   private SharedPreferences sharedPreferences;
+  private List<Screens> screensOrder;
+  private Screens currentScreen;
+  private JsonObject currentMeta;
 
   private NavigationController() {
     // Do nothing
   }
 
   public void init(Context context) {
+
+    // Init the current Meta
+    if (currentMeta == null)
+      currentMeta = new JsonObject();
 
     // Set Screens Order
     screensOrder = new ArrayList<>();
@@ -56,7 +65,36 @@ public class NavigationController {
       sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
   }
 
-  public Screens getNextScreen(Screens currentScreen) {
+  /**
+   * Set the current screen along with the collected meta json
+   */
+  public void setCurrentScreen(Screens currentScreen, JsonElement meta) {
+
+    this.currentScreen = currentScreen;
+
+    if (meta != null)
+      switch (currentScreen) {
+        case MAIN:
+          // Do nothing
+          break;
+        case SESSION:
+          // Do nothing
+          break;
+        case AUDIO:
+          currentMeta.add("audio", meta);
+          break;
+        case NFC:
+          currentMeta.add("card", meta);
+          break;
+        case LOCATION:
+          currentMeta.add("location", meta);
+          break;
+      }
+
+    Timber.d("Current Screen: %s, Meta: %s", currentScreen, currentMeta);
+  }
+
+  private Screens getNextScreen() {
 
     boolean session = sharedPreferences.getBoolean("session_screen", false);
     boolean audio = sharedPreferences.getBoolean("audio_screen", false);
@@ -86,23 +124,32 @@ public class NavigationController {
     return nextScreen;
   }
 
-  public void goToNextScreen(Context context, Screens screen) {
-    switch (screen) {
+  public void goToNextScreen(Activity activity, boolean finishActivity) {
+
+    // Get next screen
+    Screens nextScreen = getNextScreen();
+
+    switch (nextScreen) {
       case MAIN:
-        // TODO: 02/08/2018
+        // TODO: 02/08/2018 add Action
         break;
       case SESSION:
-        openSessionActivity(context);
+        openSessionActivity(activity);
         break;
       case AUDIO:
-        openAudioActivity(context);
+        openAudioActivity(activity);
         break;
       case NFC:
-        openNfcActivity(context);
+        openNfcActivity(activity);
         break;
       case LOCATION:
+        // TODO: 02/08/2018 add Action
         break;
     }
+
+    // Finish activity if necessary
+    if (finishActivity && activity != null)
+      activity.finish();
   }
 
   public static void openSessionActivity(Context context) {
