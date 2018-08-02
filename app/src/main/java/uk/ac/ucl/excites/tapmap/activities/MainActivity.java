@@ -15,7 +15,6 @@
 
 package uk.ac.ucl.excites.tapmap.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,9 +33,12 @@ import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
-public class MainActivity extends AppCompatActivity {
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-  private static final Integer READ_WRITE_EXTERNAL_STORAGE = 1;
+public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     // Check if we have the appropriate permissions before we do anything else
-    checkStoragePermission();
+    checkPermissions();
 
     // Create a Navigation Controller and initialise it
     NavigationController navigationController = NavigationController.getInstance();
@@ -75,13 +77,12 @@ public class MainActivity extends AppCompatActivity {
    * Check if we have the appropriate permissions
    */
   @SuppressLint("CheckResult")
-  private void checkStoragePermission() {
+  private void checkPermissions() {
 
     final MainActivity activity = MainActivity.this;
     final RxPermissions rxPermissions = new RxPermissions(activity);
     final String[] permissions = {
-        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.RECORD_AUDIO
+        WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, RECORD_AUDIO, ACCESS_FINE_LOCATION
     };
 
     Observable.fromArray(permissions)
