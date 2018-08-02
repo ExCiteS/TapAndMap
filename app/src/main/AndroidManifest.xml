@@ -72,7 +72,7 @@
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.LocationActivity"
-        android:label="Settings"
+        android:label="Location"
         android:screenOrientation="sensorPortrait"/>
   </application>
 

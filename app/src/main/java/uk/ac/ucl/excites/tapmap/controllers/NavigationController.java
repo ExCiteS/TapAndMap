@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
@@ -53,17 +54,22 @@ public class NavigationController {
     if (currentMeta == null)
       currentMeta = new JsonObject();
 
-    // Set Screens Order
-    screensOrder = new ArrayList<>();
-    screensOrder.add(MAIN);
-    screensOrder.add(SESSION);
-    screensOrder.add(AUDIO);
-    screensOrder.add(NFC);
-    screensOrder.add(LOCATION);
+    // Set the Original Screens Order
+    setScreensOrder();
 
     // Get preferences
     if (sharedPreferences == null)
       sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+  }
+
+  private void setScreensOrder() {
+
+    screensOrder = new ArrayList<>();
+    screensOrder.add(MAIN);
+    screensOrder.add(SESSION);
+    screensOrder.add(AUDIO);
+    screensOrder.add(LOCATION);
+    screensOrder.add(NFC);
   }
 
   /**
@@ -97,21 +103,25 @@ public class NavigationController {
 
   private Screens getNextScreen() {
 
+    // Set the Original Screens Order
+    setScreensOrder();
+
     boolean session = sharedPreferences.getBoolean("session_screen", false);
     boolean audio = sharedPreferences.getBoolean("audio_screen", false);
     boolean location = sharedPreferences.getBoolean("location_screen", false);
+
+    // Remove disabled screens
+    if (!session)
+      screensOrder.removeAll(Collections.singleton(SESSION));
+    if (!audio)
+      screensOrder.removeAll(Collections.singleton(AUDIO));
+    if (!location)
+      screensOrder.removeAll(Collections.singleton(LOCATION));
 
     // Get current index
     int currentScreenIndex = screensOrder.indexOf(currentScreen);
     // Move to next
     currentScreenIndex++;
-
-    if (!session)
-      currentScreenIndex++;
-    if (!audio)
-      currentScreenIndex++;
-    if (!location)
-      currentScreenIndex++;
 
     // Return the next Screen or loop at the beginning
     final Screens nextScreen;
