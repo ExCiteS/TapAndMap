@@ -59,12 +59,16 @@
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.SessionActivity"
-        android:label="Session"
         android:exported="true"
+        android:label="Session"
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.AudioRecordingActivity"
         android:label="Record audio"
+        android:screenOrientation="sensorPortrait"/>
+    <activity
+        android:name=".activities.SettingsActivity"
+        android:label="Settings"
         android:screenOrientation="sensorPortrait"/>
   </application>
 

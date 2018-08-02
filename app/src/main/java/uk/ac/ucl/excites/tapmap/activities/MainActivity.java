@@ -20,6 +20,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -27,7 +30,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import io.reactivex.Observable;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
-import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +44,25 @@ public class MainActivity extends AppCompatActivity {
 
     // Check if we have the appropriate permissions before we do anything else
     checkStoragePermission();
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.main, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle item selection
+    switch (item.getItemId()) {
+      case R.id.action_settings:
+        openSettingsActivity();
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
   }
 
   /**
@@ -131,6 +152,13 @@ public class MainActivity extends AppCompatActivity {
     Timber.d("Go to List activity");
 
     Intent intent = new Intent(this, ListActivity.class);
+    startActivity(intent);
+  }
+
+  public void openSettingsActivity() {
+    Timber.d("Go to Settings  activity");
+
+    Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
   }
 }
