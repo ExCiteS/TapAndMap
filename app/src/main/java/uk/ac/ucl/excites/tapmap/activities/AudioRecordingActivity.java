@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Random;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.utils.Colour;
 import uk.ac.ucl.excites.tapmap.utils.MathUtils;
 import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
@@ -161,8 +163,11 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   @OnClick(R.id.confirm)
   public void onConfirmClicked() {
 
-    // TODO: 02/07/2018 Decide what to do here:
     Timber.d("Recorded so far: %s", recordings);
+
+    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.AUDIO);
+    NavigationController.getInstance().goToNextScreen(this, nextScreen);
+    // TODO: 02/08/2018 Pass audio json and finish this
   }
 
   @OnClick(R.id.cancel)

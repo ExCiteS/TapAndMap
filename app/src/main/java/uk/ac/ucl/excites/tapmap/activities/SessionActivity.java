@@ -15,7 +15,6 @@
 
 package uk.ac.ucl.excites.tapmap.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
@@ -23,9 +22,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.storage.SessionController;
 import uk.ac.ucl.excites.tapmap.storage.SessionDao;
@@ -78,20 +78,14 @@ public class SessionActivity extends AppCompatActivity {
 
     updateActiveSession();
 
-    openNFCActivity();
+    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.SESSION);
+    NavigationController.getInstance().goToNextScreen(this, nextScreen);
   }
 
   private void setActiveSessionUI(Session activeSession) {
 
     sessionId.setText(String.valueOf(activeSession.getId()));
     sessionDesc.setText(String.valueOf(activeSession.getDescription()));
-  }
-
-  private void openNFCActivity() {
-    Timber.d("Go to NFC activity");
-
-    Intent intent = new Intent(this, TapAndMapActivity.class);
-    startActivity(intent);
   }
 
   /**

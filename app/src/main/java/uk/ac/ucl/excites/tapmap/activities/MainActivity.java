@@ -30,6 +30,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import io.reactivex.Observable;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Check if we have the appropriate permissions before we do anything else
     checkStoragePermission();
+
+    // Create a Navigation Controller and initialise it
+    NavigationController navigationController = NavigationController.getInstance();
+    navigationController.init(this);
   }
 
   @Override
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     // Handle item selection
     switch (item.getItemId()) {
       case R.id.action_settings:
-        openSettingsActivity();
+        NavigationController.openSettingsActivity(this);
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -141,24 +147,13 @@ public class MainActivity extends AppCompatActivity {
 
   @OnClick(R.id.btn_collectData)
   public void openSessionActivity() {
-    Timber.d("Go to NFC activity");
 
-    Intent intent = new Intent(this, SessionActivity.class);
-    startActivity(intent);
+    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.MAIN);
+    NavigationController.getInstance().goToNextScreen(this, nextScreen);
   }
 
   @OnClick(R.id.btn_manageCards)
   public void openListActivity() {
-    Timber.d("Go to List activity");
-
-    Intent intent = new Intent(this, ListActivity.class);
-    startActivity(intent);
-  }
-
-  public void openSettingsActivity() {
-    Timber.d("Go to Settings  activity");
-
-    Intent intent = new Intent(this, SettingsActivity.class);
-    startActivity(intent);
+    NavigationController.openListActivity(this);
   }
 }

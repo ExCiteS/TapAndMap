@@ -28,6 +28,8 @@ import java.io.File;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
+import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
@@ -149,6 +151,10 @@ public class TapAndMapActivity extends NfcBaseActivity {
       Logger.getInstance().log(STORED, session, nfcCard.toJson().toString());
       recordController.storeCard(nfcCard);
     }
+
+    final Screens nextScreen = NavigationController.getInstance().getNextScreen(Screens.NFC);
+    NavigationController.getInstance().goToNextScreen(this, nextScreen);
+    // TODO: 02/08/2018 Pass audio json and finish this
   }
 
   @OnClick(R.id.cancel)
