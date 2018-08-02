@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <PreferenceCategory
+      android:title="Screens">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="session_screen"
+        android:summary="Show session screen"
+        android:title="Session Screen"
+        />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="audio_screen"
+        android:summary="Show audio screen"
+        android:title="Audio Screen"
+        />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="location_screen"
+        android:summary="Show location screen"
+        android:title="Location Screen"
+        />
+
+  </PreferenceCategory>
+
+</PreferenceScreen>
