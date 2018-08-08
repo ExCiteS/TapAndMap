@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -21,6 +22,7 @@ import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.
 public class LocationActivity extends AppCompatActivity implements LocationListener {
 
   public static int MIN_ACCURACY_IN_METRES = 30;
+  public static int TIMEOUT_IN_MINS = 5;
 
   @BindView(R.id.progressBar)
   protected ProgressBar progressBar;
@@ -44,7 +46,28 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
           0,
           this);
 
-    // TODO: 08/08/2018 Timeout
+    // Add a GPS Timeout, call tick every 10 seconds
+    final int timeoutInMillis = TIMEOUT_IN_MINS * 60 * 1000;
+    final CountDownTimer timeout = new CountDownTimer(timeoutInMillis, 10 * 1000) {
+
+      public void onTick(long millisUntilFinished) {
+        Timber.d("Seconds Remaining: %s", millisUntilFinished / 1000);
+      }
+
+      public void onFinish() {
+
+        // Store location
+        final JsonObject meta = new JsonObject();
+        meta.addProperty("message",
+            "Could not fix GPS, the app timeout after " + TIMEOUT_IN_MINS + " minutes.");
+
+        // Go to next screen
+        final NavigationController navigationController = NavigationController.getInstance();
+        navigationController.setCurrentScreen(LOCATION, meta);
+        navigationController.goToNextScreen(LocationActivity.this, true);
+      }
+    };
+    timeout.start();
   }
 
   @Override
