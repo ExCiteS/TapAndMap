@@ -77,7 +77,6 @@ public class NavigationController {
     screensOrder.add(MAIN);
     screensOrder.add(SESSION);
     screensOrder.add(AUDIO);
-    screensOrder.add(LOCATION);
     screensOrder.add(NFC);
     screensOrder.add(LOCATION);
 
