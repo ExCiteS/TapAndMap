@@ -40,7 +40,7 @@ public class RecordController {
   /**
    * Store the card and return the id or -1 if the operation fails
    */
-  public long storeCard(NfcCard card) {
+  public long storeCard(NfcCard card, JsonObject meta) {
 
     if (card == null)
       return -1;
@@ -51,22 +51,10 @@ public class RecordController {
     // Set tag
     record.setTag(card.getTag());
     // Set meta
-    record.setMeta(generateMeta(card));
+    if (meta != null)
+      record.setMeta(meta);
 
     // Store and return the id of the record
     return recordDao.insert(record);
-  }
-
-  /**
-   * Build the JsonObject for a card
-   */
-  private JsonObject generateMeta(NfcCard card) {
-
-    JsonObject meta = new JsonObject();
-    meta.add("card", gson.toJsonTree(card));
-
-    // TODO: 15/06/2018 In the future keep adding elements to the meta object
-
-    return meta;
   }
 }

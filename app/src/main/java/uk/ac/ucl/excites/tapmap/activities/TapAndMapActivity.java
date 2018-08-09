@@ -148,15 +148,14 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
 
-    // Log click, and store record
-    if (nfcCard != null) {
+    // Log click
+    if (nfcCard != null)
       Logger.getInstance().log(STORED, session, nfcCard.toJson().toString());
-      recordController.storeCard(nfcCard);
-    }
 
     // Go to next
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.NFC, gson.toJsonTree(nfcCard));
+    navigationController.setCurrentNfcCard(nfcCard);
     navigationController.goToNextScreen(this, false);
   }
 

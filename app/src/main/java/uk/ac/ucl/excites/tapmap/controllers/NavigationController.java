@@ -17,6 +17,8 @@ import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
 import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
 import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.storage.RecordController;
 
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.AUDIO;
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.LOCATION;
@@ -40,8 +42,10 @@ public class NavigationController {
   }
 
   private SharedPreferences sharedPreferences;
+  private RecordController recordController;
   private List<Screens> screensOrder;
   private Screens currentScreen;
+  private NfcCard currentNfcCard;
   private JsonObject currentMeta;
 
   private NavigationController() {
@@ -53,6 +57,9 @@ public class NavigationController {
     // Init the current Meta
     if (currentMeta == null)
       currentMeta = new JsonObject();
+
+    if (recordController == null)
+      recordController = new RecordController(context);
 
     // Set the Original Screens Order
     setScreensOrder();
@@ -101,6 +108,13 @@ public class NavigationController {
     Timber.d("Current Screen: %s, Meta: %s", currentScreen, currentMeta);
   }
 
+  /**
+   * Set the current NfcCard
+   */
+  public void setCurrentNfcCard(NfcCard nfcCard) {
+    currentNfcCard = nfcCard;
+  }
+
   private Screens getNextScreen() {
 
     // Set the Original Screens Order
@@ -125,10 +139,20 @@ public class NavigationController {
 
     // Return the next Screen or loop at the beginning
     final Screens nextScreen;
-    if (currentScreenIndex >= screensOrder.size())
+    if (currentScreenIndex >= screensOrder.size()) {
+
+      // Start again at 0
       nextScreen = screensOrder.get(0);
-    else
+
+      // Store current record
+      recordController.storeCard(currentNfcCard, currentMeta);
+
+      // Clear the current NfcCard
+      currentNfcCard = null;
+
+    } else {
       nextScreen = screensOrder.get(currentScreenIndex);
+    }
 
     Timber.d("Next screen is: %s", nextScreen);
 
@@ -167,6 +191,9 @@ public class NavigationController {
 
     // Clear the current meta
     currentMeta = new JsonObject();
+
+    // Clear the current NfcCard
+    currentNfcCard = null;
 
     // Finish activity if necessary
     if (finishActivity && activity != null)
