@@ -59,7 +59,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         // Store location
         final JsonObject meta = new JsonObject();
         meta.addProperty("message",
-            "Could not fix GPS, the app timeout after " + TIMEOUT_IN_MINS + " minutes.");
+            "Could not fix GPS, the app timed out after " + TIMEOUT_IN_MINS + " minutes.");
 
         // Go to next screen
         final NavigationController navigationController = NavigationController.getInstance();
