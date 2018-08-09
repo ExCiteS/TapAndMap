@@ -18,6 +18,7 @@ package uk.ac.ucl.excites.tapmap.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
+
+    // Load the default values for our preferences
+    PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
     // Check if we have the appropriate permissions before we do anything else
     checkPermissions();
