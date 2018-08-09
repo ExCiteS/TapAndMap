@@ -44,6 +44,7 @@ public class NavigationController {
   private SharedPreferences sharedPreferences;
   private RecordController recordController;
   private List<Screens> screensOrder;
+  private Screens startingScreen;
   private Screens currentScreen;
   private NfcCard currentNfcCard;
   private JsonObject currentMeta;
@@ -71,12 +72,17 @@ public class NavigationController {
 
   private void setScreensOrder() {
 
+    // Set the screens in order
     screensOrder = new ArrayList<>();
     screensOrder.add(MAIN);
     screensOrder.add(SESSION);
     screensOrder.add(AUDIO);
     screensOrder.add(LOCATION);
     screensOrder.add(NFC);
+    screensOrder.add(LOCATION);
+
+    // Set the starting screen
+    startingScreen = AUDIO;
   }
 
   /**
@@ -149,7 +155,6 @@ public class NavigationController {
 
       // Clear the current NfcCard
       currentNfcCard = null;
-
     } else {
       nextScreen = screensOrder.get(currentScreenIndex);
     }
@@ -159,10 +164,14 @@ public class NavigationController {
     return nextScreen;
   }
 
-  public void goToNextScreen(Activity activity, boolean finishActivity) {
+  public void goToNextScreen(Activity activity) {
 
     // Get next screen
     Screens nextScreen = getNextScreen();
+
+    // Ensure that we start from the staring screen if we we reach at the beginning.
+    if (nextScreen == screensOrder.get(0))
+      nextScreen = startingScreen;
 
     switch (nextScreen) {
       case MAIN:
@@ -183,11 +192,11 @@ public class NavigationController {
     }
 
     // Finish activity if necessary
-    if (finishActivity && activity != null)
+    if (activity != null)
       activity.finish();
   }
 
-  public void cancel(Activity activity, boolean finishActivity) {
+  public void cancel(Activity activity) {
 
     // Clear the current meta
     currentMeta = new JsonObject();
@@ -196,7 +205,7 @@ public class NavigationController {
     currentNfcCard = null;
 
     // Finish activity if necessary
-    if (finishActivity && activity != null)
+    if (activity != null)
       activity.finish();
   }
 

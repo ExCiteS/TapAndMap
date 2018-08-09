@@ -173,7 +173,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.AUDIO, meta);
-    navigationController.goToNextScreen(this, true);
+    navigationController.goToNextScreen(this);
   }
 
   @OnClick(R.id.cancel)
@@ -189,7 +189,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     }
 
     // Clear activity and finish
-    NavigationController.getInstance().cancel(this, true);
+    NavigationController.getInstance().cancel(this);
   }
 
   private void updateRecordingUI() {

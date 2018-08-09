@@ -64,7 +64,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
         // Go to next screen
         final NavigationController navigationController = NavigationController.getInstance();
         navigationController.setCurrentScreen(LOCATION, meta);
-        navigationController.goToNextScreen(LocationActivity.this, true);
+        navigationController.goToNextScreen(LocationActivity.this);
       }
     };
     timeout.start();
@@ -93,7 +93,7 @@ public class LocationActivity extends AppCompatActivity implements LocationListe
       // Go to next screen
       final NavigationController navigationController = NavigationController.getInstance();
       navigationController.setCurrentScreen(LOCATION, meta);
-      navigationController.goToNextScreen(this, true);
+      navigationController.goToNextScreen(this);
     }
   }
 

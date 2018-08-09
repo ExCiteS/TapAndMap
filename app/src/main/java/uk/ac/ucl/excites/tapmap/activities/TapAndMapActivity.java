@@ -156,7 +156,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.NFC, gson.toJsonTree(nfcCard));
     navigationController.setCurrentNfcCard(nfcCard);
-    navigationController.goToNextScreen(this, false);
+    navigationController.goToNextScreen(this);
   }
 
   @OnClick(R.id.cancel)
@@ -168,6 +168,6 @@ public class TapAndMapActivity extends NfcBaseActivity {
     }
 
     // Clear activity and finish
-    NavigationController.getInstance().cancel(this, true);
+    NavigationController.getInstance().cancel(this);
   }
 }

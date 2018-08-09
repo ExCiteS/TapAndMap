@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.MAIN, null);
-    navigationController.goToNextScreen(this, false);
+    navigationController.goToNextScreen(this);
   }
 
   @OnClick(R.id.btn_manageCards)
