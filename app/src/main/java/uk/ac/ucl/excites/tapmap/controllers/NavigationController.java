@@ -210,51 +210,38 @@ public class NavigationController {
   }
 
   public static void openSessionActivity(Context context) {
-    Timber.d("Go to the Session activity");
-
-    Intent intent = new Intent(context, SessionActivity.class);
-    context.startActivity(intent);
+    openActivity(context, SessionActivity.class);
   }
 
   public static void openAudioActivity(Context context) {
-    Timber.d("Go to the Audio activity");
-
-    Intent intent = new Intent(context, AudioRecordingActivity.class);
-    context.startActivity(intent);
+    openActivity(context, AudioRecordingActivity.class);
   }
 
   public static void openNfcActivity(Context context) {
-    Timber.d("Go to the NFC activity");
-
-    Intent intent = new Intent(context, TapAndMapActivity.class);
-    context.startActivity(intent);
+    openActivity(context, TapAndMapActivity.class);
   }
 
   public static void openLocationActivity(Context context) {
-    Timber.d("Go to the Location activity");
-
-    Intent intent = new Intent(context, LocationActivity.class);
-    context.startActivity(intent);
+    openActivity(context, LocationActivity.class);
   }
 
   public static void openListActivity(Context context) {
-    Timber.d("Go to the List activity");
-
-    Intent intent = new Intent(context, ListActivity.class);
-    context.startActivity(intent);
+    openActivity(context, ListActivity.class);
   }
 
   public static void openSettingsActivity(Context context) {
-    Timber.d("Go to the Settings activity");
-
-    Intent intent = new Intent(context, SettingsActivity.class);
-    context.startActivity(intent);
+    openActivity(context, SettingsActivity.class);
   }
 
   public static void openExportActivity(Context context) {
-    Timber.d("Go to the Settings activity");
+    openActivity(context, ExportActivity.class);
+  }
 
-    Intent intent = new Intent(context, ExportActivity.class);
+  private static void openActivity(Context context, Class<? extends Activity> activity) {
+
+    Timber.d("Go to %s.", activity.getSimpleName());
+
+    final Intent intent = new Intent(context, activity);
     context.startActivity(intent);
   }
 }
