@@ -80,7 +80,7 @@ public class SessionActivity extends AppCompatActivity {
 
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.SESSION, null);
-    navigationController.goToNextScreen(this, false);
+    navigationController.goToNextScreen(this);
   }
 
   private void setActiveSessionUI(Session activeSession) {
