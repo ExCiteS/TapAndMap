@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
+import uk.ac.ucl.excites.tapmap.activities.ExportActivity;
 import uk.ac.ucl.excites.tapmap.activities.ListActivity;
 import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
 import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
@@ -247,6 +248,13 @@ public class NavigationController {
     Timber.d("Go to the Settings activity");
 
     Intent intent = new Intent(context, SettingsActivity.class);
+    context.startActivity(intent);
+  }
+
+  public static void openExportActivity(Context context) {
+    Timber.d("Go to the Settings activity");
+
+    Intent intent = new Intent(context, ExportActivity.class);
     context.startActivity(intent);
   }
 }

@@ -69,9 +69,15 @@ public class MainActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     // Handle item selection
     switch (item.getItemId()) {
+
       case R.id.action_settings:
         NavigationController.openSettingsActivity(this);
         return true;
+
+      case R.id.action_export:
+        NavigationController.openExportActivity(this);
+        return true;
+
       default:
         return super.onOptionsItemSelected(item);
     }
