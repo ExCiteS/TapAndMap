@@ -1,10 +1,10 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,9 +12,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.opencsv.CSVWriter;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.FileWriter;
@@ -32,7 +32,7 @@ import uk.ac.ucl.excites.tapmap.storage.SessionDao;
 /**
  * Created by Michalis Vitos on 10/08/2018.
  */
-public class ExportActivity extends AppCompatActivity {
+public class ExportActivity extends RxAppCompatActivity {
 
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
@@ -92,6 +92,18 @@ public class ExportActivity extends AppCompatActivity {
     }
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+
+    try {
+      sessionsWriter.close();
+      recordsWriter.close();
+    } catch (IOException e) {
+      Timber.e(e);
+    }
+  }
+
   @NonNull
   private File getExportFile(String filename, Date date) throws IOException {
 
@@ -107,6 +119,7 @@ public class ExportActivity extends AppCompatActivity {
     return file;
   }
 
+  @SuppressLint("CheckResult")
   @OnClick(R.id.exportData)
   protected void onExportDataClicked() {
     Timber.d("Start Exporting");
@@ -124,13 +137,14 @@ public class ExportActivity extends AppCompatActivity {
         .toObservable()
         .flatMap(Observable::fromIterable);
 
-    final Disposable subscribe = sessionsObservable
+    sessionsObservable
+        .compose(bindToLifecycle())
         .subscribeOn(Schedulers.io())
-        .doOnNext(session -> exportSession(session))
+        .doOnNext(this::exportSession)
         .toList()
         .toObservable()
         .flatMap(sessions -> recordsObservable)
-        .doOnNext(record -> exportRecord(record))
+        .doOnNext(this::exportRecord)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
             onNext -> {
@@ -151,8 +165,8 @@ public class ExportActivity extends AppCompatActivity {
               Timber.d("Completed!!!");
 
               try {
-                sessionsWriter.close();
-                recordsWriter.close();
+                sessionsWriter.flush();
+                recordsWriter.flush();
               } catch (IOException e) {
                 Timber.e(e);
               }
