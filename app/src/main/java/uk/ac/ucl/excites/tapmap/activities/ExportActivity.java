@@ -102,6 +102,21 @@ public class ExportActivity extends RxAppCompatActivity {
     } catch (IOException e) {
       Timber.e(e);
     }
+
+    // Delete empty files
+    deleteEmptyFile(sessionsFile);
+    deleteEmptyFile(recordsFile);
+
+    // Check for other emtpy files
+    for (File file : exportDirectory.listFiles())
+      deleteEmptyFile(file);
+  }
+
+  private void deleteEmptyFile(File file) {
+    if (file.length() == 0) {
+      Timber.d("Delete '%s' since it is empty.", file.getName());
+      file.delete();
+    }
   }
 
   @NonNull
