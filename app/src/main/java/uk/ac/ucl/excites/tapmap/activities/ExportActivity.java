@@ -1,28 +1,40 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.opencsv.CSVWriter;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.storage.Record;
 import uk.ac.ucl.excites.tapmap.storage.RecordDao;
+import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.storage.SessionDao;
 
 /**
  * Created by Michalis Vitos on 10/08/2018.
  */
 public class ExportActivity extends AppCompatActivity {
+
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
   private File exportDirectory;
   private SessionDao sessionDao;
@@ -31,6 +43,7 @@ public class ExportActivity extends AppCompatActivity {
   private CSVWriter recordsWriter;
   private File sessionsFile;
   private File recordsFile;
+  private ProgressDialog progress;
 
   @BindView(R.id.exportDirectory)
   protected TextView exportDirectoryTxt;
@@ -58,11 +71,12 @@ public class ExportActivity extends AppCompatActivity {
       exportDirectory.mkdirs();
 
       // Create files
-      sessionsFile = getExportFile("sessions");
-      recordsFile = getExportFile("records");
+      Date date = new Date();
+      sessionsFile = getExportFile("sessions", date);
+      recordsFile = getExportFile("records", date);
 
       // Show the exportDirectory to the user
-      String text = "1. " + sessionsFile.getAbsoluteFile() + "\n";
+      String text = "1. " + sessionsFile.getAbsoluteFile() + "\n\n";
       text += "2. " + recordsFile.getAbsoluteFile() + "\n";
       exportDirectoryTxt.setText(text);
 
@@ -79,17 +93,82 @@ public class ExportActivity extends AppCompatActivity {
   }
 
   @NonNull
-  private File getExportFile(String filename) throws IOException {
+  private File getExportFile(String filename, Date date) throws IOException {
 
     final String pathname = exportDirectory
         + File.separator
         + filename
         + "-"
-        + new Date().getTime()
+        + dateFormat.format(date)
         + ".csv";
     Timber.d("Creating file: %s", pathname);
     final File file = new File(pathname);
     file.createNewFile();
     return file;
+  }
+
+  @OnClick(R.id.exportData)
+  protected void onExportDataClicked() {
+    Timber.d("Start Exporting");
+
+    progress = new ProgressDialog(this);
+    progress.setMessage("Exporting records");
+    progress.setCancelable(false);
+    progress.show();
+
+    final Observable<Session> sessionsObservable = sessionDao.getAll()
+        .toObservable()
+        .flatMap(Observable::fromIterable);
+
+    final Observable<Record> recordsObservable = recordDao.getAll()
+        .toObservable()
+        .flatMap(Observable::fromIterable);
+
+    final Disposable subscribe = sessionsObservable
+        .subscribeOn(Schedulers.io())
+        .doOnNext(session -> exportSession(session))
+        .toList()
+        .toObservable()
+        .flatMap(sessions -> recordsObservable)
+        .doOnNext(record -> exportRecord(record))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            onNext -> {
+              // Do nothing
+            },
+            onError -> {
+              // Inform the user
+              Toast.makeText(ExportActivity.this,
+                  "Cannot export records.",
+                  Toast.LENGTH_SHORT)
+                  .show();
+
+              // Delete files
+              sessionsFile.delete();
+              recordsFile.delete();
+            },
+            () -> {
+              Timber.d("Completed!!!");
+
+              try {
+                sessionsWriter.close();
+                recordsWriter.close();
+              } catch (IOException e) {
+                Timber.e(e);
+              }
+
+              progress.cancel();
+            }
+        );
+  }
+
+  private void exportSession(Session session) {
+    Timber.d("Exporting session: %s", session.getId());
+    sessionsWriter.writeNext(session.toCSV());
+  }
+
+  private void exportRecord(Record record) {
+    Timber.d("Exporting record: %s", record.getId());
+    recordsWriter.writeNext(record.toCSV());
   }
 }
