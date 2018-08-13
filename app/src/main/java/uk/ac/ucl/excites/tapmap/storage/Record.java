@@ -63,6 +63,10 @@ public class Record {
   @ColumnInfo(name = "meta")
   private JsonObject meta;
 
+  public static String[] getCsvHeader() {
+    return new String[] { "id", "date", "tag", "meta" };
+  }
+
   public String[] toCSV() {
     final String dateField = (date != null) ? date.toString() : "";
     final String metaField = (meta != null) ? meta.toString() : "";

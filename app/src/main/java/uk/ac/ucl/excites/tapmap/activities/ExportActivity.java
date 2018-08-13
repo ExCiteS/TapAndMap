@@ -152,6 +152,10 @@ public class ExportActivity extends RxAppCompatActivity {
         .toObservable()
         .flatMap(Observable::fromIterable);
 
+    // Add Headers
+    sessionsWriter.writeNext(Session.getCsvHeader());
+    recordsWriter.writeNext(Record.getCsvHeader());
+
     sessionsObservable
         .compose(bindToLifecycle())
         .subscribeOn(Schedulers.io())
