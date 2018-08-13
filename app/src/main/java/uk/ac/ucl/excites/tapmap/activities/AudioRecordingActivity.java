@@ -40,7 +40,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -59,7 +58,6 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     implements AudioRecorder.OnErrorListener {
 
   // Static
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
   private static final String AUDIO_EXTENSION = "m4a";
 
   private static final ButterKnife.Action<View> INVISIBLE =
@@ -317,7 +315,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     final String downloads =
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
     final String recordingsDir = downloads + "/TapAndMap/audio/";
-    final String fileName = "audio-" + dateFormat.format(new Date()) + "." + AUDIO_EXTENSION;
+    final String fileName = "audio-" + Time.getTimeForFile(new Date()) + "." + AUDIO_EXTENSION;
     final String filePath = recordingsDir + fileName;
     final File file = new File(filePath);
     Timber.d("Record at: %s", filePath);

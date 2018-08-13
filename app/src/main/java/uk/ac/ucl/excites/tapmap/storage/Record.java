@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import uk.ac.ucl.excites.tapmap.utils.Time;
 
 /**
  * Created by Michalis Vitos on 15/06/2018.
@@ -68,7 +69,7 @@ public class Record {
   }
 
   public String[] toCSV() {
-    final String dateField = (date != null) ? date.toString() : "";
+    final String dateField = (date != null) ? Time.getISO8601String(date) : "";
     final String metaField = (meta != null) ? meta.toString() : "";
     return new String[] {
         String.valueOf(id), dateField, tag, metaField

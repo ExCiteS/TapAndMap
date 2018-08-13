@@ -19,7 +19,6 @@ import io.reactivex.schedulers.Schedulers;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
@@ -28,13 +27,12 @@ import uk.ac.ucl.excites.tapmap.storage.Record;
 import uk.ac.ucl.excites.tapmap.storage.RecordDao;
 import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.storage.SessionDao;
+import uk.ac.ucl.excites.tapmap.utils.Time;
 
 /**
  * Created by Michalis Vitos on 10/08/2018.
  */
 public class ExportActivity extends RxAppCompatActivity {
-
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
   private File exportDirectory;
   private SessionDao sessionDao;
@@ -126,7 +124,7 @@ public class ExportActivity extends RxAppCompatActivity {
         + File.separator
         + filename
         + "-"
-        + dateFormat.format(date)
+        + Time.getTimeForFile(date)
         + ".csv";
     Timber.d("Creating file: %s", pathname);
     final File file = new File(pathname);

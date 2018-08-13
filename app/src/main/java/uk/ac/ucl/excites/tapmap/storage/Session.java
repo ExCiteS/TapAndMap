@@ -23,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import uk.ac.ucl.excites.tapmap.utils.Time;
 
 /**
  * Representation of a collection session. This could be associated with for example a participant
@@ -67,8 +68,8 @@ public class Session {
   }
 
   public String[] toCSV() {
-    final String start = (startTime != null) ? startTime.toString() : "";
-    final String end = (endTime != null) ? endTime.toString() : "";
+    final String start = (startTime != null) ? Time.getISO8601String(startTime) : "";
+    final String end = (endTime != null) ? Time.getISO8601String(endTime) : "";
     return new String[] {
         String.valueOf(id), description, start, end
     };

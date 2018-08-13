@@ -15,11 +15,15 @@
 
 package uk.ac.ucl.excites.tapmap.utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import lombok.NoArgsConstructor;
 
 /**
- * Math Utils
+ * Time Utils
  *
  * Created by Michalis Vitos on 29/06/2018.
  */
@@ -36,5 +40,22 @@ public class Time {
     int seconds = totalSeconds % 60;
 
     return String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds);
+  }
+
+  /**
+   * Return an ISO 8601 date and time string for a date
+   *
+   * @param date Date
+   * @return String with format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+   */
+  public static String getISO8601String(Date date) {
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.UK);
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return dateFormat.format(date);
+  }
+
+  public static String getTimeForFile(Date date) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss", Locale.UK);
+    return dateFormat.format(date);
   }
 }
