@@ -133,15 +133,15 @@ public class MainActivity extends AppCompatActivity {
     Logger.getInstance();
 
     // Add shortcuts now
-    createShortcutOfTapAndMapActivity();
+    createShortcutOfStartActivity();
   }
 
   /**
-   * Create a shortcut for the Tap and Map activity
+   * Create a shortcut for the StartActivity
    */
-  private void createShortcutOfTapAndMapActivity() {
+  private void createShortcutOfStartActivity() {
 
-    final Intent shortcutIntent = new Intent(getApplicationContext(), SessionActivity.class);
+    final Intent shortcutIntent = new Intent(getApplicationContext(), StartActivity.class);
     shortcutIntent.setAction(Intent.ACTION_MAIN);
 
     final Intent addIntent = new Intent();
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.btn_collectData)
-  public void openSessionActivity() {
+  public void openCollectDataActivity() {
 
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.MAIN, null);

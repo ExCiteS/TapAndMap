@@ -17,6 +17,7 @@ import uk.ac.ucl.excites.tapmap.activities.ListActivity;
 import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
 import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
 import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
+import uk.ac.ucl.excites.tapmap.activities.StartActivity;
 import uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.RecordController;
@@ -26,6 +27,7 @@ import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.MAIN;
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.NFC;
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.SESSION;
+import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.START;
 
 /**
  * Created by Michalis Vitos on 02/08/2018.
@@ -35,7 +37,7 @@ public class NavigationController {
   private static final NavigationController ourInstance = new NavigationController();
 
   public enum Screens {
-    MAIN, SESSION, AUDIO, NFC, LOCATION
+    MAIN, START, SESSION, AUDIO, NFC, LOCATION
   }
 
   public static NavigationController getInstance() {
@@ -76,13 +78,14 @@ public class NavigationController {
     // Set the screens in order
     screensOrder = new ArrayList<>();
     screensOrder.add(MAIN);
+    screensOrder.add(START);
     screensOrder.add(SESSION);
     screensOrder.add(AUDIO);
     screensOrder.add(NFC);
     screensOrder.add(LOCATION);
 
     // Set the starting screen
-    startingScreen = AUDIO;
+    startingScreen = START;
   }
 
   /**
@@ -95,6 +98,9 @@ public class NavigationController {
     if (meta != null)
       switch (currentScreen) {
         case MAIN:
+          // Do nothing
+          break;
+        case START:
           // Do nothing
           break;
         case SESSION:
@@ -175,7 +181,11 @@ public class NavigationController {
 
     switch (nextScreen) {
       case MAIN:
-        // TODO: 02/08/2018 add Action
+        // Set activity to null, to avoid the MainActivity being terminated
+        activity = null;
+        break;
+      case START:
+        openStartActivity(activity);
         break;
       case SESSION:
         openSessionActivity(activity);
@@ -207,6 +217,10 @@ public class NavigationController {
     // Finish activity if necessary
     if (activity != null)
       activity.finish();
+  }
+
+  public static void openStartActivity(Context context) {
+    openActivity(context, StartActivity.class);
   }
 
   public static void openSessionActivity(Context context) {

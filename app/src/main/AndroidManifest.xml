@@ -28,7 +28,6 @@
 
   <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
   <uses-feature android:name="android.hardware.location.gps"/>
-
   <uses-feature
       android:name="android.hardware.nfc"
       android:required="true"/>
@@ -51,8 +50,13 @@
       </intent-filter>
     </activity>
     <activity
-        android:name=".activities.TapAndMapActivity"
+        android:name=".activities.StartActivity"
         android:exported="true"
+        android:label="Start"
+        android:screenOrientation="sensorPortrait"/>
+    <activity
+        android:name=".activities.TapAndMapActivity"
+        android:label="Tap And Map"
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.ManageNfcCardsActivity"
@@ -64,7 +68,6 @@
         android:screenOrientation="sensorPortrait"/>
     <activity
         android:name=".activities.SessionActivity"
-        android:exported="true"
         android:label="Session"
         android:screenOrientation="sensorPortrait"/>
     <activity
