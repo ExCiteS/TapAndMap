@@ -61,4 +61,12 @@ public class Session {
    */
   @ColumnInfo(name = "end_time")
   private Date endTime;
+
+  public String[] toCSV() {
+    final String start = (startTime != null) ? startTime.toString() : "";
+    final String end = (endTime != null) ? endTime.toString() : "";
+    return new String[] {
+        String.valueOf(id), description, start, end
+    };
+  }
 }

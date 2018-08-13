@@ -132,4 +132,7 @@ dependencies {
   // Audio
   implementation 'com.github.piasy:rxandroidaudio:1.5.2'
   implementation 'com.github.piasy:AudioProcessor:1.5.2'
+
+  // OpenCSV
+  compile 'com.opencsv:opencsv:4.2'
 }
