@@ -59,7 +59,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     implements AudioRecorder.OnErrorListener {
 
   // Static
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh.mm.ss");
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
   private static final String AUDIO_EXTENSION = "m4a";
 
   private static final ButterKnife.Action<View> INVISIBLE =
