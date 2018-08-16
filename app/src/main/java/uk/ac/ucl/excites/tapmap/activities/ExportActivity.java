@@ -108,8 +108,10 @@ public class ExportActivity extends RxAppCompatActivity {
     super.onDestroy();
 
     try {
-      sessionsWriter.close();
-      recordsWriter.close();
+      if (sessionsWriter != null)
+        sessionsWriter.close();
+      if (recordsWriter != null)
+        recordsWriter.close();
     } catch (IOException e) {
       Timber.e(e);
     }
