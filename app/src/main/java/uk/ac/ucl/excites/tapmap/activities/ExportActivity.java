@@ -16,6 +16,7 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Environment;
@@ -92,9 +93,6 @@ public class ExportActivity extends RxAppCompatActivity {
       String text = "1. " + sessionsFile.getAbsoluteFile() + "\n\n";
       text += "2. " + recordsFile.getAbsoluteFile() + "\n";
       exportDirectoryTxt.setText(text);
-
-      sessionsWriter = new CSVWriter(new FileWriter(sessionsFile));
-      recordsWriter = new CSVWriter(new FileWriter(recordsFile));
     } catch (Exception e) {
 
       Timber.e(e, "Error   : %s", e.getLocalizedMessage());
@@ -114,21 +112,6 @@ public class ExportActivity extends RxAppCompatActivity {
       recordsWriter.close();
     } catch (IOException e) {
       Timber.e(e);
-    }
-
-    // Delete empty files
-    deleteEmptyFile(sessionsFile);
-    deleteEmptyFile(recordsFile);
-
-    // Check for other emtpy files
-    for (File file : exportDirectory.listFiles())
-      deleteEmptyFile(file);
-  }
-
-  private void deleteEmptyFile(File file) {
-    if (file.length() == 0) {
-      Timber.d("Delete '%s' since it is empty.", file.getName());
-      file.delete();
     }
   }
 
@@ -165,6 +148,20 @@ public class ExportActivity extends RxAppCompatActivity {
         .toObservable()
         .flatMap(Observable::fromIterable);
 
+    // Set Files and Writers
+    try {
+      if (!sessionsFile.exists())
+        sessionsFile.createNewFile();
+
+      if (!recordsFile.exists())
+        recordsFile.createNewFile();
+
+      sessionsWriter = new CSVWriter(new FileWriter(sessionsFile));
+      recordsWriter = new CSVWriter(new FileWriter(recordsFile));
+    } catch (IOException e) {
+      Timber.e(e);
+    }
+
     // Add Headers
     if (sessionsFile.length() == 0)
       sessionsWriter.writeNext(Session.getCsvHeader());
@@ -198,16 +195,55 @@ public class ExportActivity extends RxAppCompatActivity {
             () -> {
               Timber.d("Completed!!!");
 
+              Timber.d("Flushing CSV writers");
               try {
-                sessionsWriter.flush();
-                recordsWriter.flush();
+                sessionsWriter.close();
+                recordsWriter.close();
               } catch (IOException e) {
                 Timber.e(e);
               }
 
+              // Delete empty files
+              Timber.d("Delete empty files");
+              deleteFile(sessionsFile, true);
+              deleteFile(recordsFile, true);
+
+              // Hide progress bar
               progress.cancel();
             }
         );
+  }
+
+  @OnClick(R.id.deleteExports)
+  protected void onDeleteExportsClicked() {
+
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    alertDialogBuilder.setTitle("Delete exports")
+        .setMessage("Are you sure you want to delete all exports from the device?")
+        .setPositiveButton("Yes",
+            (dialog, which) -> {
+              // Delete all the files from the directory
+              for (File file : exportDirectory.listFiles())
+                deleteFile(file, false);
+            })
+        .setNegativeButton("No",
+            (dialog, which) -> {
+              // Do nothing
+            })
+        .show();
+  }
+
+  private void deleteFile(File file, boolean onlyIfEmpty) {
+
+    if (onlyIfEmpty) {
+      if (file.length() == 0) {
+        Timber.d("Delete '%s' since it is empty.", file.getName());
+        file.delete();
+      }
+    } else {
+      Timber.d("Delete '%s'.", file.getName());
+      file.delete();
+    }
   }
 
   private void exportSession(Session session) {

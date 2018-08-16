@@ -134,5 +134,5 @@ dependencies {
   implementation 'com.github.piasy:AudioProcessor:1.5.2'
 
   // OpenCSV
-  compile 'com.opencsv:opencsv:4.2'
+  implementation 'com.opencsv:opencsv:4.2'
 }
