@@ -27,4 +27,9 @@
       android:title="Export"
       app:showAsAction="never"/>
 
+  <item
+      android:id="@+id/action_shortcut"
+      android:title="Create shortcut"
+      app:showAsAction="never"/>
+
 </menu>

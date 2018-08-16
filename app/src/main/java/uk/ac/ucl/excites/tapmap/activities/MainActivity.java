@@ -16,7 +16,9 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,9 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
+
+  private static final String DEFAULT_PREFERENCES = "TapAndMapDefaultPreferences";
+  private static final String FIRST_INSTALLATION = "isFirstInstallation";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
       case R.id.action_export:
         NavigationController.openExportActivity(this);
+        return true;
+
+      case R.id.action_shortcut:
+        createShortcutOfStartActivity();
+        Toast.makeText(this, "Check your Home screen!", Toast.LENGTH_LONG).show();
         return true;
 
       default:
@@ -133,7 +143,15 @@ public class MainActivity extends AppCompatActivity {
     Logger.getInstance();
 
     // Add shortcuts now
-    createShortcutOfStartActivity();
+    final SharedPreferences prefs = this.getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
+    if (prefs.getBoolean(FIRST_INSTALLATION, true)) {
+      createShortcutOfStartActivity();
+
+      // Store that this is not a first installation any more
+      SharedPreferences.Editor editor = prefs.edit();
+      editor.putBoolean(FIRST_INSTALLATION, false);
+      editor.apply();
+    }
   }
 
   /**
