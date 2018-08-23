@@ -46,9 +46,9 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
-  private static final String DEFAULT_PREFERENCES = "TapAndMapDefaultPreferences";
-  private static final String FIRST_INSTALLATION = "isFirstInstallation";
-  private static final String GUID = "GUID";
+  public static final String DEFAULT_PREFERENCES = "TapAndMapDefaultPreferences";
+  public static final String FIRST_INSTALLATION = "isFirstInstallation";
+  public static final String GUID = "GUID";
 
   private SharedPreferences prefs;
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Load the default values for our preferences
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-    prefs = this.getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
+    prefs = getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
     // Check if we have the appropriate permissions before we do anything else
     checkPermissions();
 

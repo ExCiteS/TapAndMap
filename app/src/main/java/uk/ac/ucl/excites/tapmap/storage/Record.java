@@ -65,14 +65,14 @@ public class Record {
   private JsonObject meta;
 
   public static String[] getCsvHeader() {
-    return new String[] { "id", "date", "tag", "meta" };
+    return new String[] { "id", "guid", "date", "tag", "meta" };
   }
 
-  public String[] toCSV() {
+  public String[] toCSV(String guid) {
     final String dateField = (date != null) ? Time.getISO8601String(date) : "";
     final String metaField = (meta != null) ? meta.toString() : "";
     return new String[] {
-        String.valueOf(id), dateField, tag, metaField
+        String.valueOf(id), guid, dateField, tag, metaField
     };
   }
 }

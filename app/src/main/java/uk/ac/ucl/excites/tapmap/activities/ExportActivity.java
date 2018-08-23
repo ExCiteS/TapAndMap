@@ -18,6 +18,8 @@ package uk.ac.ucl.excites.tapmap.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -45,6 +47,9 @@ import uk.ac.ucl.excites.tapmap.storage.Session;
 import uk.ac.ucl.excites.tapmap.storage.SessionDao;
 import uk.ac.ucl.excites.tapmap.utils.Time;
 
+import static uk.ac.ucl.excites.tapmap.activities.MainActivity.DEFAULT_PREFERENCES;
+import static uk.ac.ucl.excites.tapmap.activities.MainActivity.GUID;
+
 /**
  * Created by Michalis Vitos on 10/08/2018.
  */
@@ -58,6 +63,7 @@ public class ExportActivity extends RxAppCompatActivity {
   private File sessionsFile;
   private File recordsFile;
   private ProgressDialog progress;
+  private String guid;
 
   @BindView(R.id.exportDirectory)
   protected TextView exportDirectoryTxt;
@@ -101,6 +107,9 @@ public class ExportActivity extends RxAppCompatActivity {
       exportDirectoryTxt.setText(message);
       exportDataButton.setEnabled(false);
     }
+
+    final SharedPreferences prefs = getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
+    guid = prefs.getString(GUID, "");
   }
 
   @Override
@@ -250,11 +259,11 @@ public class ExportActivity extends RxAppCompatActivity {
 
   private void exportSession(Session session) {
     Timber.d("Exporting session: %s", session.getId());
-    sessionsWriter.writeNext(session.toCSV());
+    sessionsWriter.writeNext(session.toCSV(guid));
   }
 
   private void exportRecord(Record record) {
     Timber.d("Exporting record: %s", record.getId());
-    recordsWriter.writeNext(record.toCSV());
+    recordsWriter.writeNext(record.toCSV(guid));
   }
 }

@@ -64,14 +64,14 @@ public class Session {
   private Date endTime;
 
   public static String[] getCsvHeader() {
-    return new String[] { "id", "description", "start", "end" };
+    return new String[] { "id", "guid", "description", "start", "end" };
   }
 
-  public String[] toCSV() {
+  public String[] toCSV(String guid) {
     final String start = (startTime != null) ? Time.getISO8601String(startTime) : "";
     final String end = (endTime != null) ? Time.getISO8601String(endTime) : "";
     return new String[] {
-        String.valueOf(id), description, start, end
+        String.valueOf(id), guid, description, start, end
     };
   }
 }
