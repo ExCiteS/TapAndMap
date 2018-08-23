@@ -25,11 +25,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import io.reactivex.Observable;
+import java.util.UUID;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
@@ -45,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
   private static final String DEFAULT_PREFERENCES = "TapAndMapDefaultPreferences";
   private static final String FIRST_INSTALLATION = "isFirstInstallation";
+  private static final String GUID = "GUID";
+
+  private SharedPreferences prefs;
+
+  // UI
+  @BindView(R.id.guid)
+  protected TextView guidTextView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +64,23 @@ public class MainActivity extends AppCompatActivity {
 
     // Load the default values for our preferences
     PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
+    prefs = this.getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
     // Check if we have the appropriate permissions before we do anything else
     checkPermissions();
 
     // Create a Navigation Controller and initialise it
     NavigationController navigationController = NavigationController.getInstance();
     navigationController.init(this);
+
+    String guid = prefs.getString(GUID, "");
+    if (guid.isEmpty()) {
+      guid = UUID.randomUUID().toString();
+      final SharedPreferences.Editor editor = prefs.edit();
+      editor.putString(GUID, guid);
+      editor.apply();
+    }
+
+    guidTextView.setText("ID: " + guid);
   }
 
   @Override
@@ -143,12 +163,11 @@ public class MainActivity extends AppCompatActivity {
     Logger.getInstance();
 
     // Add shortcuts now
-    final SharedPreferences prefs = this.getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE);
     if (prefs.getBoolean(FIRST_INSTALLATION, true)) {
       createShortcutOfStartActivity();
 
       // Store that this is not a first installation any more
-      SharedPreferences.Editor editor = prefs.edit();
+      final SharedPreferences.Editor editor = prefs.edit();
       editor.putBoolean(FIRST_INSTALLATION, false);
       editor.apply();
     }

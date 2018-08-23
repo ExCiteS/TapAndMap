@@ -49,7 +49,7 @@
       android:id="@+id/btn_manageCards"
       android:layout_width="0dp"
       android:layout_height="0dp"
-      android:layout_marginBottom="24dp"
+      android:layout_marginBottom="8dp"
       android:layout_marginEnd="24dp"
       android:layout_marginStart="24dp"
       android:layout_marginTop="8dp"
@@ -60,10 +60,23 @@
       android:paddingRight="16dp"
       android:paddingTop="70dp"
       android:text="Manage NFC Cards"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/guid"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/btn_collectData"
+      />
+
+  <TextView
+      android:id="@+id/guid"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginStart="16dp"
+      android:text="GUID"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btn_manageCards"
       />
 
 
