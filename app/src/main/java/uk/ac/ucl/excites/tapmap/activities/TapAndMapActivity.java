@@ -38,8 +38,7 @@ import uk.ac.ucl.excites.tapmap.storage.RecordController;
 import uk.ac.ucl.excites.tapmap.storage.SessionController;
 import uk.ac.ucl.excites.tapmap.utils.Logger;
 
-import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.CANCELLED;
-import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.STORED;
+import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.CLICK;
 import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.TOUCHED;
 
 public class TapAndMapActivity extends NfcBaseActivity {
@@ -150,7 +149,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Log click
     if (nfcCard != null)
-      Logger.getInstance().log(STORED, session, nfcCard.toJson().toString());
+      Logger.getInstance().log(CLICK, session, "Confirm: ", nfcCard.toJson().toString());
 
     // Go to next
     final NavigationController navigationController = NavigationController.getInstance();
@@ -164,7 +163,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     // Log click
     if (nfcCard != null) {
-      Logger.getInstance().log(CANCELLED, session, nfcCard.toJson().toString());
+      Logger.getInstance().log(CLICK, session, "Cancel", nfcCard.toJson().toString());
     }
 
     // Clear activity and finish

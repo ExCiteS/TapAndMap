@@ -49,10 +49,14 @@ import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
+import uk.ac.ucl.excites.tapmap.storage.SessionController;
 import uk.ac.ucl.excites.tapmap.utils.Colour;
+import uk.ac.ucl.excites.tapmap.utils.Logger;
 import uk.ac.ucl.excites.tapmap.utils.MathUtils;
 import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
 import uk.ac.ucl.excites.tapmap.utils.Time;
+
+import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.CLICK;
 
 public class AudioRecordingActivity extends RxAppCompatActivity
     implements AudioRecorder.OnErrorListener {
@@ -86,6 +90,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   @BindView(R.id.cancel)
   protected ImageButton cancelButton;
   private List<View> voiceIndicators;
+  private String session;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,9 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     // Set UI
     ButterKnife.apply(confirmButton, INVISIBLE);
     ButterKnife.apply(cancelButton, INVISIBLE);
+
+    final SessionController sessionController = new SessionController(this);
+    session = "SESSION:" + sessionController.getActiveSessionId();
   }
 
   @Override
@@ -169,6 +177,8 @@ public class AudioRecordingActivity extends RxAppCompatActivity
     for (File recording : recordings)
       meta.add(recording.getName());
 
+    Logger.getInstance().log(CLICK, session, "Audio Recording Confirm: ", meta.toString());
+
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.AUDIO, meta);
     navigationController.goToNextScreen(this);
@@ -176,6 +186,8 @@ public class AudioRecordingActivity extends RxAppCompatActivity
 
   @OnClick(R.id.cancel)
   public void onCancelClicked() {
+
+    Logger.getInstance().log(CLICK, session, "Audio Recording Cancel");
 
     Timber.d("Cancel recording, must delete: %s", recordings);
     for (File recording : recordings) {
@@ -213,6 +225,7 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   private void startRecording() {
 
     Timber.d("Clicked recording...");
+    Logger.getInstance().log(CLICK, session, "Audio Recording Start");
 
     recordDisposable = Observable
         .fromCallable(() -> {
@@ -285,6 +298,8 @@ public class AudioRecordingActivity extends RxAppCompatActivity
   }
 
   private void stopRecording() {
+
+    Logger.getInstance().log(CLICK, session, "Audio Recording Stop");
 
     if (recordDisposable != null && !recordDisposable.isDisposed()) {
       recordDisposable.dispose();
