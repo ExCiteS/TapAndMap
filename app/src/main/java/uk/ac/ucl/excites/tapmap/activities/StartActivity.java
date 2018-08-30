@@ -34,6 +34,10 @@ public class StartActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     final NavigationController navigationController = NavigationController.getInstance();
+
+    // Reset the navigation controller
+    navigationController.cancel(null);
+
     navigationController.setCurrentScreen(START, null);
     navigationController.goToNextScreen(this);
   }
