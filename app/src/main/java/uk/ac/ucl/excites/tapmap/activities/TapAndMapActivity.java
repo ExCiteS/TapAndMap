@@ -44,7 +44,7 @@ import static uk.ac.ucl.excites.tapmap.utils.Logger.TAG.TOUCHED;
 
 public class TapAndMapActivity extends NfcBaseActivity {
 
-  public static final int MAX_SIZE = 500;
+  public static final int MAX_SIZE = 700;
 
   @BindView(R.id.nfc)
   protected ImageView nfcImageView;
@@ -133,7 +133,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
         .placeholder(R.drawable.progress_animation)
         .error(R.drawable.ic_error)
         .resize(MAX_SIZE, MAX_SIZE)
-        .centerCrop()
+        .centerInside()
         .into(nfcImageView);
 
     // Show buttons

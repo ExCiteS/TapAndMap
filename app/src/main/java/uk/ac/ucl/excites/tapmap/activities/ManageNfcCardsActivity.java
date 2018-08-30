@@ -181,11 +181,12 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       // Load image
       final File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
       picasso.invalidate(imageFile);
+      final int maxSize = TapAndMapActivity.MAX_SIZE / 3;
       picasso.load(imageFile)
           .placeholder(R.drawable.progress_animation)
           .error(R.drawable.ic_error)
-          .resize(TapAndMapActivity.MAX_SIZE, TapAndMapActivity.MAX_SIZE)
-          .centerCrop()
+          .resize(maxSize, maxSize)
+          .centerInside()
           .into(nfcImage);
 
       // Go to step 3

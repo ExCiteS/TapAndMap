@@ -84,7 +84,7 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
           .placeholder(R.drawable.progress_animation)
           .error(R.drawable.ic_error)
           .resize(size, size)
-          .centerCrop()
+          .centerInside()
           .into(nfcImageView);
     }
 
