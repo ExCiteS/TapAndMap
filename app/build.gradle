@@ -135,4 +135,6 @@ dependencies {
 
   // OpenCSV
   implementation 'com.opencsv:opencsv:4.2'
+
+  implementation 'com.github.Svoka:android-folder-picker-library:v2.2'
 }

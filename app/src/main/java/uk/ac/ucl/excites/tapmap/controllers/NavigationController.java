@@ -30,6 +30,7 @@ import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
 import uk.ac.ucl.excites.tapmap.activities.ExportActivity;
 import uk.ac.ucl.excites.tapmap.activities.ListActivity;
 import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
+import uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity;
 import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
 import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.StartActivity;
@@ -264,6 +265,10 @@ public class NavigationController {
 
   public static void openExportActivity(Context context) {
     openActivity(context, ExportActivity.class);
+  }
+
+  public static void openManageNfcCardsActivity(Context context) {
+    openActivity(context, ManageNfcCardsActivity.class);
   }
 
   private static void openActivity(Context context, Class<? extends Activity> activity) {

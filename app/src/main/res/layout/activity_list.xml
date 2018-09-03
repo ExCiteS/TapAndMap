@@ -23,19 +23,6 @@
     tools:layout_editor_absoluteY="81dp"
     >
 
-  <android.support.design.widget.FloatingActionButton
-      android:id="@+id/fabAddCard"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginEnd="8dp"
-      android:clickable="true"
-      android:focusable="true"
-      android:tint="@android:color/white"
-      app:layout_constraintBottom_toBottomOf="@+id/nfcCardsRecyclerView"
-      app:layout_constraintEnd_toEndOf="@+id/nfcCardsRecyclerView"
-      app:srcCompat="@drawable/ic_add"
-      />
-
   <ProgressBar
       android:id="@+id/progressBar"
       android:layout_width="wrap_content"
