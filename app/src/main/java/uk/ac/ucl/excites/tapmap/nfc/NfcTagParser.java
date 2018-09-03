@@ -19,6 +19,7 @@ import android.nfc.Tag;
 import android.nfc.tech.MifareUltralight;
 import lombok.Getter;
 import timber.log.Timber;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 
 /**
@@ -140,25 +141,6 @@ public class NfcTagParser {
     }
 
     return id;
-  }
-
-  /**
-   * Get an NFC Card from the {@link NfcTagParser}
-   *
-   * @return NfcCard
-   */
-  public NfcCard toNfcCard() {
-    return NfcCard.builder().id(id).build();
-  }
-
-  /**
-   * Get an NFC Card from the {@link NfcTagParser}
-   *
-   * @return NfcCard
-   */
-  public NfcCard toNfcCard(String imagePath, String filename, String tag) {
-
-    return NfcCard.builder().id(id).imagePath(imagePath).filename(filename).tag(tag).build();
   }
 
   @Override

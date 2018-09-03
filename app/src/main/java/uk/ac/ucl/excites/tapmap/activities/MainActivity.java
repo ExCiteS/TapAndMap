@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     guidTextView.setText("ID: " + guid);
+
+    NavigationController.openManageNfcCardsActivity(this);
   }
 
   @Override

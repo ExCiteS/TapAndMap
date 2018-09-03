@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import uk.ac.ucl.excites.tapmap.R;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.utils.ScreenMetrics;
 
@@ -39,7 +40,7 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
 
   public static final int MAX_SIZE = 32;
 
-  public NfcCard card;
+  private ImageCard imageCard;
 
   @Override
   public int getType() {
@@ -74,13 +75,12 @@ public class NfcCardItem extends AbstractItem<NfcCardItem, NfcCardItem.ViewHolde
     @Override
     public void bindView(@NonNull NfcCardItem item, @NonNull List<Object> payloads) {
 
-      tag.setText(item.card.getTag());
-      id.setText(item.card.getId());
+      tag.setText(item.imageCard.getTag());
 
       final int size = (int) ScreenMetrics.convertDpToPixel(MAX_SIZE);
       // Show NFC card
       Picasso.get()
-          .load(new File(item.card.getImagePath()))
+          .load(new File(item.imageCard.getImagePath()))
           .placeholder(R.drawable.progress_animation)
           .error(R.drawable.ic_error)
           .resize(size, size)

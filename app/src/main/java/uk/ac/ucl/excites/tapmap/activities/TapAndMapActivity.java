@@ -32,6 +32,8 @@ import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
+import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.storage.RecordController;
@@ -53,8 +55,10 @@ public class TapAndMapActivity extends NfcBaseActivity {
   protected ImageButton cancelButton;
 
   private RecordController recordController;
+  private ImageCardDao imageCardDao;
   private NfcCardDao nfcCardDao;
   private String session;
+  private ImageCard imageCard;
   private NfcCard nfcCard;
   private Picasso picasso;
   private Gson gson = new Gson();
@@ -68,6 +72,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     final TapMap app = (TapMap) getApplication();
     recordController = new RecordController(this);
+    imageCardDao = app.getAppDatabase().imageCardDao();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
 
     final SessionController sessionController = new SessionController(this);
@@ -117,7 +122,8 @@ public class TapAndMapActivity extends NfcBaseActivity {
 
     try {
       nfcCard = nfcCardDao.findById(cardID);
-      imagePath = nfcCard.getImagePath();
+      imageCard = imageCardDao.findById(nfcCard.getImageCardId());
+      imagePath = imageCard.getImagePath();
 
       // Log card
       Logger.getInstance().log(TOUCHED, session, nfcCard.toJson().toString());
@@ -154,7 +160,7 @@ public class TapAndMapActivity extends NfcBaseActivity {
     // Go to next
     final NavigationController navigationController = NavigationController.getInstance();
     navigationController.setCurrentScreen(Screens.NFC, gson.toJsonTree(nfcCard));
-    navigationController.setCurrentNfcCard(nfcCard);
+    navigationController.setCurrentImageCard(imageCard);
     navigationController.goToNextScreen(this);
   }
 

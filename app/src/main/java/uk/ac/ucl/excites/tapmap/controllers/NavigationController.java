@@ -35,6 +35,7 @@ import uk.ac.ucl.excites.tapmap.activities.SessionActivity;
 import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.StartActivity;
 import uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.RecordController;
 
@@ -65,7 +66,7 @@ public class NavigationController {
   private List<Screens> screensOrder;
   private Screens startingScreen;
   private Screens currentScreen;
-  private NfcCard currentNfcCard;
+  private ImageCard currentImageCard;
   private JsonObject currentMeta;
 
   private NavigationController() {
@@ -139,8 +140,8 @@ public class NavigationController {
   /**
    * Set the current NfcCard
    */
-  public void setCurrentNfcCard(NfcCard nfcCard) {
-    currentNfcCard = nfcCard;
+  public void setCurrentImageCard(ImageCard nfcCard) {
+    currentImageCard = nfcCard;
   }
 
   private Screens getNextScreen() {
@@ -173,10 +174,10 @@ public class NavigationController {
       nextScreen = screensOrder.get(0);
 
       // Store current record
-      recordController.storeCard(currentNfcCard, currentMeta);
+      recordController.storeCard(currentImageCard, currentMeta);
 
       // Clear the current NfcCard
-      currentNfcCard = null;
+      currentImageCard = null;
     } else {
       nextScreen = screensOrder.get(currentScreenIndex);
     }
@@ -228,7 +229,7 @@ public class NavigationController {
     currentMeta = new JsonObject();
 
     // Clear the current NfcCard
-    currentNfcCard = null;
+    currentImageCard = null;
 
     // Finish activity if necessary
     if (activity != null)

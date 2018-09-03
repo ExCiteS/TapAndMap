@@ -2,16 +2,63 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "01273fe906dd9789e3a6f799cc1b2a4b",
+    "identityHash": "d3a5283706cb4fda877d607349273921",
     "entities": [
       {
         "tableName": "NfcCard",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `image_path` TEXT, `image_filename` TEXT, `tag` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `image_card_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`image_card_id`) REFERENCES `ImageCard`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imageCardId",
+            "columnName": "image_card_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_NfcCard_image_card_id",
+            "unique": false,
+            "columnNames": [
+              "image_card_id"
+            ],
+            "createSql": "CREATE  INDEX `index_NfcCard_image_card_id` ON `${TABLE_NAME}` (`image_card_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ImageCard",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "image_card_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ImageCard",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `image_path` TEXT, `image_filename` TEXT, `tag` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -37,7 +84,7 @@
           "columnNames": [
             "id"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
@@ -121,7 +168,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"01273fe906dd9789e3a6f799cc1b2a4b\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d3a5283706cb4fda877d607349273921\")"
     ]
   }
 }

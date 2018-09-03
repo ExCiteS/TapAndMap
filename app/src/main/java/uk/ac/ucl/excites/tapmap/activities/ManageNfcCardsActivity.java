@@ -16,7 +16,6 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -35,11 +34,15 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
+import uk.ac.ucl.excites.tapmap.project.ProjectManager;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
+import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 
@@ -64,9 +67,14 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
   protected ImageButton cancelButton;
 
   private NfcTagParser currentNfcTagParser;
+  private ImageCardDao imageCardDao;
   private NfcCardDao nfcCardDao;
   private Picasso picasso;
-  private String imageFileName = "";
+
+  // Files and Paths
+  private File imagesDirectory;
+  private File currentImageFilePath;
+  private String currentImageFileName = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,8 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
     final TapMap app = (TapMap) getApplication();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+    imageCardDao = app.getAppDatabase().imageCardDao();
+    imagesDirectory = ProjectManager.getImagesDirectory(this);
 
     // Set up Picasso
     picasso = Picasso.get();
@@ -120,7 +130,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // 1. Check if Card is already associated with an icon
     final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
-    if (nfcCard != null && !nfcCard.getImagePath().isEmpty())
+    if (nfcCard != null && nfcCard.getImageCardId() > 0)
       showAlreadyExistsDialog(nfcCard);
     else
       showStepTwo(currentNfcTagParser.getId());
@@ -128,8 +138,10 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
 
   private void showAlreadyExistsDialog(final NfcCard nfcCard) {
 
+    final ImageCard imageCard = imageCardDao.findById(nfcCard.getImageCardId());
+
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-    alertDialogBuilder.setTitle("Replace card " + nfcCard.getTag() + "?")
+    alertDialogBuilder.setTitle("Replace card " + imageCard.getTag() + "?")
         .setMessage("This card has been already setup. Do you want to replace it?")
         .setPositiveButton("Replace", (dialog, which) -> showStepTwo(nfcCard.getId()))
         .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
@@ -157,15 +169,15 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       if (uri == null)
         return;
 
-      // Get the filename of the picked icon
-      imageFileName = getImageName(uri);
-
-      InputStream inputStream;
+      InputStream inputStream = null;
+      FileOutputStream outputStream = null;
       try {
         inputStream = getContentResolver().openInputStream(uri);
 
-        FileOutputStream outputStream =
-            openFileOutput(currentNfcTagParser.getId(), Context.MODE_PRIVATE);
+        // Get the Filename of the current Image and the Path
+        currentImageFileName = getImageName(uri);
+        currentImageFilePath = new File(imagesDirectory + File.separator + currentImageFileName);
+        outputStream = new FileOutputStream(currentImageFilePath);
 
         // Copy file
         byte[] buffer = new byte[1024];
@@ -173,16 +185,22 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
         while ((len = inputStream.read(buffer)) != -1) {
           outputStream.write(buffer, 0, len);
         }
-        outputStream.close();
       } catch (Exception e) {
         Timber.e(e, "Error while copying the file.");
+      } finally {
+        if (outputStream != null) {
+          try {
+            outputStream.close();
+          } catch (IOException e) {
+            Timber.e(e, "Error while copying the file and closing the FileOutputStream.");
+          }
+        }
       }
 
       // Load image
-      final File imageFile = new File(this.getFilesDir(), currentNfcTagParser.getId());
-      picasso.invalidate(imageFile);
+      picasso.invalidate(currentImageFilePath);
       final int maxSize = TapAndMapActivity.MAX_SIZE / 3;
-      picasso.load(imageFile)
+      picasso.load(currentImageFilePath)
           .placeholder(R.drawable.progress_animation)
           .error(R.drawable.ic_error)
           .resize(maxSize, maxSize)
@@ -230,14 +248,36 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
 
     // Get path
-    final String imagePath = new File(this.getFilesDir(), currentNfcTagParser.getId()).getPath();
     // Store to DB
     final String tagText = this.tag.getText().toString();
-    nfcCardDao.insert(currentNfcTagParser.toNfcCard(imagePath, imageFileName, tagText));
+    final long imageCardId =
+        imageCardDao.insert(getImageCard(currentImageFilePath.toString(),
+            currentImageFileName,
+            tagText));
+    nfcCardDao.insert(getNfcCard(currentNfcTagParser.getId(), imageCardId));
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
 
     // Close activity
     finish();
+  }
+
+  private ImageCard getImageCard(String imagePath, String filename, String tag) {
+
+    final ImageCard imageCard = new ImageCard();
+    imageCard.setFilename(filename);
+    imageCard.setImagePath(imagePath);
+    imageCard.setTag(tag);
+
+    return imageCard;
+  }
+
+  private NfcCard getNfcCard(String id, long imageCardId) {
+
+    final NfcCard nfcCard = new NfcCard();
+    nfcCard.setId(id);
+    nfcCard.setImageCardId(imageCardId);
+
+    return nfcCard;
   }
 
   @OnClick(R.id.cancel)
@@ -249,12 +289,15 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     }
 
     // Clean up by deleting the file
-    final File file = new File(this.getFilesDir(), currentNfcTagParser.getId());
+    final String cardId = currentNfcTagParser.getId();
+    final File file = new File(this.getFilesDir(), cardId);
     if (file.exists())
       file.delete();
     Toast.makeText(this, "Card deleted. Try again.", Toast.LENGTH_LONG).show();
 
-    nfcCardDao.delete(currentNfcTagParser.toNfcCard());
+    final NfcCard card = nfcCardDao.findById(cardId);
+    imageCardDao.delete(imageCardDao.findById(card.getImageCardId()));
+    nfcCardDao.delete(card);
 
     // Close activity
     finish();

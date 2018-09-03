@@ -17,13 +17,12 @@ package uk.ac.ucl.excites.tapmap.storage;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,28 +34,39 @@ import lombok.Setter;
  *
  * Created by Michalis Vitos on 21/05/2018.
  */
-@Entity(foreignKeys = @ForeignKey(
-    entity = ImageCard.class,
-    parentColumns = "id",
-    childColumns = "image_card_id",
-    onDelete = ForeignKey.CASCADE
-), indices = { @Index("image_card_id") }
-)
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class NfcCard {
+public class ImageCard {
 
   /**
-   * ID of the card. This is the actual ID that each NFC card comes with.
+   * Auto-generated ID
    */
-  @NonNull
-  @PrimaryKey
-  private String id;
+  @PrimaryKey(autoGenerate = true)
+  private long id;
 
-  @ColumnInfo(name = "image_card_id")
-  public long imageCardId;
+  /**
+   * This is the location where the image associated to this NFC card is stored. Usually this will be
+   * something like /data/user/0/uk.ac.ucl.excites.tapmap/files/<card_id>. This is excluded from a GSON
+   * conversion toJson (with the use of the transient word).
+   */
+  @ColumnInfo(name = "image_path")
+  private transient String imagePath;
+
+  /**
+   * The actual file name of the picked image for this NFC card. For example this could be banana.png
+   * This could be used later to map the results on a map and use the same images as icons.
+   */
+  @ColumnInfo(name = "image_filename")
+  private String filename;
+
+  /**
+   * This is a textual tag used on the NFC card for later analysis. For example this could be banana etc.
+   */
+  @ColumnInfo(name = "tag")
+  private String tag;
 
   /**
    * Convert Card to Json
@@ -64,5 +74,9 @@ public class NfcCard {
   public JsonObject toJson() {
     final Gson gson = new Gson();
     return gson.toJsonTree(this).getAsJsonObject();
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag.trim();
   }
 }

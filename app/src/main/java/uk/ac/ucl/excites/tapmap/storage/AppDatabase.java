@@ -24,13 +24,15 @@ import android.content.Context;
 /**
  * Created by Michalis Vitos on 21/05/2018.
  */
-@Database(entities = { NfcCard.class, Session.class, Record.class }, version = 1)
+@Database(entities = { NfcCard.class, ImageCard.class, Session.class, Record.class }, version = 1)
 @TypeConverters({ DateTypeConverter.class, MetaTypeConverter.class })
 public abstract class AppDatabase extends RoomDatabase {
 
   public static final String DATABASE_NAME = "TapMapDatabase.sqlite";
 
   public abstract NfcCardDao nfcCardDao();
+
+  public abstract ImageCardDao imageCardDao();
 
   public abstract SessionDao sessionDao();
 

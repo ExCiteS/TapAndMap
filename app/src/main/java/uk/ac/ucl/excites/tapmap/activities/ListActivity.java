@@ -48,7 +48,8 @@ import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.project.ProjectManager;
 import uk.ac.ucl.excites.tapmap.project.Settings;
-import uk.ac.ucl.excites.tapmap.storage.NfcCard;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
+import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 
 /**
@@ -66,6 +67,7 @@ public class ListActivity extends AppCompatActivity {
 
   private ItemAdapter<NfcCardItem> itemAdapter;
 
+  private ImageCardDao imageCardDao;
   private NfcCardDao nfcCardDao;
 
   @Override
@@ -76,6 +78,7 @@ public class ListActivity extends AppCompatActivity {
 
     // Get database dao
     final TapMap app = (TapMap) getApplication();
+    imageCardDao = app.getAppDatabase().imageCardDao();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
   }
 
@@ -97,20 +100,20 @@ public class ListActivity extends AppCompatActivity {
     nfcCardsRecyclerView.setItemAnimator(new DefaultItemAnimator());
     nfcCardsRecyclerView.setAdapter(fastAdapter);
 
-    nfcCardDao.getAll()
+    imageCardDao.getAll()
         .subscribeOn(Schedulers.io())
         .toObservable()
         .flatMap(Observable::fromIterable)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<NfcCard>() {
+        .subscribe(new Observer<ImageCard>() {
           @Override
           public void onSubscribe(Disposable d) {
             // Do nothing
           }
 
           @Override
-          public void onNext(NfcCard nfcCard) {
-            itemAdapter.add(new NfcCardItem(nfcCard));
+          public void onNext(ImageCard imageCard) {
+            itemAdapter.add(new NfcCardItem(imageCard));
           }
 
           @Override

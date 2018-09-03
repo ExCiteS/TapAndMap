@@ -27,26 +27,23 @@ import java.util.List;
  * Created by Michalis Vitos on 21/05/2018.
  */
 @Dao
-public interface NfcCardDao {
+public interface ImageCardDao {
 
-  @Query("SELECT * FROM NfcCard")
-  Single<List<NfcCard>> getAll();
+  @Query("SELECT * FROM ImageCard")
+  Single<List<ImageCard>> getAll();
 
-  @Query("SELECT * FROM NfcCard WHERE id IN (:nfcIds)")
-  List<NfcCard> findAllByIds(int[] nfcIds);
+  @Query("SELECT * FROM ImageCard WHERE id IN (:imageIds)")
+  List<ImageCard> findAllByIds(long[] imageIds);
 
-  @Query("SELECT * FROM NfcCard WHERE id = :id LIMIT 1")
-  NfcCard findById(String id);
-
-  @Query("SELECT * FROM NfcCard WHERE image_card_id = :imageCardId")
-  List<NfcCard> findByImageCardId(long imageCardId);
+  @Query("SELECT * FROM ImageCard WHERE id = :id LIMIT 1")
+  ImageCard findById(long id);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  long insert(NfcCard card);
+  long insert(ImageCard card);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  List<Long> insert(NfcCard... cards);
+  List<Long> insert(ImageCard... cards);
 
   @Delete
-  void delete(NfcCard card);
+  void delete(ImageCard card);
 }

@@ -40,16 +40,16 @@ public class RecordController {
   /**
    * Store the card and return the id or -1 if the operation fails
    */
-  public long storeCard(NfcCard card, JsonObject meta) {
+  public long storeCard(ImageCard imageCard, JsonObject meta) {
 
-    if (card == null)
+    if (imageCard == null)
       return -1;
 
     final Record record = new Record();
     // Set time to now
     record.setDate(new Date());
     // Set tag
-    record.setTag(card.getTag());
+    record.setTag(imageCard.getTag());
     // Set meta
     if (meta != null)
       record.setMeta(meta);
