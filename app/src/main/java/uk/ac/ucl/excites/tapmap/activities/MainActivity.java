@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
     guidTextView.setText("ID: " + guid);
 
-    NavigationController.openManageNfcCardsActivity(this);
+    // TODO: 03/09/2018 Remove 
+    NavigationController.openListActivity(this);
   }
 
   @Override

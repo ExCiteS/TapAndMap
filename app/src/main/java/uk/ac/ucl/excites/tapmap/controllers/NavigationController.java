@@ -28,6 +28,7 @@ import java.util.List;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
 import uk.ac.ucl.excites.tapmap.activities.ExportActivity;
+import uk.ac.ucl.excites.tapmap.activities.ImportSettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.ListActivity;
 import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
 import uk.ac.ucl.excites.tapmap.activities.ManageNfcCardsActivity;
@@ -36,7 +37,6 @@ import uk.ac.ucl.excites.tapmap.activities.SettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.StartActivity;
 import uk.ac.ucl.excites.tapmap.activities.TapAndMapActivity;
 import uk.ac.ucl.excites.tapmap.storage.ImageCard;
-import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.RecordController;
 
 import static uk.ac.ucl.excites.tapmap.controllers.NavigationController.Screens.AUDIO;
@@ -270,6 +270,10 @@ public class NavigationController {
 
   public static void openManageNfcCardsActivity(Context context) {
     openActivity(context, ManageNfcCardsActivity.class);
+  }
+
+  public static void openImportSettingsActivity(Context context) {
+    openActivity(context, ImportSettingsActivity.class);
   }
 
   private static void openActivity(Context context, Class<? extends Activity> activity) {
