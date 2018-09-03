@@ -81,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     guidTextView.setText("ID: " + guid);
-
-    // TODO: 03/09/2018 Remove
-    NavigationController.openImportSettingsActivity(this);
   }
 
   @Override
