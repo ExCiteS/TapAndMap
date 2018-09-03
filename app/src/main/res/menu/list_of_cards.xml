@@ -23,8 +23,14 @@
       app:showAsAction="never"/>
 
   <item
-      android:id="@+id/action_load_project"
-      android:title="Load project"
+      android:id="@+id/action_clear_all"
+      android:title="Clear all cards"
       app:showAsAction="never"/>
+
+  <item
+      android:id="@+id/action_load_project"
+      android:title="Load project from file"
+      app:showAsAction="never"/>
+
 
 </menu>

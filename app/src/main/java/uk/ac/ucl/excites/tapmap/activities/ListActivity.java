@@ -16,6 +16,7 @@
 package uk.ac.ucl.excites.tapmap.activities;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,7 +42,6 @@ import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
-import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -131,6 +131,10 @@ public class ListActivity extends AppCompatActivity {
         NavigationController.openManageNfcCardsActivity(this);
         return true;
 
+      case R.id.action_clear_all:
+        clearAllCards();
+        return true;
+
       case R.id.action_load_project:
         NavigationController.openImportSettingsActivity(this);
         return true;
@@ -138,5 +142,19 @@ public class ListActivity extends AppCompatActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void clearAllCards() {
+
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    alertDialogBuilder.setTitle("Delete all cards")
+        .setMessage(
+            "This will delete all cards from the application. Are you sure you want to delete them?")
+        .setPositiveButton("Delete", (dialog, which) -> {
+          imageCardDao.deleteAll();
+          itemAdapter.clear();
+        })
+        .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
+        .show();
   }
 }

@@ -46,4 +46,7 @@ public interface ImageCardDao {
 
   @Delete
   void delete(ImageCard card);
+
+  @Query("DELETE FROM ImageCard")
+  void deleteAll();
 }
