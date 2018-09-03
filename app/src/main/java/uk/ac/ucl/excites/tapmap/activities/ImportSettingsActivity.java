@@ -141,7 +141,10 @@ public class ImportSettingsActivity extends NfcBaseActivity {
         settings = ProjectManager.loadSettingsInDirectory(selectedDir);
       } catch (FileNotFoundException e) {
         Timber.e(e);
-        showSnackBar(root, "There is no 'settings.json' file in the selected folder");
+        Toast.makeText(this,
+            "There is no 'settings.json' file in the selected folder",
+            Toast.LENGTH_LONG).show();
+        finish();
       }
 
       // Ensure settings exist
@@ -162,6 +165,8 @@ public class ImportSettingsActivity extends NfcBaseActivity {
 
       // Finally process the cards
       processCards();
+    } else {
+      finish();
     }
   }
 
