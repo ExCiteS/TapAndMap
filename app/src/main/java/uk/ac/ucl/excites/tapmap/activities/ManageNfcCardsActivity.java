@@ -33,8 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
@@ -45,6 +44,7 @@ import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.utils.FileUtils;
 
 public class ManageNfcCardsActivity extends NfcBaseActivity {
 
@@ -169,32 +169,16 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
       if (uri == null)
         return;
 
-      InputStream inputStream = null;
-      FileOutputStream outputStream = null;
+      // Get the Filename of the current Image and the Path
+      currentImageFileName = getImageName(uri);
+      currentImageFilePath = new File(imagesDirectory + File.separator + currentImageFileName);
+
       try {
-        inputStream = getContentResolver().openInputStream(uri);
 
-        // Get the Filename of the current Image and the Path
-        currentImageFileName = getImageName(uri);
-        currentImageFilePath = new File(imagesDirectory + File.separator + currentImageFileName);
-        outputStream = new FileOutputStream(currentImageFilePath);
-
-        // Copy file
-        byte[] buffer = new byte[1024];
-        int len;
-        while ((len = inputStream.read(buffer)) != -1) {
-          outputStream.write(buffer, 0, len);
-        }
-      } catch (Exception e) {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        FileUtils.copyFile(inputStream, currentImageFilePath);
+      } catch (FileNotFoundException e) {
         Timber.e(e, "Error while copying the file.");
-      } finally {
-        if (outputStream != null) {
-          try {
-            outputStream.close();
-          } catch (IOException e) {
-            Timber.e(e, "Error while copying the file and closing the FileOutputStream.");
-          }
-        }
       }
 
       // Load image

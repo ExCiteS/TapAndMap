@@ -20,19 +20,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import com.squareup.picasso.Picasso;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import lib.folderpicker.FolderPicker;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.project.Card;
 import uk.ac.ucl.excites.tapmap.project.ProjectManager;
 import uk.ac.ucl.excites.tapmap.project.Settings;
 import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.utils.FileUtils;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -43,9 +54,20 @@ public class ImportSettingsActivity extends AppCompatActivity {
 
   @BindView(R.id.root)
   protected View root;
+  @BindView(R.id.name)
+  protected TextView name;
+  @BindView(R.id.image)
+  protected ImageView image;
+  @BindView(R.id.recycler_view_cards)
+  protected RecyclerView recyclerView;
 
+  private Picasso picasso;
   private ImageCardDao imageCardDao;
   private NfcCardDao nfcCardDao;
+
+  // Files and Paths
+  private File imagesDirectory;
+  private File currentImageFilePath;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +75,17 @@ public class ImportSettingsActivity extends AppCompatActivity {
     setContentView(R.layout.activity_import_settings);
     ButterKnife.bind(this);
 
+    // Set up Picasso
+    picasso = Picasso.get();
+
     // Get database dao
     final TapMap app = (TapMap) getApplication();
     imageCardDao = app.getAppDatabase().imageCardDao();
     nfcCardDao = app.getAppDatabase().nfcCardDao();
+
+    // Set the images directory
+    imagesDirectory = ProjectManager.getImagesDirectory(this);
+    Timber.d("Set images directory to: %s", imagesDirectory.toString());
 
     // Start with selecting a folder
     pickFolder();
@@ -97,7 +126,64 @@ public class ImportSettingsActivity extends AppCompatActivity {
         Timber.e(e);
         showSnackBar(root, "There is no settings.json file in the selected folder");
       }
+
+      // Ensure settings exist
+      if (settings == null)
+        return;
+
+      // Ensure cards exist
+      final List<Card> cards = settings.getCards();
+      if (cards == null)
+        return;
+
+      for (Card card : cards) {
+
+        // 1. Copy the card to the images directory
+        try {
+          copyCardToImagesDirectory(selectedDir, card);
+        } catch (IOException e) {
+          Timber.e(e);
+          break;
+        }
+
+        // TODO: 03/09/2018 check if card already has an id
+
+        // 3. Show card
+        currentImageFilePath = new File(imagesDirectory + File.separator + card.getImage());
+        showCard(card);
+      }
     }
+  }
+
+  private void copyCardToImagesDirectory(File selectedDir, Card card) throws IOException {
+
+    final File inputFile = new File(selectedDir + File.separator + card.getImage());
+    final File outputFile = new File(imagesDirectory + File.separator + card.getImage());
+
+    InputStream inputStream = null;
+    try {
+      inputStream = new FileInputStream(inputFile);
+    } catch (FileNotFoundException e) {
+      final String message = "The '" + card.getImage() + "' does not exist.";
+      showSnackBar(root, message);
+      throw new IOException(message);
+    }
+    FileUtils.copyFile(inputStream, outputFile);
+    Timber.d("Copied: %s To: %s", inputFile, outputFile);
+  }
+
+  private void showCard(Card card) {
+
+    name.setText(card.getImage());
+    // Load image
+    picasso.invalidate(card.getImage());
+    final int maxSize = TapAndMapActivity.MAX_SIZE / 2;
+    picasso.load(currentImageFilePath)
+        .placeholder(R.drawable.progress_animation)
+        .error(R.drawable.ic_error)
+        .resize(maxSize, maxSize)
+        .centerInside()
+        .into(image);
   }
 
   private void showSnackBar(View view, String message) {
@@ -112,5 +198,15 @@ public class ImportSettingsActivity extends AppCompatActivity {
       }
     });
     snackbar.show();
+  }
+
+  @OnClick(R.id.clear)
+  protected void onClearClicked() {
+    Timber.d("Clear Clicked");
+  }
+
+  @OnClick(R.id.next_card)
+  protected void onNextCardClicked() {
+    Timber.d("Next Clicked");
   }
 }

@@ -15,6 +15,7 @@
 
 package uk.ac.ucl.excites.tapmap.project;
 
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -23,7 +24,7 @@ import lombok.Data;
 @Data
 public class Card {
 
-  private String id;
+  private List<String> id;
   private String image;
   private String tag;
 }
