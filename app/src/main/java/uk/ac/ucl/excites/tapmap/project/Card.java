@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class Card {
 
-  private List<String> id;
+  private List<String> ids;
   private String image;
   private String tag;
 }

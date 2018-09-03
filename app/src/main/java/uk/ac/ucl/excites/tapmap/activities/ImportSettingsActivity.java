@@ -19,8 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,22 +32,27 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lib.folderpicker.FolderPicker;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
+import uk.ac.ucl.excites.tapmap.nfc.NfcTagParser;
 import uk.ac.ucl.excites.tapmap.project.Card;
 import uk.ac.ucl.excites.tapmap.project.ProjectManager;
 import uk.ac.ucl.excites.tapmap.project.Settings;
+import uk.ac.ucl.excites.tapmap.storage.ImageCard;
 import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
+import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.FileUtils;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
  */
-public class ImportSettingsActivity extends AppCompatActivity {
+public class ImportSettingsActivity extends NfcBaseActivity {
 
   public static final int PICK_DIRECTORY = 1;
 
@@ -58,12 +62,16 @@ public class ImportSettingsActivity extends AppCompatActivity {
   protected TextView name;
   @BindView(R.id.image)
   protected ImageView image;
-  @BindView(R.id.recycler_view_cards)
-  protected RecyclerView recyclerView;
+  @BindView(R.id.list_of_ids)
+  protected TextView listOfCardIdsText;
 
+  private NfcTagParser currentNfcTagParser;
   private Picasso picasso;
   private ImageCardDao imageCardDao;
   private NfcCardDao nfcCardDao;
+  private Set<String> setOfCardIds;
+  private List<Card> cards;
+  private Card currentCard;
 
   // Files and Paths
   private File imagesDirectory;
@@ -87,8 +95,50 @@ public class ImportSettingsActivity extends AppCompatActivity {
     imagesDirectory = ProjectManager.getImagesDirectory(this);
     Timber.d("Set images directory to: %s", imagesDirectory.toString());
 
+    setOfCardIds = new HashSet<>();
+
     // Start with selecting a folder
     pickFolder();
+  }
+
+  @Override
+  protected void handleNfcCard(NfcTagParser nfcTagParser) {
+    Timber.d(nfcTagParser.toString());
+    currentNfcTagParser = nfcTagParser;
+
+    // 1. Check if Card is already associated with an icon
+    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
+
+    if (nfcCard != null && nfcCard.getImageCardId() > 0)
+      showAlreadyExistsDialog(nfcCard);
+    else
+      addCardsToUI(currentNfcTagParser.getId());
+  }
+
+  private void showAlreadyExistsDialog(final NfcCard nfcCard) {
+
+    final ImageCard imageCard = imageCardDao.findById(nfcCard.getImageCardId());
+
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    alertDialogBuilder.setTitle("Replace card " + imageCard.getTag() + "?")
+        .setMessage("This card has been already setup. Do you want to replace it?")
+        .setPositiveButton("Replace", (dialog, which) -> addCardsToUI(nfcCard.getId()))
+        .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
+        .show();
+  }
+
+  private void addCardsToUI(String id) {
+
+    if (id == null || id.isEmpty())
+      return;
+
+    setOfCardIds.add(id);
+    StringBuilder cards = new StringBuilder();
+    for (String card : setOfCardIds) {
+      cards.append(card).append(",");
+    }
+
+    listOfCardIdsText.setText(cards.toString().substring(0, cards.toString().length() - 1));
   }
 
   private void pickFolder() {
@@ -132,44 +182,72 @@ public class ImportSettingsActivity extends AppCompatActivity {
         return;
 
       // Ensure cards exist
-      final List<Card> cards = settings.getCards();
+      cards = settings.getCards();
       if (cards == null)
         return;
 
-      for (Card card : cards) {
-
-        // 1. Copy the card to the images directory
-        try {
-          copyCardToImagesDirectory(selectedDir, card);
-        } catch (IOException e) {
-          Timber.e(e);
-          break;
-        }
-
-        // TODO: 03/09/2018 check if card already has an id
-
-        // 3. Show card
-        currentImageFilePath = new File(imagesDirectory + File.separator + card.getImage());
-        showCard(card);
+      // 1. Copy the card to the images directory
+      try {
+        copyCardsToImagesDir(selectedDir, cards);
+      } catch (IOException e) {
+        Timber.e(e);
       }
+
+      processCards();
     }
   }
 
-  private void copyCardToImagesDirectory(File selectedDir, Card card) throws IOException {
+  private void copyCardsToImagesDir(File inputDirectory, List<Card> cards) throws IOException {
 
-    final File inputFile = new File(selectedDir + File.separator + card.getImage());
-    final File outputFile = new File(imagesDirectory + File.separator + card.getImage());
+    for (Card card : cards) {
 
-    InputStream inputStream = null;
-    try {
-      inputStream = new FileInputStream(inputFile);
-    } catch (FileNotFoundException e) {
-      final String message = "The '" + card.getImage() + "' does not exist.";
-      showSnackBar(root, message);
-      throw new IOException(message);
+      final File inputFile = new File(inputDirectory + File.separator + card.getImage());
+      final File outputFile = new File(imagesDirectory + File.separator + card.getImage());
+
+      InputStream inputStream = null;
+      try {
+        inputStream = new FileInputStream(inputFile);
+      } catch (FileNotFoundException e) {
+        final String message = "The '" + card.getImage() + "' does not exist.";
+        showSnackBar(root, message);
+        throw new IOException(message);
+      }
+      FileUtils.copyFile(inputStream, outputFile);
+      Timber.d("Copied: %s To: %s", inputFile, outputFile);
     }
-    FileUtils.copyFile(inputStream, outputFile);
-    Timber.d("Copied: %s To: %s", inputFile, outputFile);
+  }
+
+  private void processCards() {
+
+    for (Card card : cards) {
+
+      currentCard = card;
+
+      // Check if card already has an id
+      if (currentCard.getIds() != null && !currentCard.getIds().isEmpty()) {
+        final ImageCard imageCard = new ImageCard();
+        imageCard.setFilename(currentCard.getImage());
+        imageCard.setTag(currentCard.getTag());
+        imageCard.setImagePath(currentImageFilePath.toString());
+        final long imageCardId = imageCardDao.insert(imageCard);
+
+        for (String id : currentCard.getIds()) {
+          final NfcCard nfcCard = new NfcCard();
+          nfcCard.setImageCardId(imageCardId);
+          nfcCard.setId(id);
+          nfcCardDao.insert(nfcCard);
+        }
+
+        // Loop back
+        cards.remove(currentCard);
+        processCards();
+        break;
+      }
+
+      // Show card
+      currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
+      showCard(currentCard);
+    }
   }
 
   private void showCard(Card card) {
@@ -186,6 +264,45 @@ public class ImportSettingsActivity extends AppCompatActivity {
         .into(image);
   }
 
+  @OnClick(R.id.clear)
+  public void onClearClicked() {
+    Timber.d("Clear Clicked");
+    setOfCardIds.clear();
+    listOfCardIdsText.setText("");
+    showSnackBar(root, "Cleared cards, add them again!");
+  }
+
+  @OnClick(R.id.next_card)
+  public void onNextCardClicked() {
+    Timber.d("Next Clicked");
+    if (setOfCardIds.isEmpty()) {
+      showSnackBar(root, "Please add NFC cards for the current image first!");
+      return;
+    }
+
+    // Store cards and image files
+    final ImageCard imageCard = new ImageCard();
+    imageCard.setFilename(currentCard.getImage());
+    imageCard.setTag(currentCard.getTag());
+    imageCard.setImagePath(currentImageFilePath.toString());
+    final long imageCardId = imageCardDao.insert(imageCard);
+
+    for (String id : setOfCardIds) {
+      final NfcCard nfcCard = new NfcCard();
+      nfcCard.setImageCardId(imageCardId);
+      nfcCard.setId(id);
+      nfcCardDao.insert(nfcCard);
+    }
+
+    // Remove current card from the list
+    cards.remove(currentCard);
+    setOfCardIds.clear();
+    listOfCardIdsText.setText("");
+
+    // Process the rest of the cards
+    processCards();
+  }
+
   private void showSnackBar(View view, String message) {
 
     final Snackbar snackbar = Snackbar.make(view,
@@ -198,15 +315,5 @@ public class ImportSettingsActivity extends AppCompatActivity {
       }
     });
     snackbar.show();
-  }
-
-  @OnClick(R.id.clear)
-  protected void onClearClicked() {
-    Timber.d("Clear Clicked");
-  }
-
-  @OnClick(R.id.next_card)
-  protected void onNextCardClicked() {
-    Timber.d("Next Clicked");
   }
 }

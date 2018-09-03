@@ -49,8 +49,8 @@
 
   <ImageView
       android:id="@+id/image"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
+      android:layout_width="150dp"
+      android:layout_height="150dp"
       android:layout_marginTop="8dp"
       android:scaleType="centerInside"
       app:layout_constraintStart_toStartOf="@+id/name"
@@ -58,17 +58,6 @@
       app:srcCompat="@drawable/ic_image"
       />
 
-
-  <android.support.v7.widget.RecyclerView
-      android:id="@+id/recycler_view_cards"
-      android:layout_width="wrap_content"
-      android:layout_height="0dp"
-      android:layout_marginBottom="16dp"
-      android:layout_marginTop="8dp"
-      app:layout_constraintBottom_toTopOf="@+id/clear"
-      app:layout_constraintStart_toStartOf="@+id/image"
-      app:layout_constraintTop_toBottomOf="@+id/textView5"
-      />
 
   <TextView
       android:id="@+id/textView5"
@@ -80,6 +69,17 @@
       app:layout_constraintTop_toBottomOf="@+id/image"
       />
 
+  <TextView
+      android:id="@+id/list_of_ids"
+      android:layout_width="wrap_content"
+      android:layout_height="0dp"
+      android:layout_marginTop="8dp"
+      android:text=""
+      app:layout_constraintBottom_toTopOf="@+id/clear"
+      app:layout_constraintStart_toStartOf="@+id/textView5"
+      app:layout_constraintTop_toBottomOf="@+id/textView5"
+      />
+
   <Button
       android:id="@+id/clear"
       android:layout_width="0dp"
@@ -88,7 +88,6 @@
       android:layout_marginEnd="16dp"
       android:layout_marginStart="16dp"
       android:backgroundTint="@color/colorAccent"
-      android:enabled="false"
       android:text="Clear"
       android:textColor="@color/white"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -103,7 +102,6 @@
       android:layout_marginEnd="16dp"
       android:layout_marginStart="16dp"
       android:backgroundTint="@color/colorAccent"
-      android:enabled="false"
       android:text="Next Card"
       android:textColor="@color/white"
       app:layout_constraintBottom_toBottomOf="@+id/clear"
