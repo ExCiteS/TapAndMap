@@ -31,7 +31,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.google.gson.JsonObject;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import io.reactivex.Observable;
@@ -47,9 +46,10 @@ import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
 import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
+import uk.ac.ucl.excites.tapmap.project.ProjectManager;
+import uk.ac.ucl.excites.tapmap.project.Settings;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
-import uk.ac.ucl.excites.tapmap.utils.ProjectManager;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -178,9 +178,9 @@ public class ListActivity extends AppCompatActivity {
 
       Timber.d("Selected folder: %s", selectedDir);
 
-      JsonObject json = null;
+      Settings settings = null;
       try {
-        json = ProjectManager.loadSettingsInDirectory(selectedDir);
+        settings = ProjectManager.loadSettingsInDirectory(selectedDir);
       } catch (FileNotFoundException e) {
         Timber.e(e);
         showSnackBar(nfcCardsRecyclerView, "There is no settings.json file in the selected folder");

@@ -13,11 +13,10 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package uk.ac.ucl.excites.tapmap.utils;
+package uk.ac.ucl.excites.tapmap.project;
 
 import android.content.Context;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,17 +37,17 @@ public class ProjectManager {
     return context.getDir(IMAGES_DIRECTORY, Context.MODE_PRIVATE);
   }
 
-  public static JsonObject loadSettingsInDirectory(File directory) throws FileNotFoundException {
+  public static Settings loadSettingsInDirectory(File directory) throws FileNotFoundException {
 
-    final String settings = directory + File.separator + SETTINGS_NAME;
-    Timber.d("Try to load Settings at: %s", settings);
-    final BufferedReader bufferedReader = new BufferedReader(new FileReader(settings));
+    final String settingsFile = directory + File.separator + SETTINGS_NAME;
+    Timber.d("Try to load Settings at: %s", settingsFile);
+    final BufferedReader bufferedReader = new BufferedReader(new FileReader(settingsFile));
 
     final Gson gson = new Gson();
-    final JsonObject json = gson.fromJson(bufferedReader, JsonObject.class);
+    final Settings settings = gson.fromJson(bufferedReader, Settings.class);
 
-    Timber.d("JSON: %s", json.toString());
+    Timber.d(settings.toString());
 
-    return json;
+    return settings;
   }
 }
