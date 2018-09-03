@@ -18,6 +18,7 @@ package uk.ac.ucl.excites.tapmap.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import com.google.gson.JsonObject;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import io.reactivex.Observable;
@@ -39,6 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import java.io.File;
+import java.io.FileNotFoundException;
 import lib.folderpicker.FolderPicker;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.R;
@@ -47,6 +49,7 @@ import uk.ac.ucl.excites.tapmap.adapters.NfcCardItem;
 import uk.ac.ucl.excites.tapmap.controllers.NavigationController;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
+import uk.ac.ucl.excites.tapmap.utils.ProjectManager;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -175,6 +178,27 @@ public class ListActivity extends AppCompatActivity {
 
       Timber.d("Selected folder: %s", selectedDir);
 
+      JsonObject json = null;
+      try {
+        json = ProjectManager.loadSettingsInDirectory(selectedDir);
+      } catch (FileNotFoundException e) {
+        Timber.e(e);
+        showSnackBar(nfcCardsRecyclerView, "There is no settings.json file in the selected folder");
+      }
     }
+  }
+
+  private void showSnackBar(View view, String message) {
+
+    final Snackbar snackbar = Snackbar.make(view,
+        message,
+        Snackbar.LENGTH_INDEFINITE);
+    snackbar.setAction("Dismiss", new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        snackbar.dismiss();
+      }
+    });
+    snackbar.show();
   }
 }
