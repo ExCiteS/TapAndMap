@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -101,52 +102,18 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     pickFolder();
   }
 
-  @Override
-  protected void handleNfcCard(NfcTagParser nfcTagParser) {
-    Timber.d(nfcTagParser.toString());
-    currentNfcTagParser = nfcTagParser;
-
-    // 1. Check if Card is already associated with an icon
-    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
-
-    if (nfcCard != null && nfcCard.getImageCardId() > 0)
-      showAlreadyExistsDialog(nfcCard);
-    else
-      addCardsToUI(currentNfcTagParser.getId());
-  }
-
-  private void showAlreadyExistsDialog(final NfcCard nfcCard) {
-
-    final ImageCard imageCard = imageCardDao.findById(nfcCard.getImageCardId());
-
-    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-    alertDialogBuilder.setTitle("Replace card " + imageCard.getTag() + "?")
-        .setMessage("This card has been already setup. Do you want to replace it?")
-        .setPositiveButton("Replace", (dialog, which) -> addCardsToUI(nfcCard.getId()))
-        .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
-        .show();
-  }
-
-  private void addCardsToUI(String id) {
-
-    if (id == null || id.isEmpty())
-      return;
-
-    setOfCardIds.add(id);
-    StringBuilder cards = new StringBuilder();
-    for (String card : setOfCardIds) {
-      cards.append(card).append(",");
-    }
-
-    listOfCardIdsText.setText(cards.toString().substring(0, cards.toString().length() - 1));
-  }
-
+  /**
+   * Start another activity to pick a Folder where the project is defined as a settings.json file
+   */
   private void pickFolder() {
     Intent intent = new Intent(this, FolderPicker.class);
     intent.putExtra("title", "Select folder with Tap And Map project");
     startActivityForResult(intent, PICK_DIRECTORY);
   }
 
+  /**
+   * Callback for the selected folder in the {@code pickFolder()} method
+   */
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -174,7 +141,7 @@ public class ImportSettingsActivity extends NfcBaseActivity {
         settings = ProjectManager.loadSettingsInDirectory(selectedDir);
       } catch (FileNotFoundException e) {
         Timber.e(e);
-        showSnackBar(root, "There is no settings.json file in the selected folder");
+        showSnackBar(root, "There is no 'settings.json' file in the selected folder");
       }
 
       // Ensure settings exist
@@ -186,13 +153,14 @@ public class ImportSettingsActivity extends NfcBaseActivity {
       if (cards == null)
         return;
 
-      // 1. Copy the card to the images directory
+      // Copy the cards to the images directory
       try {
         copyCardsToImagesDir(selectedDir, cards);
       } catch (IOException e) {
         Timber.e(e);
       }
 
+      // Finally process the cards
       processCards();
     }
   }
@@ -217,6 +185,53 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     }
   }
 
+  /**
+   * Handle the NFC card touched on the device
+   */
+  @Override
+  protected void handleNfcCard(NfcTagParser nfcTagParser) {
+    Timber.d(nfcTagParser.toString());
+    currentNfcTagParser = nfcTagParser;
+
+    // Check if Card is already associated with an icon
+    final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
+
+    if (nfcCard != null && nfcCard.getImageCardId() > 0)
+      showAlreadyExistsDialog(nfcCard);
+    else
+      addNfcCardIdsToUI(currentNfcTagParser.getId());
+  }
+
+  private void showAlreadyExistsDialog(final NfcCard nfcCard) {
+
+    final ImageCard imageCard = imageCardDao.findById(nfcCard.getImageCardId());
+
+    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+    alertDialogBuilder.setTitle("Replace card " + imageCard.getTag() + "?")
+        .setMessage("This card has been already setup. Do you want to replace it?")
+        .setPositiveButton("Replace", (dialog, which) -> addNfcCardIdsToUI(nfcCard.getId()))
+        .setNegativeButton("Cancel", (dialog, which) -> { /* Do nothing */ })
+        .show();
+  }
+
+  private void addNfcCardIdsToUI(String id) {
+
+    if (id == null || id.isEmpty())
+      return;
+
+    setOfCardIds.add(id);
+    StringBuilder cardsBuilder = new StringBuilder();
+    for (String card : setOfCardIds) {
+      cardsBuilder.append(card).append(",");
+    }
+
+    final String cardsString = cardsBuilder.toString();
+    listOfCardIdsText.setText(cardsString.substring(0, cardsString.length() - 1));
+  }
+
+  /**
+   * Method to process the cards described in the settings.json
+   */
   private void processCards() {
 
     for (Card card : cards) {
@@ -246,11 +261,11 @@ public class ImportSettingsActivity extends NfcBaseActivity {
 
       // Show card
       currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
-      showCard(currentCard);
+      updateUIwithCard(currentCard);
     }
   }
 
-  private void showCard(Card card) {
+  private void updateUIwithCard(Card card) {
 
     name.setText(card.getImage());
     // Load image
@@ -300,7 +315,12 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     listOfCardIdsText.setText("");
 
     // Process the rest of the cards
-    processCards();
+    if (!cards.isEmpty())
+      processCards();
+    else {
+      Toast.makeText(this, "All cards have been imported.", Toast.LENGTH_LONG).show();
+      finish();
+    }
   }
 
   private void showSnackBar(View view, String message) {
