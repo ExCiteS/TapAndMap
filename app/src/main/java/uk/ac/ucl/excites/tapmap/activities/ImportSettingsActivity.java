@@ -18,7 +18,6 @@ package uk.ac.ucl.excites.tapmap.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,6 +48,7 @@ import uk.ac.ucl.excites.tapmap.storage.ImageCardDao;
 import uk.ac.ucl.excites.tapmap.storage.NfcCard;
 import uk.ac.ucl.excites.tapmap.storage.NfcCardDao;
 import uk.ac.ucl.excites.tapmap.utils.FileUtils;
+import uk.ac.ucl.excites.tapmap.utils.UiUtils;
 
 /**
  * Created by Michalis Vitos on 24/05/2018.
@@ -182,7 +182,7 @@ public class ImportSettingsActivity extends NfcBaseActivity {
         inputStream = new FileInputStream(inputFile);
       } catch (FileNotFoundException e) {
         final String message = "The '" + card.getImage() + "' does not exist.";
-        showSnackBar(root, message);
+        UiUtils.showSnackBarWithDismiss(root, message);
         throw new IOException(message);
       }
       FileUtils.copyFile(inputStream, outputFile);
@@ -289,14 +289,14 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     Timber.d("Clear Clicked");
     setOfCardIds.clear();
     listOfCardIdsText.setText("");
-    showSnackBar(root, "Cleared cards, add them again!");
+    UiUtils.showSnackBarWithDismiss(root, "Cleared cards, add them again!");
   }
 
   @OnClick(R.id.next_card)
   public void onNextCardClicked() {
     Timber.d("Next Clicked");
     if (setOfCardIds.isEmpty()) {
-      showSnackBar(root, "Please add NFC cards for the current image first!");
+      UiUtils.showSnackBarWithDismiss(root, "Please add NFC cards for the current image first!");
       return;
     }
 
@@ -326,19 +326,5 @@ public class ImportSettingsActivity extends NfcBaseActivity {
       Toast.makeText(this, "All cards have been imported.", Toast.LENGTH_LONG).show();
       finish();
     }
-  }
-
-  private void showSnackBar(View view, String message) {
-
-    final Snackbar snackbar = Snackbar.make(view,
-        message,
-        Snackbar.LENGTH_INDEFINITE);
-    snackbar.setAction("Dismiss", new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        snackbar.dismiss();
-      }
-    });
-    snackbar.show();
   }
 }
