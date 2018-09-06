@@ -139,6 +139,10 @@ public class ListActivity extends AppCompatActivity {
         NavigationController.openImportSettingsActivity(this);
         return true;
 
+      case R.id.action_export_project:
+        // TODO: 06/09/2018 Add functionality here
+        return true;
+
       default:
         return super.onOptionsItemSelected(item);
     }

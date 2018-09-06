@@ -19,17 +19,25 @@
   <!-- Settings, should always be in the overflow -->
   <item
       android:id="@+id/action_add_card"
+      android:icon="@drawable/ic_add_white"
       android:title="Add a new card"
-      app:showAsAction="never"/>
+      app:showAsAction="ifRoom"/>
 
   <item
       android:id="@+id/action_clear_all"
+      android:icon="@drawable/ic_delete_white"
       android:title="Clear all cards"
-      app:showAsAction="never"/>
+      app:showAsAction="ifRoom"/>
 
   <item
       android:id="@+id/action_load_project"
       android:title="Load project from file"
+      app:showAsAction="never"/>
+
+
+  <item
+      android:id="@+id/action_export_project"
+      android:title="Export project to file"
       app:showAsAction="never"/>
 
 
