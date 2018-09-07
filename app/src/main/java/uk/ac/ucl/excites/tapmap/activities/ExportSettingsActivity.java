@@ -153,6 +153,10 @@ public class ExportSettingsActivity extends AppCompatActivity {
 
           return card;
         })
+        .map(card -> {
+          copyCardsFromImagesDir(exportsDir, card);
+          return card;
+        })
         .toList()
         .map(cards -> {
           // Map to Settings
@@ -187,25 +191,21 @@ public class ExportSettingsActivity extends AppCompatActivity {
         });
   }
 
-  // TODO: 07/09/2018 Use this?
-  private void copyCardsToImagesDir(File inputDirectory, List<Card> cards) throws IOException {
+  private void copyCardsFromImagesDir(File exportDirectory, Card card) throws IOException {
 
-    for (Card card : cards) {
+    final File inputFile = new File(imagesDirectory + File.separator + card.getImage());
+    final File outputFile = new File(exportDirectory + File.separator + card.getImage());
 
-      final File inputFile = new File(inputDirectory + File.separator + card.getImage());
-      final File outputFile = new File(imagesDirectory + File.separator + card.getImage());
-
-      InputStream inputStream = null;
-      try {
-        inputStream = new FileInputStream(inputFile);
-      } catch (FileNotFoundException e) {
-        final String message = "The '" + card.getImage() + "' does not exist.";
-        showSnackBar(root, message);
-        throw new IOException(message);
-      }
-      FileUtils.copyFile(inputStream, outputFile);
-      Timber.d("Copied: %s To: %s", inputFile, outputFile);
+    InputStream inputStream = null;
+    try {
+      inputStream = new FileInputStream(inputFile);
+    } catch (FileNotFoundException e) {
+      final String message = "The '" + card.getImage() + "' does not exist.";
+      showSnackBar(root, message);
+      throw new IOException(message);
     }
+    FileUtils.copyFile(inputStream, outputFile);
+    Timber.d("Copied: %s To: %s", inputFile, outputFile);
   }
 
   private void showSnackBar(View view, String message) {
