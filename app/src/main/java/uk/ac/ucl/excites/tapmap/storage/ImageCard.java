@@ -22,7 +22,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,10 +41,12 @@ import lombok.Setter;
 public class ImageCard {
 
   /**
-   * Auto-generated ID
+   * The actual file name of the picked image for this NFC card. For example this could be banana.png
+   * This could be used later to map the results on a map and use the same images as icons.
    */
-  @PrimaryKey(autoGenerate = true)
-  private long id;
+  @NonNull
+  @PrimaryKey
+  private String filename;
 
   /**
    * This is the location where the image associated to this NFC card is stored. Usually this will be
@@ -54,13 +55,6 @@ public class ImageCard {
    */
   @ColumnInfo(name = "image_path")
   private transient String imagePath;
-
-  /**
-   * The actual file name of the picked image for this NFC card. For example this could be banana.png
-   * This could be used later to map the results on a map and use the same images as icons.
-   */
-  @ColumnInfo(name = "image_filename")
-  private String filename;
 
   /**
    * This is a textual tag used on the NFC card for later analysis. For example this could be banana etc.

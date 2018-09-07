@@ -37,7 +37,7 @@ import lombok.Setter;
  */
 @Entity(foreignKeys = @ForeignKey(
     entity = ImageCard.class,
-    parentColumns = "id",
+    parentColumns = "filename",
     childColumns = "image_card_id",
     onDelete = ForeignKey.CASCADE
 ), indices = { @Index("image_card_id") }
@@ -56,7 +56,7 @@ public class NfcCard {
   private String id;
 
   @ColumnInfo(name = "image_card_id")
-  public long imageCardId;
+  public String imageCardId;
 
   /**
    * Convert Card to Json

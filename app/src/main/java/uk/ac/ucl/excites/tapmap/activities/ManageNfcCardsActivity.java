@@ -130,7 +130,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // 1. Check if Card is already associated with an icon
     final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
-    if (nfcCard != null && nfcCard.getImageCardId() > 0)
+    if (nfcCard != null && !nfcCard.getImageCardId().isEmpty())
       showAlreadyExistsDialog(nfcCard);
     else
       showStepTwo(currentNfcTagParser.getId());
@@ -234,11 +234,12 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     // Get path
     // Store to DB
     final String tagText = this.tag.getText().toString();
-    final long imageCardId =
-        imageCardDao.insert(getImageCard(currentImageFilePath.toString(),
-            currentImageFileName,
-            tagText));
-    nfcCardDao.insert(getNfcCard(currentNfcTagParser.getId(), imageCardId));
+    final ImageCard imageCard = getImageCard(currentImageFilePath.toString(),
+        currentImageFileName,
+        tagText);
+    imageCardDao.insert(imageCard);
+    final NfcCard nfcCard = getNfcCard(currentNfcTagParser.getId(), imageCard.getFilename());
+    nfcCardDao.insert(nfcCard);
     Toast.makeText(this, "Card stored.", Toast.LENGTH_LONG).show();
 
     // Close activity
@@ -255,7 +256,7 @@ public class ManageNfcCardsActivity extends NfcBaseActivity {
     return imageCard;
   }
 
-  private NfcCard getNfcCard(String id, long imageCardId) {
+  private NfcCard getNfcCard(String id, String imageCardId) {
 
     final NfcCard nfcCard = new NfcCard();
     nfcCard.setId(id);

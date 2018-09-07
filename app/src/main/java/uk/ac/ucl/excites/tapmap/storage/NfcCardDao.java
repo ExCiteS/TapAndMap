@@ -42,7 +42,7 @@ public interface NfcCardDao {
   List<NfcCard> findByImageCardId(long imageCardId);
 
   @Query("SELECT id FROM NfcCard WHERE image_card_id = :imageCardId")
-  List<String> findCardIdsByImageId(long imageCardId);
+  List<String> findCardIdsByImageId(String imageCardId);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   long insert(NfcCard card);

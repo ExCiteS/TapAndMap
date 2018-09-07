@@ -143,7 +143,7 @@ public class ExportSettingsActivity extends AppCompatActivity {
         .flatMap(Observable::fromIterable)
         .map(imageCard -> {
           // Get Cards IDs
-          final List<String> ids = nfcCardDao.findCardIdsByImageId(imageCard.getId());
+          final List<String> ids = nfcCardDao.findCardIdsByImageId(imageCard.getFilename());
 
           // Create our card
           final Card card = new Card();

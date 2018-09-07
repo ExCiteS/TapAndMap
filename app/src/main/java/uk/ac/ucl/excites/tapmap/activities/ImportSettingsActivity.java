@@ -201,7 +201,7 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     // Check if Card is already associated with an icon
     final NfcCard nfcCard = nfcCardDao.findById(nfcTagParser.getId());
 
-    if (nfcCard != null && nfcCard.getImageCardId() > 0)
+    if (nfcCard != null && !nfcCard.getImageCardId().isEmpty())
       showAlreadyExistsDialog(nfcCard);
     else
       addNfcCardIdsToUI(currentNfcTagParser.getId());
@@ -253,14 +253,15 @@ public class ImportSettingsActivity extends NfcBaseActivity {
       // Check if card already has an id
       if (currentCard.getIds() != null && !currentCard.getIds().isEmpty()) {
         final ImageCard imageCard = new ImageCard();
-        imageCard.setFilename(currentCard.getImage());
+        final String filename = currentCard.getImage();
+        imageCard.setFilename(filename);
         imageCard.setTag(currentCard.getTag());
         imageCard.setImagePath(currentImageFilePath.toString());
-        final long imageCardId = imageCardDao.insert(imageCard);
+        imageCardDao.insert(imageCard);
 
         for (String id : currentCard.getIds()) {
           final NfcCard nfcCard = new NfcCard();
-          nfcCard.setImageCardId(imageCardId);
+          nfcCard.setImageCardId(filename);
           nfcCard.setId(id);
           nfcCardDao.insert(nfcCard);
         }
@@ -308,14 +309,15 @@ public class ImportSettingsActivity extends NfcBaseActivity {
 
     // Store cards and image files
     final ImageCard imageCard = new ImageCard();
-    imageCard.setFilename(currentCard.getImage());
+    final String filename = currentCard.getImage();
+    imageCard.setFilename(filename);
     imageCard.setTag(currentCard.getTag());
     imageCard.setImagePath(currentImageFilePath.toString());
-    final long imageCardId = imageCardDao.insert(imageCard);
+    imageCardDao.insert(imageCard);
 
     for (String id : setOfCardIds) {
       final NfcCard nfcCard = new NfcCard();
-      nfcCard.setImageCardId(imageCardId);
+      nfcCard.setImageCardId(filename);
       nfcCard.setId(id);
       nfcCardDao.insert(nfcCard);
     }

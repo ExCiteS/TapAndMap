@@ -32,17 +32,17 @@ public interface ImageCardDao {
   @Query("SELECT * FROM ImageCard")
   Single<List<ImageCard>> getAll();
 
-  @Query("SELECT * FROM ImageCard WHERE id IN (:imageIds)")
-  List<ImageCard> findAllByIds(long[] imageIds);
+  @Query("SELECT * FROM ImageCard WHERE filename IN (:imageIds)")
+  List<ImageCard> findAllByIds(String[] imageIds);
 
-  @Query("SELECT * FROM ImageCard WHERE id = :id LIMIT 1")
-  ImageCard findById(long id);
-
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  long insert(ImageCard card);
+  @Query("SELECT * FROM ImageCard WHERE filename = :id LIMIT 1")
+  ImageCard findById(String id);
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  List<Long> insert(ImageCard... cards);
+  void insert(ImageCard card);
+
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  void insert(ImageCard... cards);
 
   @Delete
   void delete(ImageCard card);

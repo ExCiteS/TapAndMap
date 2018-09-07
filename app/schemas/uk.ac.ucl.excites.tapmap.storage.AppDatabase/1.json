@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d3a5283706cb4fda877d607349273921",
+    "identityHash": "cc534b557b602cc9bff3c539318c73ab",
     "entities": [
       {
         "tableName": "NfcCard",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `image_card_id` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`image_card_id`) REFERENCES `ImageCard`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `image_card_id` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`image_card_id`) REFERENCES `ImageCard`(`filename`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -17,8 +17,8 @@
           {
             "fieldPath": "imageCardId",
             "columnName": "image_card_id",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -46,30 +46,24 @@
               "image_card_id"
             ],
             "referencedColumns": [
-              "id"
+              "filename"
             ]
           }
         ]
       },
       {
         "tableName": "ImageCard",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `image_path` TEXT, `image_filename` TEXT, `tag` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`filename` TEXT NOT NULL, `image_path` TEXT, `tag` TEXT, PRIMARY KEY(`filename`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "filename",
+            "columnName": "filename",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "imagePath",
             "columnName": "image_path",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "filename",
-            "columnName": "image_filename",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -82,9 +76,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "filename"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -168,7 +162,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d3a5283706cb4fda877d607349273921\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"cc534b557b602cc9bff3c539318c73ab\")"
     ]
   }
 }
