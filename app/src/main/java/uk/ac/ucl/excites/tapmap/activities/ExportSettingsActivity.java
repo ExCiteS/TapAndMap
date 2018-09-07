@@ -58,6 +58,8 @@ public class ExportSettingsActivity extends AppCompatActivity {
   protected View root;
   @BindView(R.id.exportDirectory)
   protected TextView exportDirectory;
+  @BindView(R.id.title)
+  protected TextView title;
   @BindView(R.id.progressBar)
   protected ProgressBar progressBar;
 
@@ -115,63 +117,74 @@ public class ExportSettingsActivity extends AppCompatActivity {
 
       // Ensure the selected folder exists
       final File selectedDir = new File(selectedDirString);
-      if (!selectedDir.exists())
-        return;
+      if (!selectedDir.exists()) {
+        Toast.makeText(this, "The directory does not exist.", Toast.LENGTH_LONG).show();
+        finish();
+      }
 
       Timber.d("Selected folder: %s", selectedDir);
 
       // Start showing the progress bar
       progressBar.setVisibility(View.VISIBLE);
-
-      // Export settings
-      imageCardDao.getAll()
-          .subscribeOn(Schedulers.io())
-          .toObservable()
-          .flatMap(Observable::fromIterable)
-          .observeOn(AndroidSchedulers.mainThread())
-          .map(imageCard -> {
-            // Get Cards IDs
-            final List<String> ids = nfcCardDao.findCardIdsByImageId(imageCard.getId());
-
-            // Create our card
-            final Card card = new Card();
-            card.setIds(ids);
-            card.setImage(imageCard.getFilename());
-            card.setTag(imageCard.getTag());
-
-            return card;
-          })
-          .toList()
-          .map(cards -> {
-            // Map to Settings
-            final Settings settings = new Settings();
-            settings.setCards(cards);
-            return settings;
-          })
-          .toObservable()
-          .doOnNext(settings -> ProjectManager.writeSettingsToDirectory(settings, selectedDir))
-          .subscribe(new DisposableObserver<Settings>() {
-            @Override
-            public void onNext(Settings settings) {
-              Timber.d(settings.toString());
-            }
-
-            @Override
-            public void onError(Throwable e) {
-              Timber.e(e);
-              final Activity activity = ExportSettingsActivity.this;
-              Toast.makeText(activity, "Could not export settings.", Toast.LENGTH_LONG).show();
-              activity.finish();
-            }
-
-            @Override
-            public void onComplete() {
-              progressBar.setVisibility(View.GONE);
-              exportDirectory.setVisibility(View.VISIBLE);
-              exportDirectory.setText(selectedDir.toString());
-            }
-          });
+      exportSettings(selectedDir);
+    } else {
+      finish();
     }
+  }
+
+  private void exportSettings(File exportsDir) {
+
+    Timber.d("Export settings to : %s", exportsDir);
+
+    // Export settings
+    imageCardDao.getAll()
+        .subscribeOn(Schedulers.io())
+        .toObservable()
+        .flatMap(Observable::fromIterable)
+        .map(imageCard -> {
+          // Get Cards IDs
+          final List<String> ids = nfcCardDao.findCardIdsByImageId(imageCard.getId());
+
+          // Create our card
+          final Card card = new Card();
+          card.setIds(ids);
+          card.setImage(imageCard.getFilename());
+          card.setTag(imageCard.getTag());
+
+          return card;
+        })
+        .toList()
+        .map(cards -> {
+          // Map to Settings
+          final Settings settings = new Settings();
+          settings.setCards(cards);
+          return settings;
+        })
+        .toObservable()
+        .doOnNext(settings -> ProjectManager.writeSettingsToDirectory(settings, exportsDir))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new DisposableObserver<Settings>() {
+          @Override
+          public void onNext(Settings settings) {
+            Timber.d(settings.toString());
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            Timber.e(e);
+            final Activity activity = ExportSettingsActivity.this;
+            Toast.makeText(activity, "Could not export settings.", Toast.LENGTH_LONG).show();
+            activity.finish();
+          }
+
+          @Override
+          public void onComplete() {
+            progressBar.setVisibility(View.GONE);
+            title.setVisibility(View.VISIBLE);
+            exportDirectory.setVisibility(View.VISIBLE);
+            exportDirectory.setText(exportsDir.toString());
+          }
+        });
   }
 
   // TODO: 07/09/2018 Use this?
