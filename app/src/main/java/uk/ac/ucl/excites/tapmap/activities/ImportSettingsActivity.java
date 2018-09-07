@@ -226,12 +226,13 @@ public class ImportSettingsActivity extends NfcBaseActivity {
 
     setOfCardIds.add(id);
     StringBuilder cardsBuilder = new StringBuilder();
+    int counter = 1;
     for (String card : setOfCardIds) {
-      cardsBuilder.append(card).append(",");
+      cardsBuilder.append(counter).append(") ").append(card).append("\n");
+      counter++;
     }
 
-    final String cardsString = cardsBuilder.toString();
-    listOfCardIdsText.setText(cardsString.substring(0, cardsString.length() - 1));
+    listOfCardIdsText.setText(cardsBuilder.toString());
   }
 
   /**
