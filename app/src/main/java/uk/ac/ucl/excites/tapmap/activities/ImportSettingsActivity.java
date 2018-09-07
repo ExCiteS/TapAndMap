@@ -244,6 +244,7 @@ public class ImportSettingsActivity extends NfcBaseActivity {
     if (cards.isEmpty()) {
       Toast.makeText(this, "All cards have been imported.", Toast.LENGTH_LONG).show();
       finish();
+      return;
     }
 
     // Get first card
