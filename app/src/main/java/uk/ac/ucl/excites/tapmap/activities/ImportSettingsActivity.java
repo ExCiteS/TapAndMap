@@ -239,9 +239,16 @@ public class ImportSettingsActivity extends NfcBaseActivity {
    */
   private void processCards() {
 
+    // Process the rest of the cards
+    if (cards.isEmpty()) {
+      Toast.makeText(this, "All cards have been imported.", Toast.LENGTH_LONG).show();
+      finish();
+    }
+
     for (Card card : cards) {
 
       currentCard = card;
+      currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
 
       // Check if card already has an id
       if (currentCard.getIds() != null && !currentCard.getIds().isEmpty()) {
@@ -265,12 +272,11 @@ public class ImportSettingsActivity extends NfcBaseActivity {
       }
 
       // Show card
-      currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
-      updateUIwithCard(currentCard);
+      updateUIwithCard(currentCard, currentImageFilePath);
     }
   }
 
-  private void updateUIwithCard(Card card) {
+  private void updateUIwithCard(Card card, File currentImageFilePath) {
 
     name.setText(card.getImage());
     // Load image
