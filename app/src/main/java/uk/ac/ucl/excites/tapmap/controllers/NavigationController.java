@@ -28,6 +28,7 @@ import java.util.List;
 import timber.log.Timber;
 import uk.ac.ucl.excites.tapmap.activities.AudioRecordingActivity;
 import uk.ac.ucl.excites.tapmap.activities.ExportActivity;
+import uk.ac.ucl.excites.tapmap.activities.ExportSettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.ImportSettingsActivity;
 import uk.ac.ucl.excites.tapmap.activities.ListActivity;
 import uk.ac.ucl.excites.tapmap.activities.LocationActivity;
@@ -274,6 +275,10 @@ public class NavigationController {
 
   public static void openImportSettingsActivity(Context context) {
     openActivity(context, ImportSettingsActivity.class);
+  }
+
+  public static void openExportSettingsActivity(Context context) {
+    openActivity(context, ExportSettingsActivity.class);
   }
 
   private static void openActivity(Context context, Class<? extends Activity> activity) {

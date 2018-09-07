@@ -138,7 +138,7 @@ public class ImportSettingsActivity extends NfcBaseActivity {
 
       Settings settings = null;
       try {
-        settings = ProjectManager.loadSettingsInDirectory(selectedDir);
+        settings = ProjectManager.loadSettingsFromDirectory(selectedDir);
       } catch (FileNotFoundException e) {
         Timber.e(e);
         Toast.makeText(this,

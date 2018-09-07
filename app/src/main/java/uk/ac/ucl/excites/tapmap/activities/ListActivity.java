@@ -140,7 +140,7 @@ public class ListActivity extends AppCompatActivity {
         return true;
 
       case R.id.action_export_project:
-        // TODO: 06/09/2018 Add functionality here
+        NavigationController.openExportSettingsActivity(this);
         return true;
 
       default:
