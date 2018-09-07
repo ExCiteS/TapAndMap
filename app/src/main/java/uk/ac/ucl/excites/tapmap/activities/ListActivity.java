@@ -32,9 +32,8 @@ import butterknife.ButterKnife;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.adapters.ItemAdapter;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 import uk.ac.ucl.excites.tapmap.R;
 import uk.ac.ucl.excites.tapmap.TapMap;
@@ -92,11 +91,7 @@ public class ListActivity extends AppCompatActivity {
         .toObservable()
         .flatMap(Observable::fromIterable)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Observer<ImageCard>() {
-          @Override
-          public void onSubscribe(Disposable d) {
-            // Do nothing
-          }
+        .subscribe(new DisposableObserver<ImageCard>() {
 
           @Override
           public void onNext(ImageCard imageCard) {
