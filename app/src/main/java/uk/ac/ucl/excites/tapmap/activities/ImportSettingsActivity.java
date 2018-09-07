@@ -245,36 +245,33 @@ public class ImportSettingsActivity extends NfcBaseActivity {
       finish();
     }
 
-    for (Card card : cards) {
+    // Get first card
+    currentCard = cards.get(0);
+    currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
 
-      currentCard = card;
-      currentImageFilePath = new File(imagesDirectory + File.separator + currentCard.getImage());
+    // Check if card already has an id
+    if (currentCard.getIds() != null && !currentCard.getIds().isEmpty()) {
+      final ImageCard imageCard = new ImageCard();
+      final String filename = currentCard.getImage();
+      imageCard.setFilename(filename);
+      imageCard.setTag(currentCard.getTag());
+      imageCard.setImagePath(currentImageFilePath.toString());
+      imageCardDao.insert(imageCard);
 
-      // Check if card already has an id
-      if (currentCard.getIds() != null && !currentCard.getIds().isEmpty()) {
-        final ImageCard imageCard = new ImageCard();
-        final String filename = currentCard.getImage();
-        imageCard.setFilename(filename);
-        imageCard.setTag(currentCard.getTag());
-        imageCard.setImagePath(currentImageFilePath.toString());
-        imageCardDao.insert(imageCard);
-
-        for (String id : currentCard.getIds()) {
-          final NfcCard nfcCard = new NfcCard();
-          nfcCard.setImageCardId(filename);
-          nfcCard.setId(id);
-          nfcCardDao.insert(nfcCard);
-        }
-
-        // Loop back
-        cards.remove(currentCard);
-        processCards();
-        break;
+      for (String id : currentCard.getIds()) {
+        final NfcCard nfcCard = new NfcCard();
+        nfcCard.setImageCardId(filename);
+        nfcCard.setId(id);
+        nfcCardDao.insert(nfcCard);
       }
 
-      // Show card
-      updateUIwithCard(currentCard, currentImageFilePath);
+      // Loop back
+      cards.remove(currentCard);
+      processCards();
     }
+
+    // Show card
+    updateUIwithCard(currentCard, currentImageFilePath);
   }
 
   private void updateUIwithCard(Card card, File currentImageFilePath) {
