@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import timber.log.Timber;
@@ -157,9 +158,12 @@ public class TapAndMapActivity extends NfcBaseActivity {
     if (nfcCard != null)
       Logger.getInstance().log(CLICK, session, "Confirm: ", nfcCard.toJson().toString());
 
+    final JsonObject meta = (JsonObject) gson.toJsonTree(nfcCard);
+    meta.addProperty("tag", imageCard.getTag());
+
     // Go to next
     final NavigationController navigationController = NavigationController.getInstance();
-    navigationController.setCurrentScreen(Screens.NFC, gson.toJsonTree(nfcCard));
+    navigationController.setCurrentScreen(Screens.NFC, meta);
     navigationController.setCurrentImageCard(imageCard);
     navigationController.goToNextScreen(this);
   }
