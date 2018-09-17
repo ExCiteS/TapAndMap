@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.hugo'
+//apply plugin: 'com.jakewharton.hugo'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'project-report'
+apply plugin: 'io.fabric'
 
 repositories {
-  maven { url 'https://maven.fabric.io/public' }
   maven { url 'http://dl.bintray.com/piasy/maven' }
   maven { url 'https://jitpack.io' }
 }
@@ -88,10 +88,9 @@ dependencies {
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-  // Crashlytics
-  implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
-    transitive = true;
-  }
+  // Firebase and Crashlytics
+  implementation 'com.google.firebase:firebase-core:16.0.3'
+  implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
 
   // Stetho debugging tool
   implementation 'com.facebook.stetho:stetho:1.5.0'
@@ -151,3 +150,6 @@ dependencies {
 
   implementation 'lib.kashif:folderpicker:2.4'
 }
+
+// Firebase integration
+apply plugin: 'com.google.gms.google-services'
