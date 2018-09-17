@@ -158,8 +158,13 @@ public class TapAndMapActivity extends NfcBaseActivity {
     if (nfcCard != null)
       Logger.getInstance().log(CLICK, session, "Confirm: ", nfcCard.toJson().toString());
 
-    final JsonObject meta = (JsonObject) gson.toJsonTree(nfcCard);
-    meta.addProperty("tag", imageCard.getTag());
+    JsonObject meta = new JsonObject();
+    try {
+      meta = (JsonObject) gson.toJsonTree(nfcCard);
+      meta.addProperty("tag", imageCard.getTag());
+    } catch (Exception e) {
+      Timber.e(e);
+    }
 
     // Go to next
     final NavigationController navigationController = NavigationController.getInstance();
