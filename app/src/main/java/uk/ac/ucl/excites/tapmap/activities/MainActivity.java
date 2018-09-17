@@ -19,6 +19,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -80,7 +82,16 @@ public class MainActivity extends AppCompatActivity {
       editor.apply();
     }
 
-    guidTextView.setText("ID: " + guid);
+    try {
+      PackageInfo packageInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+      String version = packageInfo.versionName;
+
+      if (!version.isEmpty())
+        guidTextView.setText("Version: " + version + "\n");
+    } catch (PackageManager.NameNotFoundException e) {
+      Timber.e(e);
+    }
+    guidTextView.append("ID: " + guid);
   }
 
   @Override
