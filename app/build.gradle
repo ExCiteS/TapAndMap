@@ -47,6 +47,14 @@ android {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
+
+    // Rename the output apk and add the version name
+    applicationVariants.all { variant ->
+      variant.outputs.all { output ->
+        outputFileName =
+            new File(output.outputFile.name.replace(".apk", ".${variant.versionName}.apk"));
+      }
+    }
   }
   defaultConfig {
     vectorDrawables.useSupportLibrary = true
