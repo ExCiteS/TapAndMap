@@ -34,6 +34,7 @@ public class StartActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     final NavigationController navigationController = NavigationController.getInstance();
+    navigationController.init(this);
 
     // Reset the navigation controller
     navigationController.cancel(null);
